@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patients - Marate AI</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #050505;
+      color: #f0f0f0;
+    }
+
+    h1, h2, h3, h4, h5, h6, .logo-font {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .glow-button {
+      background: linear-gradient(90deg, #00FFFF, #8000FF);
+      color: #050505;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .glow-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #00FFFF, #8000FF, #00FFFF);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
+      background-size: 200% auto;
+    }
+
+    .glow-button:hover::before {
+      opacity: 1;
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .input-field {
+      background-color: rgba(30, 30, 35, 0.8);
+      border: 1px solid #333;
+      color: #f0f0f0;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .input-field::placeholder {
+      color: #888;
+    }
+
+    .input-field:focus {
+      border-color: #00FFFF;
+      box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+      background-color: rgba(40, 40, 45, 0.9);
+    }
+
+    .card {
+      background-color: #000; /* Pitch black */
+      border: 1px solid rgba(50, 50, 60, 0.5);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+      backdrop-filter: none;
+    }
+
+    .table-header {
+      background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(128, 0, 255, 0.1));
+      border-bottom: 2px solid #00FFFF;
+    }
+
+    .table-row {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background-color 0.25s ease;
+    } 
+
+    .table-row:hover {
+      background-color: rgba(56, 115, 119, 0); /* subtle soft background */
+      backdrop-filter: blur(2px); /* modern, glassy touch */
+      transition: background-color 0.25s ease;
+    }
+    .action-button {
+      transition: all 0.2s ease;
+    }
+
+    .action-button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.2);
+    }
+
+    .cyan-glow {
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    .purple-glow {
+      text-shadow: 0 0 10px rgba(128, 0, 255, 0.5);
+    }
+
+    .scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+      background: #111;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+      background: linear-gradient(#00FFFF, #8000FF);
+      border-radius: 5px;
+    }
+    /* Splash screen styles */
+    #splashScreen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    #splashScreen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+/* Invoice Modal Centering - FIXED */
+#invoiceModal {
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+#invoiceModal.show {
+    display: flex !important;
+}
+
+#invoiceModal .card {
+    margin: 0 auto;
+    max-width: 900px;
+    width: 90%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#invoiceModal #invoice-items-container {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 60vh;
+    scrollbar-width: thin; /* for Firefox */
+    scrollbar-color: #00FFFF #111; /* for Firefox */
+}
+
+#invoice-items-container::-webkit-scrollbar {
+  width: 5px;
+}
+#invoice-items-container::-webkit-scrollbar-track {
+  background: #111;
+}
+#invoice-items-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(#00FFFF, #8000FF);
+  border-radius: 5px;
+}
+
+#invoiceCard {
+  resize: both;
+  overflow: auto;
+  min-width: 400px;
+  min-height: 400px;
+}
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    #invoiceModal {
+        padding: 1rem;
+    }
+    
+    #invoiceModal .card {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    #invoiceModal #invoice-items-container {
+        max-height: 50vh;
+    }
+}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8" style="visibility: hidden;">
+
+  <div id="splashScreen">
+    <img src="https://allarassemjonathan.github.io/marate_black.PNG" alt="Logo" class="h-64 md:h-80" />
+  </div>
+
+  <div class="w-full max-w-7xl">
+    <div class="card rounded-2xl shadow-2xl p-6 md:p-8 mb-8">
+      <div class="flex justify-center mb-10">
+        <img src="https://allarassemjonathan.github.io/marate_black.PNG" class="h-48 md:h-60">
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
+        <div class="relative w-full">
+          <input id="searchBox" type="text" placeholder="Rechercher un patient..." class="input-field w-full p-4 pl-12 rounded-xl text-sm focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto scrollbar rounded-xl mb-10">
+        <table class="w-full table-auto border-collapse">
+          <thead class="table-header">
+            <tr>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Nom</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Date de naissance</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Adresse</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Age</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Poids</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Taille</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Tension</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Température</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Hypothèse</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Bilan</th>
+              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Ordonnance</th>
+              <th class="p-4 text-center text-cyan-400 font-semibold uppercase text-xs tracking-wider">Action</th>
+            </tr>
+          </thead>
+          <tbody id="resultsTable" class="text-gray-300 text-sm">
+            <!-- Results will be populated here -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="border-t border-gray-700 mt-10 pt-8">
+        <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-6">Ajouter un patient</h2>
+        <form id="addForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="relative">
+            <input name="name" placeholder="Nom" required class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="adresse" placeholder="Adresse" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="date_of_birth" type="date" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="age" type="number" placeholder="Âge" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="poids" type="number" step="0.1" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="taille" type="number" step="0.01" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="tension_arterielle" placeholder="Tension" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="hypothese_de_diagnostique" placeholder="Hypothèse" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="bilan" placeholder="Bilan" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            <input name="date_creation" id="dateCreation" type="date" placeholder="Date de création" class="input-field w-full p-4 rounded-xl" disabled>
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+          <div class="md:col-span-2 mt-4">
+            <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Ajouter Patient</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Invoice Modal -->
+<!-- Outer backdrop -->
+<div id="invoiceModal"
+     class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center"
+     style="display: none !important;">
+
+  <!-- Inner modal box -->
+  <div id="invoiceCard"
+       class="bg-black resize rounded-xl p-8 overflow-auto scrollbar"
+       style="min-width: 700px; min-height: 500px; max-width: 90vw; max-height: 90vh; resize: both;">
+
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-400 mb-0">Générer Facture</h2>
+      <button onclick="closeInvoiceModal()" class="text-gray-400 hover:text-cyan-400 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Patient Info Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <input id="input_nom" type="text" placeholder="Nom du patient" class="input-field w-full p-4 rounded-xl border border-gray-600" required>
+      <input id="input_prenom" type="text" placeholder="Prénom du patient" class="input-field w-full p-4 rounded-xl border border-gray-600" required>
+      <input id="input_police" type="text" placeholder="Numéro de police" class="input-field w-full p-4 rounded-xl border border-gray-600">
+      <input id="input_assurance" type="text" placeholder="Nom de l'assurance" class="input-field w-full p-4 rounded-xl border border-gray-600">
+      <input id="input_pourcentage" type="number" placeholder="% couvert par l'assurance (ex: 80)" class="input-field w-full p-4 rounded-xl border border-gray-600" min="0" max="100" value="80">
+      <input id="input_envoye_a" type="text" placeholder="Envoyé à (ex: Assurance X ou Parent)" class="input-field w-full p-4 rounded-xl border border-gray-600">
+    </div>
+
+    <!-- Section container -->
+    <div id="invoice-items-container" class="space-y-6 mb-6"></div>
+
+    <div class="flex justify-start mb-6">
+      <button type="button" onclick="addInvoiceSection()" class="bg-gray-600 hover:bg-gray-500 text-white px-5 py-2 rounded-xl">
+        Ajouter une section
+      </button>
+    </div>
+
+    <div class="flex justify-between">
+      <button onclick="closeInvoiceModal()" class="px-6 py-3 bg-gray-600 hover:bg-gray-500 text-white rounded-xl transition-colors">Annuler</button>
+      <button onclick="generateInvoice()" class="glow-button px-6 py-3 rounded-xl text-white font-medium">Générer PDF</button>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Edit Modal -->
+  <div id="editModalOverlay" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="card rounded-2xl p-8 max-w-4xl w-full max-h-screen overflow-y-auto scrollbar" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Modifier le patient</h3>
+        <button onclick="closeEditModal()" class="text-gray-400 hover:text-cyan-400 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <form id="editForm" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <input type="hidden" id="editId" name="id">
+        
+        <div class="relative">
+          <input id="edit_name" name="name" placeholder="Nom" required class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+        
+        <div class="relative">
+          <input id="edit_adresse" name="adresse" placeholder="Adresse" class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+        
+        <div class="relative">
+          <input id="edit_date_of_birth" name="date_of_birth" type="date" class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+        
+        <div class="relative">
+          <input id="edit_age" name="age" type="number" placeholder="Age" class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+        
+        <div class="relative">
+          <input id="edit_poids" name="poids" type="number" step="0.1" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+        
+        <div class="relative">
+          <input id="edit_taille" name="taille" type="number" step="0.01" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+        
+        <div class="relative">
+          <input id="edit_tension_arterielle" name="tension_arterielle" placeholder="Tension" class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+        
+        <div class="relative">
+          <input id="edit_temperature" name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+        
+        <div class="relative md:col-span-2">
+          <input name="hypothese_de_diagnostique" placeholder="Hypothèse" class="input-field w-full p-4 rounded-xl">
+        </div>
+        
+        <div class="relative md:col-span-2">
+          <input name="bilan" placeholder="Bilan" class="input-field w-full p-4 rounded-xl">
+        </div>
+        
+        <div class="relative md:col-span-2">
+          <input name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl">
+        </div>
+        
+        <div class="sm:col-span-2 mt-4">
+          <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Enregistrer les modifications</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+
+    window.addInvoiceSection = function() {
+      const sectionList = document.getElementById('invoice-items-container');
+
+      const sectionDiv = document.createElement('div');
+      sectionDiv.className = 'section-container border p-4 rounded-xl mb-6';
+
+      sectionDiv.innerHTML = `
+        <input type="text" placeholder="Titre de la section" class="section-title-input input-field mb-4 w-full p-2 rounded border" required>
+
+        <div class="articles-list scrollbar space-y-4 mb-4"></div>
+
+        <button type="button" onclick="addArticle(this)" class="bg-cyan-500 text-white px-3 py-1 rounded mb-2">Ajouter un article</button>
+
+        <div class="section-subtotal text-right font-semibold mt-2">Sous-total: 0 Fcfa</div>
+      `;
+
+      sectionList.appendChild(sectionDiv);
+
+      // Automatically add one article row when a new section is created
+      addArticle(sectionDiv.querySelector('button'));
+    };
+
+    window.addArticle = function(button) {
+    const sectionDiv = button.closest('.section-container');
+    const articleList = sectionDiv.querySelector('.articles-list');
+
+    const row = document.createElement('div');
+    row.className = 'article-row grid grid-cols-1 md:grid-cols-3 gap-4 items-center';
+
+    row.innerHTML = `
+      <input type="text" class="item-libelle input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Libellé" required>
+      <input type="number" class="item-quantite input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Quantité" min="1" step="1" value="1" required>
+      <input type="number" class="item-montant input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Montant (Fcfa)" min="0" step="1" value="0" required>
+      <div class="col-span-1 md:col-span-3 text-right">
+        <button type="button" onclick="removeArticle(this)" class="text-red-400 hover:text-red-300 text-sm">Supprimer l'article</button>
+      </div>
+    `;
+
+    articleList.appendChild(row);
+
+    // Add event listeners to update subtotal when quantity or price changes
+    const qtyInput = row.querySelector('.item-quantite');
+    const priceInput = row.querySelector('.item-montant');
+
+    [qtyInput, priceInput].forEach(input => {
+      input.addEventListener('input', () => updateSectionSubtotal(sectionDiv));
+    });
+
+    updateSectionSubtotal(sectionDiv);
+  };
+
+    window.removeArticle = function(button) {
+      const sectionDiv = button.closest('.section-container');
+      button.closest('.article-row').remove();
+      updateSectionSubtotal(sectionDiv);
+    };
+
+    function updateSectionSubtotal(sectionDiv) {
+      const articles = sectionDiv.querySelectorAll('.article-row');
+      let subtotal = 0;
+
+      articles.forEach(article => {
+        const qty = parseFloat(article.querySelector('.item-quantite').value) || 0;
+        const price = parseFloat(article.querySelector('.item-montant').value) || 0;
+        subtotal += qty * price;
+      });
+
+      const subtotalDiv = sectionDiv.querySelector('.section-subtotal');
+      subtotalDiv.textContent = `Sous-total: ${subtotal.toFixed(2)} Fcfa`;
+    }
+
+    window.addArticleRow = function(button) {
+      const articleList = button.closest('.section-container').querySelector('.article-list');
+
+      const row = document.createElement('div');
+      row.className = 'article-row grid grid-cols-1 md:grid-cols-3 gap-4';
+
+      row.innerHTML = `
+        <input type="text" class="item-libelle input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Libellé" required>
+        <input type="number" class="item-quantite input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Quantité" min="1" step="1" required>
+        <input type="number" class="item-montant input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Montant (Fcfa)" min="0" step="1" required>
+        <div class="col-span-1 md:col-span-3 text-right">
+          <button type="button" onclick="this.closest('.article-row').remove()" class="text-red-400 hover:text-red-300 text-sm">Supprimer l'article</button>
+        </div>
+      `;
+
+      articleList.appendChild(row);
+    };
+
+
+    // Show main content after splash screen delay
+    window.addEventListener('load', () => {
+      // Make body visible once fully loaded to avoid flicker
+      document.body.style.visibility = 'visible';
+
+      setTimeout(() => {
+        const splash = document.getElementById('splashScreen');
+        splash.classList.add('hidden');
+
+        // Remove splash from DOM after transition (optional)
+        setTimeout(() => splash.style.display = 'none', 1000);
+      }, 1000);
+    });
+
+    // Add animation effect for input fields
+    document.querySelectorAll('.input-field').forEach(input => {
+      input.addEventListener('focus', function() {
+        const underline = this.nextElementSibling;
+        if (underline && underline.classList.contains('input-underline')) {
+          underline.style.width = '100%';
+        }
+      });
+      
+      input.addEventListener('blur', function() {
+        const underline = this.nextElementSibling;
+        if (underline && underline.classList.contains('input-underline')) {
+          underline.style.width = '0';
+        }
+      });
+    });
+    
+    // Populate table row styling
+    function populateTable(data) {
+      const table = document.getElementById('resultsTable');
+      table.innerHTML = '';
+      
+      data.forEach((patient, index) => {
+        const row = document.createElement('tr');
+        row.className = 'table-row hover:bg-opacity-10';
+        
+        // Add all patient data cells
+        const fields = ['name', 'date_of_birth', 'adresse', 'age', 'poids', 'taille', 
+                        'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 
+                        'bilan', 'ordonnance'];
+        
+        fields.forEach(field => {
+          const cell = document.createElement('td');
+          cell.className = 'p-4';
+          cell.textContent = patient[field] || '-';
+          row.appendChild(cell);
+        });
+        
+        // Add action buttons
+        const actionsCell = document.createElement('td');
+        actionsCell.className = 'p-4 flex justify-center space-x-2';
+        
+        // Edit button
+        const editButton = document.createElement('button');
+        editButton.className = 'action-button bg-cyan-500 bg-opacity-20 hover:bg-opacity-30 p-2 rounded-lg';
+        editButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>';
+        editButton.onclick = function() { openEditModal(patient); };
+        
+        // Delete button
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'action-button bg-red-500 bg-opacity-20 hover:bg-opacity-30 p-2 rounded-lg';
+        deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m4-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>';
+        deleteButton.onclick = function() { deletePatient(patient.id); };
+        
+        actionsCell.appendChild(editButton);
+        actionsCell.appendChild(deleteButton);
+        row.appendChild(actionsCell);
+        
+        table.appendChild(row);
+      });
+    }
+    
+    function openEditModal(patient) {
+      // Fill edit form fields
+      document.getElementById('editId').value = patient.id;
+      document.getElementById('edit_name').value = patient.name || '';
+      document.getElementById('edit_adresse').value = patient.adresse || '';
+      document.getElementById('edit_date_of_birth').value = patient.date_of_birth || '';
+      document.getElementById('edit_age').value = patient.age || '';
+      document.getElementById('edit_poids').value = patient.poids || '';
+      document.getElementById('edit_taille').value = patient.taille || '';
+      document.getElementById('edit_tension_arterielle').value = patient.tension_arterielle || '';
+      document.getElementById('edit_temperature').value = patient.temperature || '';
+      document.getElementById('edit_hypothese_de_diagnostique').value = patient.hypothese_de_diagnostique || '';
+      document.getElementById('edit_bilan').value = patient.bilan || '';
+      document.getElementById('edit_ordonnance').value = patient.ordonnance || '';
+      
+      // Show modal
+      document.getElementById('editModalOverlay').classList.remove('hidden');
+    }
+    
+    function closeEditModal() {
+      document.getElementById('editModalOverlay').classList.add('hidden');
+    }
+    
+    function deletePatient(id) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce patient?')) {
+        // Delete logic would go here
+        console.log('Deleting patient with ID:', id);
+      }
+    }
+    
+    // Connect this to your external search.js if needed
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize any needed functionality
+    });
+
+    
+    let currentPatientId = null;
+
+    // Function to open invoice modal when table row is clicked
+    function openInvoiceModal(patientId) {
+        currentPatientId = patientId;
+        const modal = document.getElementById('invoiceModal');
+        modal.style.display = 'flex';
+        modal.classList.add('show');
+        
+        // Clear existing items and add one default item
+        document.getElementById('invoice-items-container').innerHTML = '';
+        addInvoiceSection();
+    }
+
+    // Function to close the invoice modal
+    function closeInvoiceModal() {
+        const modal = document.getElementById('invoiceModal');
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        currentPatientId = null;
+        document.getElementById('invoice-items-container').innerHTML = '';
+    }
+
+    // Function to add a new invoice item row
+    function addInvoiceItem() {
+        const itemsContainer = document.getElementById('invoice-items-container');
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'grid grid-cols-1 md:grid-cols-4 gap-5 mb-6 p-6 border border-gray-700 rounded-xl';
+        
+        itemDiv.innerHTML = `
+            <div class="relative md:col-span-2">
+                <input type="text" placeholder="Nom de l'article" class="item-name input-field w-full p-4 rounded-xl" required>
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-cyan-400 transition-all duration-300 input-underline"></div>
+            </div>
+            
+            <div class="relative">
+                <input type="number" placeholder="Quantité" class="item-quantity input-field w-full p-4 rounded-xl" step="1" min="0" required>
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-cyan-400 transition-all duration-300 input-underline"></div>
+            </div>
+            
+            <div class="relative">
+                <input type="number" placeholder="Prix unitaire" class="item-price input-field w-full p-4 rounded-xl" step="500" min="0" required>
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-cyan-400 transition-all duration-300 input-underline"></div>
+            </div>
+            
+            <div class="md:col-span-4 flex justify-end">
+                <button type="button" onclick="removeInvoiceItem(this)" class="text-red-400 hover:text-red-300 transition-colors text-sm">
+                    Supprimer cet article
+                </button>
+            </div>
+        `;
+        
+        itemsContainer.appendChild(itemDiv);
+        
+        // Add focus/blur effects to the new inputs
+        const newInputs = itemDiv.querySelectorAll('.input-field');
+        newInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                const underline = this.nextElementSibling;
+                if (underline && underline.classList.contains('input-underline')) {
+                    underline.style.width = '100%';
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                const underline = this.nextElementSibling;
+                if (underline && underline.classList.contains('input-underline')) {
+                    underline.style.width = '0';
+                }
+            });
+        });
+    }
+
+    // Function to remove an invoice item
+    function removeInvoiceItem(button) {
+        const itemsContainer = document.getElementById('invoice-items-container');
+        if (itemsContainer.children.length > 1) {
+            button.closest('.grid').remove();
+        } else {
+            alert('Au moins un article est requis');
+        }
+    }
+
+  function generateInvoice() {
+  if (!currentPatientId) {
+    alert('Erreur: Aucun patient sélectionné');
+    return;
+  }
+
+  // Gather meta info from patient inputs
+  const meta = {
+    nom: document.getElementById('input_nom').value.trim(),
+    prenom: document.getElementById('input_prenom').value.trim(),
+    police: document.getElementById('input_police').value.trim(),
+    assurance: document.getElementById('input_assurance').value.trim(),
+    pourcentage: document.getElementById('input_pourcentage').value.trim(),
+    envoye_a: document.getElementById('input_envoye_a').value.trim()
+  };
+
+  const sections = [];
+  const sectionDivs = document.querySelectorAll('#invoice-items-container .section-container');
+
+  sectionDivs.forEach(sectionDiv => {
+    const titre = sectionDiv.querySelector('.section-title-input').value.trim();
+    const articles = [];
+    const articleRows = sectionDiv.querySelectorAll('.article-row');
+
+    articleRows.forEach(row => {
+      const libelle = row.querySelector('.item-libelle').value.trim();
+      const quantite = parseFloat(row.querySelector('.item-quantite').value);
+      const montant = parseFloat(row.querySelector('.item-montant').value);
+
+      if (libelle && quantite > 0 && montant >= 0) {
+        articles.push({ libelle, quantite, montant });
+      }
+    });
+
+    if (titre && articles.length > 0) {
+      sections.push({ titre, articles });
+    }
+  });
+
+  if (sections.length === 0) {
+    alert('Veuillez ajouter au moins une section avec des articles valides.');
+    return;
+  }
+
+  // Send to backend with meta
+  fetch(`/generate_invoice/${currentPatientId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ meta, sections })
+  })
+  .then(response => {
+    if (response.ok) return response.blob();
+    else throw new Error('Erreur lors de la génération du PDF');
+  })
+  .then(blob => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = `facture_${meta.nom}_${meta.prenom}_${new Date().toISOString().slice(0,10)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    closeInvoiceModal();
+  })
+  .catch(error => {
+    alert('Erreur: ' + error.message);
+  });
+}
+
+  </script>
+  <script src="/static/js/search.js">
+  </script>
+</body>
+</html>

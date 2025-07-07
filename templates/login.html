@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Marate AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #050505;
+      color: #f0f0f0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .glow-button {
+      background: linear-gradient(90deg, #00FFFF, #8000FF);
+      color: #050505;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .glow-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #00FFFF, #8000FF, #00FFFF);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
+      background-size: 200% auto;
+    }
+
+    .glow-button:hover::before {
+      opacity: 1;
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .input-field {
+      background-color: rgba(30, 30, 35, 0.8);
+      border: 1px solid #333;
+      color: #f0f0f0;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .input-field::placeholder {
+      color: #888;
+    }
+
+    .input-field:focus {
+      border-color: #00FFFF;
+      box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+      background-color: rgba(40, 40, 45, 0.9);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+
+  <div class="bg-black border border-gray-700 rounded-2xl shadow-xl p-10 w-full max-w-md">
+    <div class="flex flex-col items-center mb-8">
+      <img src="https://allarassemjonathan.github.io/marate_black.PNG" class="h-32 mb-4" alt="Logo">
+      <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Connexion</h1>
+    </div>
+
+    <form id="loginForm" class="space-y-6">
+      <div>
+        <label for="email" class="block text-sm font-medium text-cyan-300 mb-1">Email</label>
+        <input type="email" id="email" name="email" required placeholder="you@example.com" class="input-field w-full p-4 rounded-xl">
+      </div>
+
+      <div>
+        <label for="password" class="block text-sm font-medium text-cyan-300 mb-1">Mot de passe</label>
+        <input type="password" id="password" name="password" required placeholder="••••••••" class="input-field w-full p-4 rounded-xl">
+      </div>
+
+      <div>
+        <button type="submit" class="glow-button w-full py-3 rounded-xl text-lg">Se connecter</button>
+      </div>
+    </form>
+
+    <p class="text-sm text-gray-400 mt-6 text-center">
+      Vous n'avez pas de compte ?
+      <a href="/register" class="text-purple-400 hover:underline">Créer un compte</a>
+    </p>
+
+    <div id="message" class="mt-4 text-center text-red-400"></div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          window.location.href = result.redirect;
+        } else {
+          document.getElementById('message').innerHTML = '<p>' + result.message + '</p>';
+        }
+      } catch (error) {
+        document.getElementById('message').innerHTML = '<p>Échec de la connexion</p>';
+      }
+    });
+  </script>
+</body>
+</html>
