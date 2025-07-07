@@ -7,22 +7,25 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from fpdf import FPDF
 import io
+import os
+from dotenv import load_dotenv
 from datetime import datetime
 import requests
 import tempfile
 import locale
 
+load_dotenv()
+
 app = Flask(__name__)
 DATABASE = 'patients.db'
 
 # Set up the SMTP server
-smtp_server = "smtp.gmail.com"
-smtp_port = 587
-your_email = "jonathanjerabe@gmail.com"
-your_password = "ajrn mros lkzm urnu"
-
-acteur_inf = "InfirmiersRapha@gmail.com"
-acteur_med = "MedecinsRapha@gmail.com"
+smtp_server = os.environ.get('SMTP_SERVER')
+smtp_port = os.environ.get('SMTP_PORT')
+your_email = os.environ.get('EMAIL')
+your_password = os.environ.get('CODE')
+acteur_inf = os.environ.get('NURSES_EMAIL')
+acteur_med = os.environ.get('PHYSI_EMAIL')
 
 
 def email_reception(firstname, lastname, body, plot, recipient_email):
