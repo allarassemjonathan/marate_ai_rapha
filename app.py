@@ -187,7 +187,7 @@ class InvoicePDF(FPDF):
 
         self.cell(95, 10, f"Prénom: {meta.get('prenom', '')}", ln=0)
 
-        self.cell(95, 10, f"Date: {now.strftime('%d/%m/%Y %H:%M')}", ln=1)
+        self.cell(95, 10, f"Date: {now.strftime('%d/%m/%Y')}", ln=1)
         self.ln(5)
 
     def add_invoice_sections(self, sections, pourcentage_patient):
