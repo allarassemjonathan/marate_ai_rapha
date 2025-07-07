@@ -1,12 +1,10 @@
 from flask import Flask, render_template, request, jsonify, send_file
 import sqlite3
-import base64
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from fpdf import FPDF
-import io
 import os
 from dotenv import load_dotenv
 from datetime import datetime
