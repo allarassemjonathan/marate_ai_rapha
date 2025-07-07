@@ -150,15 +150,26 @@ class InvoicePDF(FPDF):
         self.ln(5)
 
     def add_invoice_header(self, meta):
-        try:
-            locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
-        except locale.Error:
-            locale.setlocale(locale.LC_TIME, 'French_France')
+        dic =  { "January": "Janvier",
+            "February": "Février",
+            "March": "Mars",
+            "April": "Avril",
+            "May": "Mai",
+            "June": "Juin",
+            "July": "Juillet",
+            "August": "Août",
+            "Septembe": "Septembre",
+            "October": "Octobre",
+            "November": "Novembre",
+            "December": "Décembre"}
         assurance = meta.get('assurance', '')
         envoye_a = meta.get('envoye_a', '')
         now = datetime.now()
         mois_annee = now.strftime('%B %Y').capitalize()
-
+        month = mois_annee.split(' ')[0]
+        print(month)
+        mois_annee = mois_annee.replace(month, dic.get(month))
+        
         self.set_font('Arial', 'B', 14)
         self.set_text_color(0)
         self.cell(0, 10, f"Société d'assurance : {assurance}", ln=1, align='C')
