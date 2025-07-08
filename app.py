@@ -199,7 +199,7 @@ class InvoicePDF(FPDF):
             self.set_text_color(255)
             self.cell(0, 10, section.get('titre', 'Section'), 1, 1, 'C', 1)
 
-            headers = ['Libellé', 'Quantité', 'Montant brut', f'% Assurance', 'Net à payer']
+            headers = ['Libellé', 'Quantité', 'Montant unitaire', f'% Assurance', 'Net à payer']
             col_widths = [50, 30, 35, 25, 45]
 
             self.set_font('Arial', 'B', 11)
