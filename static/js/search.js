@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
             p[k] = p[k] + ' mmHg'
           }
           else if (k == 'temperature' && p[k]!=''){
-            p[k] = p[k] + ' degrees'
+            p[k] = p[k] + ' °'
           }
           let content = p[k] || '';
           if (content.length > 30) {
