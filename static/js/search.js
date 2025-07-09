@@ -186,6 +186,21 @@ document.addEventListener('DOMContentLoaded', () => {
           .forEach(k => {
           const td = document.createElement('td');
           td.className = "p-2 border";
+          if (k == 'age' && p[k]!=''){
+            p[k] = p[k] + ' ans'
+          }
+          else if (k == 'poids' && p[k]!=''){
+            p[k] = p[k] + ' kg'
+          }
+          else if (k =='taille' && p[k]!=''){
+            p[k] = p[k] + ' m'
+          }
+          else if (k == 'tension_arterielle' && p[k]!='') {
+            p[k] = p[k] + ' mmHg'
+          }
+          else if (k == 'temperature' && p[k]!=''){
+            p[k] = p[k] + ' degrees'
+          }
           let content = p[k] || '';
           if (content.length > 30) {
             content = content.substring(0, 30) + '...';
