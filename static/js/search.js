@@ -6,6 +6,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const editForm = document.getElementById('editForm');
   
   let currentPatientId = null;
+// class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider"
+  const userType = window.USER_TYPE;
+  console.log(userType);
+  console.log("userType");
+  // Define which columns each user type can see
+  const columnVisibility = {
+    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique','bilan','ordonnance'], // Columns 1-3
+    'infirmiers': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature'], // Columns 4-7  
+    'receptionistes': ['created_at', 'name','date_of_birth','adresse','age'] // Column 8
+  };
+
+    const columnHeaders = {
+    'created_at': 'Date de création',
+    'name': 'Nom',
+    'date_of_birth': 'Date de naissance',
+    'adresse': 'Adresse',
+    'age': 'Age',
+    'poids': 'Poids',
+    'taille': 'Taille',
+    'tension_arterielle': 'Tension',
+    'temperature': 'Température',
+    'hypothese_de_diagnostique': 'Hypothèse',
+    'bilan': 'Bilan',
+    'ordonnance': 'Ordonnance'
+  };
+
+  function createTableHeaders(){
+    const visibleColumns = columnVisibility[userType] || [];
+    tableHeader.innerHTML = '';
+
+    visibleColumns.forEach(columnKey => {
+      const th = document.createElement('th');
+      th.className = "p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider";
+      th.textContent = columnHeaders[columnKey] || columnKey;
+      tableHeader.appendChild(th);
+  });}
 
   // Make these functions globally accessible
   window.openInvoiceModal = function(patient) {
@@ -174,16 +210,11 @@ document.addEventListener('DOMContentLoaded', () => {
           // Open invoice modal when clicking the row
           tr.onclick = () => openInvoiceModal(p);
           
-          // Include the created_at field first
-          const createdAtTd = document.createElement('td');
-          createdAtTd.className = "p-2 border";
-          createdAtTd.textContent = p.created_at || '';
-          createdAtTd.title = p.created_at || '';
-          tr.appendChild(createdAtTd);
+          // Get the visibility columns for current user type
+          const visibleColumns = columnVisibility[userType] || [];
 
           // The rest of the fields
-          ['name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique','bilan','ordonnance']
-          .forEach(k => {
+          visibleColumns.forEach(k => {
           const td = document.createElement('td');
           td.className = "p-2 border";
           if (k == 'age' && p[k]!=''){
@@ -245,10 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('editId').value = patient.rowid;
         
         // Populate all fields
-        const fields = ['name', 'date_of_birth', 'adresse', 'age', 'poids', 'taille', 
-                        'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 
-                        'bilan', 'ordonnance'];
-        
+        const fields = columnVisibility[userType];
         fields.forEach(field => {
           const input = document.getElementById(`edit_${field}`);
           if (input) {
@@ -321,5 +349,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initial load
+  createTableHeaders();
   loadPatients();
 });

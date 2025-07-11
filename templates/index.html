@@ -201,9 +201,14 @@
     }
 }
   </style>
+  
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 md:p-8" style="visibility: hidden;">
-
+<body>
+      <div style="position: absolute; top: 20px; right: 20px;">
+        <a href="{{ url_for('logout') }}" style="margin-left: 20px; padding: 5px 10px; background-color: #982f39; color: white; text-decoration: none; border-radius: 5px;">Déconnexion</a>
+    </div>
+</body>
   <div id="splashScreen">
     <img src="https://allarassemjonathan.github.io/marate_black.PNG" alt="Logo" class="h-64 md:h-80" />
   </div>
@@ -226,20 +231,8 @@
       <div class="overflow-x-auto scrollbar rounded-xl mb-10">
         <table class="w-full table-auto border-collapse">
           <thead class="table-header">
-            <tr>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Date de creation</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Nom</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Date de naissance</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Adresse</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Age</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Poids</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Taille</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Tension</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Température</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Hypothèse</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Bilan</th>
-              <th class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider">Ordonnance</th>
-              <th class="p-4 text-center text-cyan-400 font-semibold uppercase text-xs tracking-wider">Action</th>
+            <tr id="tableHeader">
+              <!-- Headers will be populated here -->
             </tr>
           </thead>
           <tbody id="resultsTable" class="text-gray-300 text-sm">
@@ -796,6 +789,7 @@
     alert('Erreur: ' + error.message);
   });
 }
+window.USER_TYPE = "{{user_type}}"
 
   </script>
   <script src="/static/js/search.js">

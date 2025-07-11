@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, session, flash, redirect, url_for
 import sqlite3
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -11,11 +11,29 @@ from datetime import datetime
 import requests
 import tempfile
 import locale
+from functools import wraps
 
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('FLASK_SECRET')
 DATABASE = 'patients.db'
+
+# Simple credential storage (in production, use a database)
+CREDENTIALS = {
+    'medecins': 'med123',
+    'infirmiers': 'inf123', 
+    'receptionistes': 'rec123'
+}
+
+# Decorator to require login
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Set up the SMTP server
 smtp_server = os.environ.get('SMTP_SERVER')
@@ -299,6 +317,7 @@ class InvoicePDF(FPDF):
 
 
 @app.route('/generate_invoice/<int:patient_id>', methods=['POST'])
+@login_required
 def generate_invoice(patient_id):
     try:
         data = request.get_json()
@@ -333,11 +352,17 @@ def generate_invoice(patient_id):
 
 
 @app.route('/')
+@login_required
 def index():
     init_db()
-    return render_template('index.html')
+    if session.get('logged_in'):
+        user_type = session.get('user_type')
+        print(user_type)
+        return render_template('index.html', user_type = user_type)
+    return redirect(url_for('login'))
 
 @app.route('/search')
+@login_required
 def search():
     q = request.args.get('q', '')
     conn = get_db_connection()
@@ -350,6 +375,7 @@ def search():
 from datetime import date
 
 @app.route('/add', methods=['POST'])
+@login_required
 def add():
     data = request.get_json() or {}
     if not data.get('name'):
@@ -372,6 +398,7 @@ def add():
         return jsonify({'status': 'error', 'message': str(e)}), 500
     
 @app.route('/delete/<int:rowid>', methods=['DELETE'])
+@login_required
 def delete(rowid):
     conn = get_db_connection()
     conn.execute('DELETE FROM patients WHERE rowid = ?', (rowid,))
@@ -380,6 +407,7 @@ def delete(rowid):
     return jsonify({'status': 'deleted'})
 
 @app.route('/patient/<int:patient_id>')
+@login_required
 def patient_detail(patient_id):
     conn = get_db_connection()
     patient = conn.execute('SELECT rowid, * FROM patients WHERE rowid = ?', (patient_id,)).fetchone()
@@ -388,6 +416,7 @@ def patient_detail(patient_id):
     return render_template('patient.html', patient=patient, visits=visits) if patient else ("Patient not found", 404)
 
 @app.route('/get_patient/<int:patient_id>')
+@login_required
 def get_patient(patient_id):
     conn = get_db_connection()
     patient = conn.execute('SELECT rowid, * FROM patients WHERE rowid = ?', (patient_id,)).fetchone()
@@ -397,6 +426,7 @@ def get_patient(patient_id):
     return jsonify({'status': 'error', 'message': 'Patient not found'}), 404
 
 @app.route('/update/<int:patient_id>', methods=['PUT'])
+@login_required
 def update_patient(patient_id):
     data = request.get_json() or {}
     if not data.get('name'):
@@ -415,6 +445,30 @@ def update_patient(patient_id):
         email_reception(data['name'], '', 'Cher medecin, vous avez un nouveau malade. Certaines informations ont ete modifie et il semble que votre malade est prêt.', None, acteur_med)
     
     return jsonify({'status': 'success'})
+
+@app.route('/logout')
+@login_required
+def logout():
+    session.clear()  # Clears all session data
+    return redirect(url_for('login'))  # Redirects to login page
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if session.get('logged_in'):
+        return redirect(url_for('index', user_type = session.get('user_type')))
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # Check credentials
+        if username in CREDENTIALS and CREDENTIALS[username] == password:
+            session['user_type'] = username
+            session['logged_in'] = True
+            return redirect(url_for('index', user_type = username))
+        else:
+            flash('Invalid credentials')
+    
+    return render_template('login.html')
 
 if __name__ == '__main__':
     init_db()
