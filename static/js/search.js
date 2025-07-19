@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("userType");
   // Define which columns each user type can see
   const columnVisibility = {
-    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique','bilan','ordonnance', 'signature'], // Columns 1-3
+    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique','bilan','resultat_bilan', 'ordonnance', 'signature'], // Columns 1-3
     'infirmiers': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature'], // Columns 4-7  
     'receptionistes': ['created_at', 'name','date_of_birth','adresse','age'] // Column 8
   };
@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'temperature': 'Température',
     'hypothese_de_diagnostique': 'Hypothèse',
     'bilan': 'Bilan',
+    'resultat_bilan': 'Conclusion du bilan',
     'ordonnance': 'Ordonnance',
     'signature':'Signature'
   };
@@ -204,6 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(res => res.json())
       .then(data => {
         resultsTable.innerHTML = '';
+        data.sort((a, b) => - new Date(b.created_at) + new Date(a.created_at));
         data.forEach(p => {
           const tr = document.createElement('tr');
           tr.className = "cursor-pointer hover:bg-gray-800 transition-colors";
@@ -253,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
         tr.appendChild(actionTd);
-        resultsTable.appendChild(tr);
+        resultsTable.prepend(tr);
       });
     });
 

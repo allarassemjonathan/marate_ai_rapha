@@ -9,7 +9,7 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #050505;
+      background-color: #000000;
       color: #f0f0f0;
     }
 
@@ -213,7 +213,7 @@
     <img src="https://allarassemjonathan.github.io/marate_black.PNG" alt="Logo" class="h-64 md:h-80" />
   </div>
 
-  <div class="w-full max-w-7xl">
+  <div class="w-full max-w-screen-2xl">
     <div class="card rounded-2xl shadow-2xl p-6 md:p-8 mb-8">
       <div class="flex justify-center mb-10">
         <img src="https://allarassemjonathan.github.io/marate_black.PNG" class="h-48 md:h-60">
@@ -228,7 +228,7 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto scrollbar rounded-xl mb-10">
+      <div class="overflow-x-auto scrollbar rounded-xl mb-10 w-full">
         <table class="w-full table-auto border-collapse">
           <thead class="table-header">
             <tr id="tableHeader">
@@ -291,6 +291,11 @@
           
           <div class="relative">
             <input name="bilan" placeholder="Bilan" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            <input name="resultat_bilan" placeholder="Conclusion du bilan" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
           
@@ -424,6 +429,10 @@
         
         <div class="relative md:col-span-2">
           <input id="edit_bilan" name="bilan" placeholder="Bilan" class="input-field w-full p-4 rounded-xl">
+        </div>
+
+        <div class="relative md:col-span-2">
+          <input id="edit_resultat_bilan" name="resultat_bilan" placeholder="Conclusion du bilan" class="input-field w-full p-4 rounded-xl">
         </div>
         
         <div class="relative md:col-span-2">
@@ -576,7 +585,7 @@
         // Add all patient data cells
         const fields = ['name', 'date_of_birth', 'adresse', 'age', 'poids', 'taille', 
                         'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 
-                        'bilan', 'ordonnance', 'signature'];
+                        'bilan', 'resultat_bilan', 'ordonnance', 'signature'];
         
         fields.forEach(field => {
           const cell = document.createElement('td');
@@ -623,6 +632,8 @@
       document.getElementById('edit_hypothese_de_diagnostique').value = patient.hypothese_de_diagnostique || '';
       document.getElementById('edit_bilan').value = patient.bilan || '';
       document.getElementById('edit_ordonnance').value = patient.ordonnance || '';
+      document.getElementById('edit_resultat_bilan').value = patient.resultat_bilan || '';
+      document.getElementById('edit_signature').value = patient.signature || '';
       
       // Show modal
       document.getElementById('editModalOverlay').classList.remove('hidden');
