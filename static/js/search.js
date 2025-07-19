@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("userType");
   // Define which columns each user type can see
   const columnVisibility = {
-    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique','bilan','ordonnance'], // Columns 1-3
+    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique','bilan','ordonnance', 'signature'], // Columns 1-3
     'infirmiers': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature'], // Columns 4-7  
     'receptionistes': ['created_at', 'name','date_of_birth','adresse','age'] // Column 8
   };
@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'temperature': 'Température',
     'hypothese_de_diagnostique': 'Hypothèse',
     'bilan': 'Bilan',
-    'ordonnance': 'Ordonnance'
+    'ordonnance': 'Ordonnance',
+    'signature':'Signature'
   };
 
   function createTableHeaders(){

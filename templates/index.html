@@ -298,6 +298,11 @@
             <textarea name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
+
+          <div class="relative">
+            <input name="signature" placeholder="Signature du docteur" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
           
           <div class="relative">
             <input name="date_creation" id="dateCreation" type="date" placeholder="Date de création" class="input-field w-full p-4 rounded-xl" disabled>
@@ -424,7 +429,11 @@
         <div class="relative md:col-span-2">
           <textarea id="edit_ordonnance" name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
         </div>
-        
+
+        <div class="relative md:col-span-2">
+          <input id="edit_signature" name="signature" placeholder="Signature du docteur" class="input-field w-full p-4 rounded-xl">
+        </div>
+
         <div class="sm:col-span-2 mt-4">
           <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Enregistrer les modifications</button>
         </div>
@@ -567,7 +576,7 @@
         // Add all patient data cells
         const fields = ['name', 'date_of_birth', 'adresse', 'age', 'poids', 'taille', 
                         'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 
-                        'bilan', 'ordonnance'];
+                        'bilan', 'ordonnance', 'signature'];
         
         fields.forEach(field => {
           const cell = document.createElement('td');

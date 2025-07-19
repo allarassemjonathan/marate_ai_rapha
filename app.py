@@ -112,7 +112,7 @@ def init_db():
     conn.execute('''CREATE TABLE IF NOT EXISTS patients (
         name TEXT NOT NULL, date_of_birth DATE, adresse TEXT, age INTEGER,
         Poids REAL, Taille REAL, TA REAL, T° REAL, FC REAL, PC REAL, SaO2 REAL,
-        symptomes TEXT, hypothese_de_diagnostique TEXT, ordonnance TEXT, bilan TEXT,
+        symptomes TEXT, hypothese_de_diagnostique TEXT, ordonnance TEXT, bilan TEXT, signature TEXT,
         created_at DATE
     )''')
     conn.execute('''CREATE TABLE IF NOT EXISTS visits (
@@ -129,6 +129,7 @@ class InvoicePDF(FPDF):
     def header(self):
         # Add logo if possible
         try:
+            logo_rapha = "https://allarassemjonathan.github.io/rapha_logo.png"
             logo_url = "https://allarassemjonathan.github.io/marate_white.png"
             response = requests.get(logo_url, timeout=10)
             if response.status_code == 200:
@@ -136,6 +137,14 @@ class InvoicePDF(FPDF):
                     tmp_file.write(response.content)
                     tmp_file.flush()
                     self.image(tmp_file.name, 10, 8, 40)
+            
+            other_res= requests.get(logo_rapha, timeout=10)
+            if other_res.status_code == 200:
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
+                    tmp_file.write(other_res.content)
+                    tmp_file.flush()
+                    self.image(tmp_file.name, 160, 8, 40)
+
         except Exception as e:
             print(f"Could not load logo: {e}")
 
