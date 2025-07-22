@@ -9,8 +9,8 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #000000;
-      color: #f0f0f0;
+      background-color: #ffffff;
+      color: #111111;
     }
 
     h1, h2, h3, h4, h5, h6, .logo-font {
@@ -53,38 +53,38 @@
     }
 
     .input-field {
-      background-color: rgba(30, 30, 35, 0.8);
-      border: 1px solid #333;
-      color: #f0f0f0;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: 1px solid #ccc;
+      color:  #111111;
       transition: all 0.3s ease;
-      backdrop-filter: blur(5px);
+      backdrop-filter: none;
     }
 
     .input-field::placeholder {
-      color: #888;
+      color: #000000;
     }
 
     .input-field:focus {
       border-color: #00FFFF;
       box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
-      background-color: rgba(40, 40, 45, 0.9);
+      background-color: #ffffff; 
     }
 
     .card {
-      background-color: #000; /* Pitch black */
-      border: 1px solid rgba(50, 50, 60, 0.5);
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
-      backdrop-filter: none;
+      background-color: #ffffff; /* Pitch black */
+      border: 1px solid rgba(200, 200, 200, 0.5);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     }
 
     .table-header {
-      background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(128, 0, 255, 0.1));
+      background: linear-gradient(90deg, rgba(0, 255, 255, 0.05), rgba(128, 0, 255, 0.05));
       border-bottom: 2px solid #00FFFF;
+      color: #111111;
     }
-
+    
     .table-row {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background-color 0.25s ease;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      color: #111111
     } 
 
     .table-row:hover {
@@ -126,7 +126,7 @@
     #splashScreen {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #000000;
+      background-color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -205,18 +205,18 @@
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 md:p-8" style="visibility: hidden;">
 <body>
-      <div style="position: absolute; top: 20px; right: 20px;">
-        <a href="{{ url_for('logout') }}" style="margin-left: 20px; padding: 5px 10px; background-color: #982f39; color: white; text-decoration: none; border-radius: 5px;">Déconnexion</a>
-    </div>
 </body>
   <div id="splashScreen">
-    <img src="https://allarassemjonathan.github.io/marate_black.PNG" alt="Logo" class="h-64 md:h-80" />
+    <img src="https://allarassemjonathan.github.io/marate_white.png" class="h-20 md:h-28 w-auto object-contain">
   </div>
 
   <div class="w-full max-w-screen-2xl">
     <div class="card rounded-2xl shadow-2xl p-6 md:p-8 mb-8">
       <div class="flex justify-center mb-10">
-        <img src="https://allarassemjonathan.github.io/marate_black.PNG" class="h-48 md:h-60">
+      <img src="https://allarassemjonathan.github.io/marate_white.png" class="h-20 md:h-28 w-auto object-contain">
+      <div style="position: absolute; top: 50px; left: 50px;">
+        <a href="{{ url_for('logout') }}" style="margin-left: 20px; padding: 5px 10px; background-color: #982f39; color: white; text-decoration: none; border-radius: 5px;">Déconnexion</a>
+      </div>
       </div>
 
       <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
@@ -228,8 +228,8 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto scrollbar rounded-xl mb-10 w-full">
-        <table class="w-full table-auto border-collapse">
+      <div class="overflow-x-auto scrollbar rounded-xl mb-10 w-full max-h-[500px] overflow-y-auto">
+        <table class="min-w-full w-full table-auto border-collapse">
           <thead class="table-header">
             <tr id="tableHeader">
               <!-- Headers will be populated here -->
@@ -283,9 +283,14 @@
             <input name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
+
+          <div class="relative">
+            <input name="renseignements_clinique" placeholder="Renseignement clinique" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
           
           <div class="relative">
-            <input name="hypothese_de_diagnostique" placeholder="Hypothèse" class="input-field w-full p-4 rounded-xl">
+            <input name="hypothese_de_diagnostique" placeholder="Hypothèse de diagnostique" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
           
@@ -321,8 +326,7 @@
     </div>
   </div>
 
-
-  <!-- Invoice Modal -->
+<!-- Invoice Modal -->
 <!-- Outer backdrop -->
 <div id="invoiceModal"
      class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center"
@@ -330,12 +334,12 @@
 
   <!-- Inner modal box -->
   <div id="invoiceCard"
-       class="bg-black resize rounded-xl p-8 overflow-auto scrollbar"
+       class="bg-white text-black resize rounded-xl p-8 overflow-auto scrollbar shadow-lg"
        style="min-width: 700px; min-height: 500px; max-width: 90vw; max-height: 90vh; resize: both;">
 
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-400 mb-0">Générer Facture</h2>
-      <button onclick="closeInvoiceModal()" class="text-gray-400 hover:text-cyan-400 transition-colors">
+      <h2 class="text-2xl font-bold text-black mb-0">Générer Facture</h2>
+      <button onclick="closeInvoiceModal()" class="text-gray-600 hover:text-red-500 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -344,26 +348,28 @@
 
     <!-- Patient Info Section -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <input id="input_nom" type="text" placeholder="Nom du patient" class="input-field w-full p-4 rounded-xl border border-gray-600" required>
-      <input id="input_prenom" type="text" placeholder="Prénom du patient" class="input-field w-full p-4 rounded-xl border border-gray-600" required>
-      <input id="input_police" type="text" placeholder="Numéro de police" class="input-field w-full p-4 rounded-xl border border-gray-600">
-      <input id="input_assurance" type="text" placeholder="Nom de l'assurance" class="input-field w-full p-4 rounded-xl border border-gray-600">
-      <input id="input_pourcentage" type="number" placeholder="% couvert par l'assurance (ex: 80)" class="input-field w-full p-4 rounded-xl border border-gray-600" min="0" max="100" value="80">
-      <input id="input_envoye_a" type="text" placeholder="Envoyé à (ex: Assurance X ou Parent)" class="input-field w-full p-4 rounded-xl border border-gray-600">
+      <input id="input_nom" type="text" placeholder="Nom du patient" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
+      <input id="input_prenom" type="text" placeholder="Prénom du patient" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
+      <input id="input_police" type="text" placeholder="Numéro de police" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+      <input id="input_assurance" type="text" placeholder="Nom de l'assurance" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+      <input id="input_pourcentage" type="number" placeholder="% couvert par l'assurance (ex: 80)" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" min="0" max="100" value="80">
+      <input id="input_envoye_a" type="text" placeholder="Envoyé à (ex: Assurance X ou Parent)" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
     </div>
 
     <!-- Section container -->
     <div id="invoice-items-container" class="space-y-6 mb-6"></div>
 
     <div class="flex justify-start mb-6">
-      <button type="button" onclick="addInvoiceSection()" class="bg-gray-600 hover:bg-gray-500 text-white px-5 py-2 rounded-xl">
+      <button type="button" onclick="addInvoiceSection()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2 rounded-xl transition">
         Ajouter une section
       </button>
     </div>
 
     <div class="flex justify-between">
-      <button onclick="closeInvoiceModal()" class="px-6 py-3 bg-gray-600 hover:bg-gray-500 text-white rounded-xl transition-colors">Annuler</button>
-      <button onclick="generateInvoice()" class="glow-button px-6 py-3 rounded-xl text-white font-medium">Générer PDF</button>
+      <button onclick="closeInvoiceModal()" class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-black rounded-xl transition">Annuler</button>
+      <button onclick="generateInvoice()" class="glow-button px-6 py-3 rounded-xl text-white font-medium bg-cyan-600 hover:bg-cyan-700">
+        Générer PDF
+      </button>
     </div>
   </div>
 </div>
@@ -424,9 +430,13 @@
         </div>
         
         <div class="relative md:col-span-2">
-          <input id="edit_hypothese_de_diagnostique" name="hypothese_de_diagnostique" placeholder="Hypothèse" class="input-field w-full p-4 rounded-xl">
+          <input id="edit_hypothese_de_diagnostique" name="hypothese_de_diagnostique" placeholder="Hypothèse de diagnostique" class="input-field w-full p-4 rounded-xl">
         </div>
-        
+
+        <div class="relative md:col-span-2">
+          <input id="edit_renseignements_clinique" name="renseignements_clinique" placeholder="Renseignement clinique" class="input-field w-full p-4 rounded-xl">
+        </div>
+
         <div class="relative md:col-span-2">
           <input id="edit_bilan" name="bilan" placeholder="Bilan" class="input-field w-full p-4 rounded-xl">
         </div>
@@ -486,7 +496,7 @@
       <input type="number" class="item-quantite input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Quantité" min="1" step="1" value="1" required>
       <input type="number" class="item-montant input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Montant (Fcfa)" min="0" step="1" value="0" required>
       <div class="col-span-1 md:col-span-3 text-right">
-        <button type="button" onclick="removeArticle(this)" class="text-red-400 hover:text-red-300 text-sm">Supprimer l'article</button>
+        <button type="button" onclick="removeArticle(this)" class="text-red-500 hover:text-red-500 text-sm">Supprimer l'article</button>
       </div>
     `;
 
@@ -584,7 +594,7 @@
         
         // Add all patient data cells
         const fields = ['name', 'date_of_birth', 'adresse', 'age', 'poids', 'taille', 
-                        'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 
+                        'tension_arterielle', 'temperature', 'renseignements_clinique', 'hypothese_de_diagnostique', 
                         'bilan', 'resultat_bilan', 'ordonnance', 'signature'];
         
         fields.forEach(field => {
@@ -630,6 +640,7 @@
       document.getElementById('edit_tension_arterielle').value = patient.tension_arterielle || '';
       document.getElementById('edit_temperature').value = patient.temperature || '';
       document.getElementById('edit_hypothese_de_diagnostique').value = patient.hypothese_de_diagnostique || '';
+      document.getElementById('edit_renseignements_clinique').value = patient.renseignements_clinique || '';
       document.getElementById('edit_bilan').value = patient.bilan || '';
       document.getElementById('edit_ordonnance').value = patient.ordonnance || '';
       document.getElementById('edit_resultat_bilan').value = patient.resultat_bilan || '';
