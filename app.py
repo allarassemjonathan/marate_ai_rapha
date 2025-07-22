@@ -10,14 +10,134 @@ from dotenv import load_dotenv
 from datetime import datetime
 import requests
 import tempfile
-import locale
 from functools import wraps
+import os.path
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
+from google.auth.transport.requests import Request 
+import io
+import os
+import signal
+import sys
 
 load_dotenv()
-
-app = Flask(__name__)
-app.secret_key = os.environ.get('FLASK_SECRET')
 DATABASE = 'patients.db'
+app = Flask(__name__)
+
+
+# If modifying these scopes, delete the token.json
+SCOPES = ['https://www.googleapis.com/auth/drive.file']
+
+def authenticate():
+    """Authenticate and return Drive service"""
+    creds = None
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+
+    # If no valid credentials available, prompt login
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save credentials for future use
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
+    return build('drive', 'v3', credentials=creds)
+
+def upload_file(filepath, filename_on_drive):
+    service = authenticate()
+    
+    file_metadata = {'name': filename_on_drive}
+    media = MediaFileUpload(filepath, mimetype='application/octet-stream')
+
+    # Upload the file
+    file = service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id, webViewLink'
+    ).execute()
+
+    print(f"✅ Uploaded: {filename_on_drive}")
+    print(f"📎 File ID: {file.get('id')}")
+    print(f"🔗 View: {file.get('webViewLink')}")
+
+
+def find_file_id_by_name(filename):
+    """Find the file ID of a file with a given name in your Google Drive."""
+    service = authenticate()
+    results = service.files().list(q=f"name='{filename}'",
+                                   spaces='drive',
+                                   fields='files(id, name)').execute()
+    files = results.get('files', [])
+    return files[0]['id'] if files else None
+
+def download_file(drive_filename, local_path):
+    """Download a file from Google Drive using its name."""
+    service = authenticate()
+    file_id = find_file_id_by_name(drive_filename)
+    if not file_id:
+        print(f"❌ File '{drive_filename}' not found on Drive.")
+        return
+
+    request = service.files().get_media(fileId=file_id)
+    fh = io.FileIO(local_path, 'wb')
+    downloader = MediaIoBaseDownload(fh, request)
+
+    print(f"⬇️ Downloading '{drive_filename}' to '{local_path}'...")
+    done = False
+    while not done:
+        status, done = downloader.next_chunk()
+        print(f"Progress: {int(status.progress() * 100)}%")
+
+    print("✅ Download complete.")
+
+def get_db_connection():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    conn = get_db_connection()
+    cursor = conn.execute("PRAGMA table_info(patients)")
+    columns = [col[1] for col in cursor.fetchall()]
+    print('the columns', columns)
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS patients (
+        name TEXT NOT NULL, date_of_birth DATE, adresse TEXT, age INTEGER,
+        Poids REAL, Taille REAL, TA REAL, T° REAL, FC REAL, PC REAL, SaO2 REAL,
+        symptomes TEXT, hypothese_de_diagnostique TEXT, renseignements_clinique TEXT, ordonnance TEXT, bilan TEXT, signature TEXT,
+        created_at DATE
+    )''')
+    conn.execute('''CREATE TABLE IF NOT EXISTS visits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, patient_id INTEGER,
+        visit_date DATE, notes TEXT,
+        FOREIGN KEY(patient_id) REFERENCES patients(rowid)
+    )''')
+    conn.commit()
+    conn.close()
+
+def before_shutdown():
+    upload_file('patients.db', 'patients.db')
+    print('Server got killed')
+
+def on_startup():
+    download_file('patients.db', 'patients.db')
+    print('Server just started')
+
+def handle_exit(signal, frame):
+    before_shutdown()
+    sys.exit(0)
+
+init_db()
+on_startup()
+
+print('hello')
+app.secret_key = os.environ.get('FLASK_SECRET')
 
 # Simple credential storage (in production, use a database)
 CREDENTIALS = {
@@ -43,6 +163,13 @@ your_password = os.environ.get('CODE')
 acteur_inf = os.environ.get('NURSES_EMAIL')
 acteur_med = os.environ.get('PHYSI_EMAIL')
 
+# Registering diffterent shutdown event types
+
+# cntr + C event 
+signal.signal(signal.SIGINT, handle_exit)
+
+# container kill event
+signal.signal(signal.SIGTERM, handle_exit)
 
 def email_reception(firstname, lastname, body, plot, recipient_email):
 
@@ -100,28 +227,6 @@ def email_reception(firstname, lastname, body, plot, recipient_email):
 
     # You could include additional validation for the URL here if needed
     return jsonify(success=True)
-
-
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-def init_db():
-    conn = get_db_connection()
-    conn.execute('''CREATE TABLE IF NOT EXISTS patients (
-        name TEXT NOT NULL, date_of_birth DATE, adresse TEXT, age INTEGER,
-        Poids REAL, Taille REAL, TA REAL, T° REAL, FC REAL, PC REAL, SaO2 REAL,
-        symptomes TEXT, hypothese_de_diagnostique TEXT, ordonnance TEXT, bilan TEXT, signature TEXT,
-        created_at DATE
-    )''')
-    conn.execute('''CREATE TABLE IF NOT EXISTS visits (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, patient_id INTEGER,
-        visit_date DATE, notes TEXT,
-        FOREIGN KEY(patient_id) REFERENCES patients(rowid)
-    )''')
-    conn.commit()
-    conn.close()
 
 
 # PDF generation using fpdf==1.7.2
@@ -364,6 +469,7 @@ def generate_invoice(patient_id):
 @login_required
 def index():
     init_db()
+    # restore the db in drive
     if session.get('logged_in'):
         user_type = session.get('user_type')
         print(user_type)
@@ -478,7 +584,3 @@ def login():
             flash('Invalid credentials')
     
     return render_template('login.html')
-
-if __name__ == '__main__':
-    init_db()
-    app.run(host='0.0.0.0', port=5000, debug=True)

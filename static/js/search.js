@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("userType");
   // Define which columns each user type can see
   const columnVisibility = {
-    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique','bilan','resultat_bilan', 'ordonnance', 'signature'], // Columns 1-3
+    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'], // Columns 1-3
     'infirmiers': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature'], // Columns 4-7  
     'receptionistes': ['created_at', 'name','date_of_birth','adresse','age'] // Column 8
   };
@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'taille': 'Taille',
     'tension_arterielle': 'Tension',
     'temperature': 'Température',
-    'hypothese_de_diagnostique': 'Hypothèse',
+    'hypothese_de_diagnostique': 'Hypothèse de diagnostique',
+    'renseignements_clinique':'Renseignement clinique',
     'bilan': 'Bilan',
     'resultat_bilan': 'Conclusion du bilan',
     'ordonnance': 'Ordonnance',
@@ -208,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         data.sort((a, b) => - new Date(b.created_at) + new Date(a.created_at));
         data.forEach(p => {
           const tr = document.createElement('tr');
-          tr.className = "cursor-pointer hover:bg-gray-800 transition-colors";
+          tr.className = "cursor-pointer";
 
           // Open invoice modal when clicking the row
           tr.onclick = () => openInvoiceModal(p);
@@ -219,20 +220,20 @@ document.addEventListener('DOMContentLoaded', () => {
           // The rest of the fields
           visibleColumns.forEach(k => {
           const td = document.createElement('td');
-          td.className = "p-2 border";
-          if (k == 'age' && p[k]!=''){
+          td.className = "p-2 border text-black";
+          if (k == 'age' && p[k]!=null && p[k]!=''){
             p[k] = p[k] + ' ans'
           }
-          else if (k == 'poids' && p[k]!=''){
+          else if (k == 'poids' && p[k]!=null && p[k]!=''){
             p[k] = p[k] + ' kg'
           }
-          else if (k =='taille' && p[k]!=''){
-            p[k] = p[k] + ' m'
+          else if (k =='taille' && p[k]!=null && p[k]!=''){
+            p[k] = p[k] + ' cm'
           }
-          else if (k == 'tension_arterielle' && p[k]!='') {
+          else if (k == 'tension_arterielle' && p[k]!=null && p[k]!='') {
             p[k] = p[k] + ' mmHg'
           }
-          else if (k == 'temperature' && p[k]!=''){
+          else if (k == 'temperature' && p[k]!=null && p[k]!=''){
             p[k] = p[k] + ' °C'
           }
           let content = p[k] || '';
