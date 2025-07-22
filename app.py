@@ -141,9 +141,9 @@ app.secret_key = os.environ.get('FLASK_SECRET')
 
 # Simple credential storage (in production, use a database)
 CREDENTIALS = {
-    'medecins': 'med123',
-    'infirmiers': 'inf123', 
-    'receptionistes': 'rec123'
+    'medecins': os.environ.get('medecins'),
+    'infirmiers': os.environ.get('infirmiers'), 
+    'receptionistes': os.environ.get('receptionistes')
 }
 
 # Decorator to require login
