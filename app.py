@@ -31,9 +31,16 @@ app = Flask(__name__)
 # If modifying these scopes, delete the token.json
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
-def authenticate():
-    """Authenticate and return Drive service"""
 
+
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+import os
+
+SCOPES = ['https://www.googleapis.com/auth/drive.file']
+
+def authenticate():
     info_cred = {
         "installed":{
                 "client_id": os.environ.get("client_id"),
@@ -49,22 +56,38 @@ def authenticate():
     with open("credentials.json", "w", encoding="utf-8") as f:
         json.dump(info_cred, f, indent=4)
 
+    info_token_now = {"token": os.environ.get("token"), 
+        "refresh_token": os.environ.get("refresh_token"), 
+        "token_uri": os.environ.get("token_uri"), 
+        "client_id": os.environ.get("client_id"), 
+        "client_secret": os.environ.get("client_secret"), 
+        "scopes": [os.environ.get("scopes")], 
+        "universe_domain": os.environ.get("universe_domain"),
+        "account": os.environ.get("account"),
+        "expiry": os.environ.get("expiry")
+    }
+    
+    with open("token.json", "w", encoding="utf-8") as f:
+        json.dump(info_token_now, f, indent=4)
+
     creds = None
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    token_path = 'token.json'
 
-    # If no valid credentials available, prompt login
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
+    if os.path.exists(token_path):
+        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+
+        if creds.expired and creds.refresh_token:
             creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-            creds = flow.run_console()
-        # Save credentials for future use
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
+            # Save the refreshed credentials back to token.json
+            with open(token_path, 'w') as token_file:
+                token_file.write(creds.to_json())
 
-    return build('drive', 'v3', credentials=creds)
+    else:
+        raise RuntimeError("❌ token.json not found. Cannot authenticate.")
+
+    service = build('drive', 'v3', credentials=creds)
+    return service
+
 
 def upload_file(filepath, filename_on_drive):
     service = authenticate()
