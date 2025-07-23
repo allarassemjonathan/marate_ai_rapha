@@ -12,15 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("userType");
   // Define which columns each user type can see
   const columnVisibility = {
-    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'], // Columns 1-3
-    'infirmiers': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature'], // Columns 4-7  
-    'receptionistes': ['created_at', 'name','date_of_birth','adresse','age'] // Column 8
+    'medecins': ['created_at', 'name','date_de_naissance','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'], // Columns 1-3
+    'infirmiers': ['created_at', 'name','date_de_naissance','adresse','age','poids','taille','tension_arterielle','temperature'], // Columns 4-7  
+    'receptionistes': ['created_at', 'name','date_de_naissance','adresse','age'] // Column 8
   };
 
     const columnHeaders = {
     'created_at': 'Date de création',
     'name': 'Nom',
-    'date_of_birth': 'Date de naissance',
+    'date_de_naissance': 'Date de naissance',
     'adresse': 'Adresse',
     'age': 'Age',
     'poids': 'Poids',
