@@ -53,6 +53,8 @@ def authenticate():
         }
     }
 
+    print(info_cred)
+
     with open("credentials.json", "w", encoding="utf-8") as f:
         json.dump(info_cred, f, indent=4)
 
@@ -67,6 +69,8 @@ def authenticate():
         "expiry": os.environ.get("expiry")
     }
     
+    print(info_token_now)
+    
     with open("token.json", "w", encoding="utf-8") as f:
         json.dump(info_token_now, f, indent=4)
 
@@ -75,7 +79,7 @@ def authenticate():
 
     if os.path.exists(token_path):
         creds = Credentials.from_authorized_user_file(token_path, SCOPES)
-
+        print('credentials', creds.expired, creds.refresh_token)
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
             # Save the refreshed credentials back to token.json
