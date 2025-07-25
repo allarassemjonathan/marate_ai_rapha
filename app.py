@@ -11,20 +11,12 @@ from datetime import datetime
 import requests
 import tempfile
 from functools import wraps
-import os.path
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
-from google.auth.transport.requests import Request 
-import io
+import psycopg2
+from psycopg2.extras import RealDictCursor
 import os
-import signal
-import sys
-import json
 
 load_dotenv()
-DATABASE = 'patients.db'
+DATABASE_URL = os.getenv("DATABASE_URL")
 app = Flask(__name__)
 
 
@@ -32,153 +24,48 @@ app = Flask(__name__)
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 
-
-from google.oauth2.credentials import Credentials
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-import os
-
-SCOPES = ['https://www.googleapis.com/auth/drive.file']
-
-def authenticate():
-    info_cred = {
-        "installed":{
-                "client_id": os.environ.get("client_id"),
-                "project_id": os.environ.get("project_id"),
-                "auth_uri": os.environ.get("auth_uri"), 
-                "token_uri":os.environ.get("token_uri"),
-                "auth_provider_x509_cert_url": os.environ.get("auth_provider_x509_cert_url"),
-                "client_secret": os.environ.get("client_secret"),
-                "redirect_uris":[os.environ.get("redirect_uris")]
-        }
-    }
-
-    print(info_cred)
-
-    with open("credentials.json", "w", encoding="utf-8") as f:
-        json.dump(info_cred, f, indent=4)
-
-    info_token_now = {"token": os.environ.get("token"), 
-        "refresh_token": os.environ.get("refresh_token"), 
-        "token_uri": os.environ.get("token_uri"), 
-        "client_id": os.environ.get("client_id"), 
-        "client_secret": os.environ.get("client_secret"), 
-        "scopes": [os.environ.get("scopes")], 
-        "universe_domain": os.environ.get("universe_domain"),
-        "account": os.environ.get("account"),
-        "expiry": os.environ.get("expiry")
-    }
-    
-    print(info_token_now)
-    
-    with open("token.json", "w", encoding="utf-8") as f:
-        json.dump(info_token_now, f, indent=4)
-
-    creds = None
-    token_path = 'token.json'
-
-    if os.path.exists(token_path):
-        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
-        print('credentials', creds.expired, creds.refresh_token)
-        if creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-            # Save the refreshed credentials back to token.json
-            with open(token_path, 'w') as token_file:
-                token_file.write(creds.to_json())
-
-    else:
-        raise RuntimeError("❌ token.json not found. Cannot authenticate.")
-
-    service = build('drive', 'v3', credentials=creds)
-    return service
-
-
-def upload_file(filepath, filename_on_drive):
-    service = authenticate()
-    
-    file_metadata = {'name': filename_on_drive}
-    media = MediaFileUpload(filepath, mimetype='application/octet-stream')
-
-    # Upload the file
-    file = service.files().create(
-        body=file_metadata,
-        media_body=media,
-        fields='id, webViewLink'
-    ).execute()
-
-    print(f"✅ Uploaded: {filename_on_drive}")
-    print(f"📎 File ID: {file.get('id')}")
-    print(f"🔗 View: {file.get('webViewLink')}")
-
-
-def find_file_id_by_name(filename):
-    """Find the file ID of a file with a given name in your Google Drive."""
-    service = authenticate()
-    results = service.files().list(q=f"name='{filename}'",
-                                   spaces='drive',
-                                   fields='files(id, name)').execute()
-    files = results.get('files', [])
-    return files[0]['id'] if files else None
-
-def download_file(drive_filename, local_path):
-    """Download a file from Google Drive using its name."""
-    service = authenticate()
-    file_id = find_file_id_by_name(drive_filename)
-    if not file_id:
-        print(f"❌ File '{drive_filename}' not found on Drive.")
-        return
-
-    request = service.files().get_media(fileId=file_id)
-    fh = io.FileIO(local_path, 'wb')
-    downloader = MediaIoBaseDownload(fh, request)
-
-    print(f"⬇️ Downloading '{drive_filename}' to '{local_path}'...")
-    done = False
-    while not done:
-        status, done = downloader.next_chunk()
-        print(f"Progress: {int(status.progress() * 100)}%")
-
-    print("✅ Download complete.")
+def clean_float(value):
+    return float(value) if value.strip() != "" else None
 
 def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
-
+    return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
 def init_db():
-    conn = get_db_connection()
-    cursor = conn.execute("PRAGMA table_info(patients)")
-    columns = [col[1] for col in cursor.fetchall()]
-    print('the columns', columns)
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS patients (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    adresse TEXT,
+                    age INTEGER,
+                    date_of_birth DATE, 
+                    poids REAL,
+                    taille REAL,
+                    tension_arterielle REAL,
+                    temperature REAL,
+                    hypothese_de_diagnostique TEXT,
+                    bilan TEXT, 
+                    resultat_bilan TEXT,
+                    signature TEXT,
+                    renseignements_clinique TEXT,
+                    ordonnance TEXT,
+                    created_at DATE
+                )
+            ''')
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS visits (
+                    id SERIAL PRIMARY KEY,
+                    patient_id INTEGER REFERENCES patients(id),
+                    visit_date DATE,
+                    notes TEXT
+                )
+            ''')
+            conn.commit()
 
-    conn.execute('''CREATE TABLE IF NOT EXISTS patients (
-        name TEXT NOT NULL, date_of_birth DATE, adresse TEXT, age INTEGER,
-        Poids REAL, Taille REAL, TA REAL, T° REAL, FC REAL, PC REAL, SaO2 REAL,
-        symptomes TEXT, hypothese_de_diagnostique TEXT, renseignements_clinique TEXT, ordonnance TEXT, bilan TEXT, signature TEXT,
-        created_at DATE
-    )''')
-    conn.execute('''CREATE TABLE IF NOT EXISTS visits (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, patient_id INTEGER,
-        visit_date DATE, notes TEXT,
-        FOREIGN KEY(patient_id) REFERENCES patients(rowid)
-    )''')
-    conn.commit()
-    conn.close()
 
-def before_shutdown():
-    upload_file('patients.db', 'patients.db')
-    print('Server got killed')
-
-def on_startup():
-    download_file('patients.db', 'patients.db')
-    print('Server just started')
-
-def handle_exit(signal, frame):
-    before_shutdown()
-    sys.exit(0)
 
 init_db()
-on_startup()
+# on_startup()
 
 print('hello')
 app.secret_key = os.environ.get('FLASK_SECRET')
@@ -206,14 +93,6 @@ your_email = os.environ.get('EMAIL')
 your_password = os.environ.get('CODE')
 acteur_inf = os.environ.get('NURSES_EMAIL')
 acteur_med = os.environ.get('PHYSI_EMAIL')
-
-# Registering diffterent shutdown event types
-
-# cntr + C event 
-signal.signal(signal.SIGINT, handle_exit)
-
-# container kill event
-signal.signal(signal.SIGTERM, handle_exit)
 
 def email_reception(firstname, lastname, body, plot, recipient_email):
 
@@ -525,42 +404,91 @@ def index():
 def search():
     q = request.args.get('q', '')
     conn = get_db_connection()
-    results = conn.execute(
-        "SELECT rowid, * FROM patients WHERE name LIKE ? OR adresse LIKE ?",
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT * FROM patients WHERE name ILIKE %s OR adresse ILIKE %s",
         tuple(f'%{q}%' for _ in range(2))
-    ).fetchall()
+    )
+    results = cur.fetchall()
     conn.close()
-    return jsonify([dict(row) for row in results])
-from datetime import date
+    return jsonify(results)
 
+
+from datetime import date
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
     data = request.get_json() or {}
+    
+    # List of known date fields in the table
+    date_fields = {'name', 'adresse', 'date_of_birth'} #'taille', 'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 'bilan', 'resultat_bilan', 'signature', 'renseignements_clinique', 'ordonnance', 'created_at'}
+
+    # Replace empty strings with None for date fields
+    cleaned_data = {}
+    for k, v in data.items():
+        if k in date_fields and v == '':
+            cleaned_data[k] = None
+        else:
+            cleaned_data[k] = v
+
+    data = cleaned_data
     if not data.get('name'):
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
 
     try:
-        data['created_at'] = date.today().isoformat()  # Add today's date
-        columns = ', '.join(data.keys())
-        placeholders = ', '.join(['?'] * len(data))
+        data['created_at'] = date.today().isoformat()
+
+        # Fields that should be treated as floats in the DB
+        float_fields = {'age', 'poids', 'taille', 'tension_arterielle', 'temperature'}
+
+        for field in float_fields:
+            if field in data:
+                if data[field] == '':
+                    data[field] = None
+                else:
+                    try:
+                        data[field] = float(data[field])
+                    except ValueError:
+                        return jsonify({'status': 'error', 'message': f'{field} must be a number'}), 400
+
+        # Notify reception if temperature is missing
+        if data.get('name') is not None:
+            email_reception(
+                data['name'], '',
+                'Chers infirmiers, vous avez un nouveau patient! Faite-le entrer dès que vous êtes prêt',
+                None, acteur_inf
+            )
+
+        print(data)
+        print(data.items())
+        # Use parameterized query
+        columns = list(data.keys())
         values = list(data.values())
-        if data['temperature']=='':
-            email_reception(data['name'], '', 'Chers infirmiers, vous avez un nouveau patient! Faite-le entrer dès que vous êtes prêt', None, acteur_inf)
-            
+        placeholders = ', '.join(['%s'] * len(values))
+        print(placeholders, values)
+        col_names = ', '.join(columns)
+
+        query = f'INSERT INTO patients ({col_names}) VALUES ({placeholders})'
+
         conn = get_db_connection()
-        conn.execute(f'INSERT INTO patients ({columns}) VALUES ({placeholders})', values)
+        cur = conn.cursor()
+        print(query, values)
+        cur.execute(query, values)
         conn.commit()
         conn.close()
+
         return jsonify({'status': 'success'})
+
     except Exception as e:
+        print(e)
         return jsonify({'status': 'error', 'message': str(e)}), 500
-    
+
 @app.route('/delete/<int:rowid>', methods=['DELETE'])
 @login_required
 def delete(rowid):
     conn = get_db_connection()
-    conn.execute('DELETE FROM patients WHERE rowid = ?', (rowid,))
+    cur = conn.cursor()
+    cur.execute('DELETE FROM patients WHERE id = %s', (rowid,))
     conn.commit()
     conn.close()
     return jsonify({'status': 'deleted'})
@@ -569,19 +497,27 @@ def delete(rowid):
 @login_required
 def patient_detail(patient_id):
     conn = get_db_connection()
-    patient = conn.execute('SELECT rowid, * FROM patients WHERE rowid = ?', (patient_id,)).fetchone()
-    visits = conn.execute('SELECT * FROM visits WHERE patient_id = ?', (patient_id,)).fetchall()
+    cur = conn.cursor()
+    cur.execute('SELECT id, * FROM patients WHERE id = %s', (patient_id,))
+    patient = cur.fetchone()
+
+    cur.execute('SELECT * FROM visits WHERE patient_id = %s', (patient_id,))
+    visits = cur.fetchall()
+    columns = [desc[0] for desc in cur.description]
     conn.close()
-    return render_template('patient.html', patient=patient, visits=visits) if patient else ("Patient not found", 404)
+
+    return render_template('patient.html', patient=dict(zip(columns, patient)) if patient else None, visits=visits) if patient else ("Patient not found", 404)
 
 @app.route('/get_patient/<int:patient_id>')
 @login_required
 def get_patient(patient_id):
     conn = get_db_connection()
-    patient = conn.execute('SELECT rowid, * FROM patients WHERE rowid = ?', (patient_id,)).fetchone()
+    cur = conn.cursor()
+    cur.execute('SELECT id, * FROM patients WHERE id = %s', (patient_id,))
+    row = cur.fetchone()
     conn.close()
-    if patient:
-        return jsonify(dict(patient))
+    if row:
+        return jsonify(row)
     return jsonify({'status': 'error', 'message': 'Patient not found'}), 404
 
 @app.route('/update/<int:patient_id>', methods=['PUT'])
@@ -590,20 +526,34 @@ def update_patient(patient_id):
     data = request.get_json() or {}
     if not data.get('name'):
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
-    
-    # Prepare SQL UPDATE statement
-    set_clause = ", ".join([f"{k} = ?" for k in data.keys()])
-    values = list(data.values())
-    values.append(patient_id)  # For the WHERE clause
-    
+
+    # List of known date fields in the table
+    date_fields = {'name', 'adresse', 'age', 'date_of_birth', 'poids', 'taille', 'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 'bilan', 'resultat_bilan', 'signature', 'renseignements_clinique', 'ordonnance', 'created_at'}
+
+
+    # Replace empty strings with None for date fields
+    cleaned_data = {}
+    for k, v in data.items():
+        if k in date_fields and v == '':
+            cleaned_data[k] = None
+        else:
+            cleaned_data[k] = v
+
+    set_clause = ", ".join([f"{k} = %s" for k in cleaned_data.keys()])
+    values = list(cleaned_data.values())
+    values.append(patient_id)
+
     conn = get_db_connection()
-    conn.execute(f'UPDATE patients SET {set_clause} WHERE rowid = ?', values)
+    cur = conn.cursor()
+    cur.execute(f'UPDATE patients SET {set_clause} WHERE id = %s', values)
     conn.commit()
     conn.close()
-    if not data['temperature'] =='':
+
+    if data.get('temperature') != '':
         email_reception(data['name'], '', 'Cher medecin, vous avez un nouveau malade. Certaines informations ont ete modifie et il semble que votre malade est prêt.', None, acteur_med)
-    
+
     return jsonify({'status': 'success'})
+
 
 @app.route('/logout')
 @login_required

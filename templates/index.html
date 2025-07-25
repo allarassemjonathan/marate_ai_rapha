@@ -61,7 +61,7 @@
     }
 
     .input-field::placeholder {
-      color: #000000;
+      color:color-mix(in srgb, currentColor 40%, white);
     }
 
     .input-field:focus {
@@ -200,10 +200,31 @@
         max-height: 50vh;
     }
 }
+#toastContainer > div {
+  min-width: 250px;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  color: #111;
+  background:  #00FFFF;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  cursor: default;
+  user-select: none;
+}
+
+#toastContainer > div.show {
+  opacity: 1;
+  transform: translateX(0);
+}
   </style>
   
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 md:p-8" style="visibility: hidden;">
+<div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2"></div>
 <body>
 </body>
   <div id="splashScreen">
@@ -215,9 +236,10 @@
       <div class="flex justify-center mb-10">
       <img src="https://allarassemjonathan.github.io/marate_white.png" class="h-20 md:h-28 w-auto object-contain">
       <div style="position: absolute; top: 50px; left: 50px;">
-        <a href="{{ url_for('logout') }}" style="margin-left: 20px; padding: 5px 10px; background-color: #982f39; color: white; text-decoration: none; border-radius: 5px;">Déconnexion</a>
+        <a href="{{ url_for('logout') }}" style="margin-left: 150px; padding: 5px 10px; background-color: #982f39; color: white; text-decoration: none; border-radius: 5px;">Déconnexion</a>
       </div>
       </div>
+    </div>
 
       <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
         <div class="relative w-full">
@@ -360,7 +382,7 @@
     <div id="invoice-items-container" class="space-y-6 mb-6"></div>
 
     <div class="flex justify-start mb-6">
-      <button type="button" onclick="addInvoiceSection()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2 rounded-xl transition">
+      <button type="button" onclick="addInvoiceSection()" class="bg-cyan-600 hover:bg-cyan-700 text-black px-5 py-2 rounded-xl transition">
         Ajouter une section
       </button>
     </div>
@@ -473,7 +495,7 @@
 
         <div class="articles-list scrollbar space-y-4 mb-4"></div>
 
-        <button type="button" onclick="addArticle(this)" class="bg-cyan-500 text-white px-3 py-1 rounded mb-2">Ajouter un article</button>
+        <button type="button" onclick="addArticle(this)" class="bg-cyan-500 text-black px-3 py-1 rounded mb-2">Ajouter un article</button>
 
         <div class="section-subtotal text-right font-semibold mt-2">Sous-total: 0 Fcfa</div>
       `;
@@ -627,7 +649,38 @@
         table.appendChild(row);
       });
     }
-    
+    window.editPatient = function(id) {
+      fetch(`/get_patient/${id}`)
+        .then(res => res.json())
+        .then(patient => {
+          // Set the hidden id field
+          document.getElementById('editId').value = patient.id;
+
+          // Iterate over each key in the patient object
+          for (const [key, value] of Object.entries(patient)) {
+            const input = document.getElementById(`edit_${key}`);
+            if (input) {
+              let val = value;
+
+              // If it's a date string, format to 'YYYY-MM-DD' for input[type="date"]
+              if (
+                input.type === 'date' &&
+                typeof val === 'string' &&
+                val.includes('T')
+              ) {
+                val = new Date(val).toISOString().split('T')[0];
+              }
+
+              // Set value (for text, number, date, textarea, etc.)
+              input.value = val != null ? val : '';
+            }
+          }
+
+          // Show the modal
+          document.getElementById('editModalOverlay').classList.remove('hidden');
+        });
+    };
+
     function openEditModal(patient) {
       // Fill edit form fields
       document.getElementById('editId').value = patient.id;
@@ -739,7 +792,6 @@
             });
         });
     }
-
     // Function to remove an invoice item
     function removeInvoiceItem(button) {
         const itemsContainer = document.getElementById('invoice-items-container');
