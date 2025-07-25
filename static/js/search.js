@@ -12,15 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("userType");
   // Define which columns each user type can see
   const columnVisibility = {
-    'medecins': ['created_at', 'name','date_de_naissance','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'], // Columns 1-3
-    'infirmiers': ['created_at', 'name','date_de_naissance','adresse','age','poids','taille','tension_arterielle','temperature'], // Columns 4-7  
-    'receptionistes': ['created_at', 'name','date_de_naissance','adresse','age'] // Column 8
+    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'], // Columns 1-3
+    'infirmiers': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature'], // Columns 4-7  
+    'receptionistes': ['created_at', 'name','date_of_birth','adresse','age'] // Column 8
   };
 
     const columnHeaders = {
     'created_at': 'Date de création',
     'name': 'Nom',
     'date_de_naissance': 'Date de naissance',
+    'date_of_birth':'Date de naissance',
     'adresse': 'Adresse',
     'age': 'Age',
     'poids': 'Poids',
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Make these functions globally accessible
   window.openInvoiceModal = function(patient) {
-    currentPatientId = patient.rowid;
+    currentPatientId = patient.id;
     document.getElementById('invoiceModal').style.display = 'flex';
 
     // Split full name into prenom and nom
@@ -207,6 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(data => {
         resultsTable.innerHTML = '';
         data.sort((a, b) => - new Date(b.created_at) + new Date(a.created_at));
+        console.log(data);
         data.forEach(p => {
           const tr = document.createElement('tr');
           tr.className = "cursor-pointer";
@@ -236,6 +238,9 @@ document.addEventListener('DOMContentLoaded', () => {
           else if (k == 'temperature' && p[k]!=null && p[k]!=''){
             p[k] = p[k] + ' °C'
           }
+          if (k == 'created_at' || k=='date_of_birth' && typeof p[k] == 'string' && p[k]!=''){
+            p[k] = new Date(p[k]).toISOString().split('T')[0];
+          }
           let content = p[k] || '';
           if (content.length > 30) {
             content = content.substring(0, 30) + '...';
@@ -250,9 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
         actionTd.className = "p-2 border";
         actionTd.innerHTML = `
           <div class="flex space-x-2 justify-center">
-            <button class="text-blue-500 hover:text-blue-700" onclick="event.stopPropagation(); editPatient(${p.rowid})">Modifier</button>
-            <button class="text-red-500 hover:text-red-700" onclick="event.stopPropagation(); deletePatient(${p.rowid})">Supprimer</button>
-            <button class="text-green-500 hover:text-green-700" onclick="event.stopPropagation(); window.location.href='/patient/${p.rowid}'">Détails</button>
+            <button class="text-blue-500 hover:text-blue-700" onclick="event.stopPropagation(); editPatient(${p.id})">Modifier</button>
+            <button class="text-red-500 hover:text-red-700" onclick="event.stopPropagation(); deletePatient(${p.id})">Supprimer</button>
+            <button class="text-green-500 hover:text-green-700" onclick="event.stopPropagation(); window.location.href='/patient/${p.id}'">Détails</button>
           </div>
         `;
         tr.appendChild(actionTd);
@@ -268,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.json())
         .then(() => {
           loadPatients(searchBox.value);
+          showToast('Patient supprimé avec succès', 2500)
         });
     }
   }
@@ -277,7 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(res => res.json())
       .then(patient => {
         // Populate the edit form
-        document.getElementById('editId').value = patient.rowid;
+        document.getElementById('editId').value = patient.id;
+        document.getElementById('edit_name').value  = patient.name;
         
         // Populate all fields
         const fields = columnVisibility[userType];
@@ -324,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (result.status === 'success') {
         closeEditModal();
         loadPatients(searchBox.value);
+        showToast('Patient modifié avec succès', 2500);
       } else {
         alert(result.message || 'Error updating patient');
       }
@@ -343,6 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(() => {
       form.reset();
       loadPatients(searchBox.value);
+      showToast('Patient ajouté avec succès', 2500);
     });
   });
 
@@ -351,6 +360,28 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(window.searchTimer);
     window.searchTimer = setTimeout(() => loadPatients(e.target.value), 300);
   });
+
+  function showToast(message, duration = 3000) {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.textContent = message;
+
+  container.appendChild(toast);
+
+  // Trigger show animation
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
+
+  // Auto-remove after duration
+  setTimeout(() => {
+    toast.classList.remove('show');
+    toast.addEventListener('transitionend', () => toast.remove());
+  }, duration);
+};
+
 
   // Initial load
   createTableHeaders();
