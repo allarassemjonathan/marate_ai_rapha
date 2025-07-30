@@ -209,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsTable.innerHTML = '';
         data.sort((a, b) => - new Date(b.created_at) + new Date(a.created_at));
         console.log(data);
+        data = data.slice(-20);
         data.forEach(p => {
           const tr = document.createElement('tr');
           tr.className = "cursor-pointer";
