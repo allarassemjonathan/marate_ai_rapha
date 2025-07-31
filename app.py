@@ -413,7 +413,14 @@ def search():
     conn.close()
     return jsonify(results)
 
-
+# @app.rout('/stat')
+# @login_required
+# def stat():
+#     conn = get_db_connection()
+#     cur = conn.cursor()
+#     cur.execute("SELECT * FROM patients")
+#     results = cur.fetchall()
+    
 from datetime import date
 @app.route('/add', methods=['POST'])
 @login_required
