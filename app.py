@@ -463,7 +463,7 @@ def index():
     if session.get('logged_in'):
         user_type = session.get('user_type')
         print(user_type)
-        if user_type == 'receptionistes' or user_type == 'infirmiers':
+        if user_type == 'receptionistes' or user_type == 'infirmiers' or user_type == 'medecins':
             username = user_type[:-1]
         else:
             username = session['username'].replace('_', ' ')
@@ -576,7 +576,10 @@ def add():
         print(data)
         print(data.items())
         if session['user_type'] == 'medecins':
-            data['signature'] = session['username'].replace('_', ' ')
+            if 'username' in session:
+                data['signature'] = session['username'].replace('_', ' ')
+            else:
+                data['signature'] = 'medecins'
         # Use parameterized query
         columns = list(data.keys())
         values = list(data.values())
@@ -658,7 +661,8 @@ def get_patient(patient_id):
     print(row)
     conn.close()
     print(session['username'])
-    if user_type=='infirmiers' or user_type == 'receptionistes':
+
+    if user_type=='infirmiers' or user_type == 'receptionistes' or user_type == 'medecins':
         return jsonify(row)
     if row['signature'] is None:
         return jsonify(row)
