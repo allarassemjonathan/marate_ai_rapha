@@ -79,7 +79,7 @@ def log_file(user_type, action, details=None):
     file_exists = os.path.exists(FILENAME)
 
     if file_exists:
-        with open(FILENAME, 'r', encoding='latin-1'):
+        with open(FILENAME, 'r', encoding='latin-1') as f:
             lines = f.readlines()
 
         # Check if the first line matches today's date
