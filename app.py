@@ -779,8 +779,6 @@ def generate_daily_report(date_of_report=None):
     output.seek(0)
     return output
 
-from apscheduler.schedulers.background import BackgroundScheduler
-from threading import Thread
 @app.route('/report')
 def send_daily_report_email():
     today = date.today()
