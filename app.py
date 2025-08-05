@@ -788,7 +788,7 @@ def send_daily_report_email():
     # Compose email
     subject = f"Daily Action Report for {today.strftime('%Y-%m-%d')}"
     msg = MIMEMultipart()
-    msg['From'] = your_email
+    msg['From'] = 'jonathanjerabe@gmail.com'
     msg['To'] = your_email  # or list of recipients
     msg['Subject'] = subject
 
