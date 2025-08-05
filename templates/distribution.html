@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dynamic Distribution</title>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+  }
+  #plot {
+    max-width: 800px;
+    margin: auto;
+  }
+  #legend {
+    text-align: center;
+    margin-top: 20px;
+  }
+  #legend button {
+    margin: 0 10px;
+    padding: 8px 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  #legend button.active {
+    background-color: #0056b3;
+  }
+</style>
+</head>
+<body>
+
+<h2>Distribution of Columns</h2>
+
+<div id="plot"></div>
+
+<div id="legend"></div>
+
+<script>
+  // Get data passed from Flask as a JSON string
+  const data = JSON.parse(document.getElementById('data-json').textContent);
+
+  // Columns list
+  const columns = Object.keys(data);
+
+  // Current column index
+  let currentIndex = 0;
+
+  // Function to compute counts for categories or bins for numbers
+  function getDistribution(values) {
+    // If values are numbers, bucketize them, else count categories
+    if (values.length === 0) return {labels: [], counts: []};
+
+    if (typeof values[0] === 'number') {
+      // Bucketize numeric data
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const binCount = 10;
+      const binSize = (max - min) / binCount;
+      const bins = Array(binCount).fill(0);
+      const labels = [];
+
+      for (let i = 0; i < binCount; i++) {
+        const start = min + i * binSize;
+        const end = start + binSize;
+        labels.push(`${start.toFixed(1)} - ${end.toFixed(1)}`);
+      }
+
+      values.forEach(v => {
+        let idx = Math.floor((v - min) / binSize);
+        if (idx === binCount) idx = binCount - 1; // edge case max value
+        bins[idx]++;
+      });
+
+      return {labels, counts: bins};
+    } else {
+      // Count categories
+      const counts = {};
+      values.forEach(v => {
+        counts[v] = (counts[v] || 0) + 1;
+      });
+      const labels = Object.keys(counts);
+      const countsArr = labels.map(label => counts[label]);
+      return {labels, counts: countsArr};
+    }
+  }
+
+  // Render the distribution chart for a given column
+  function renderColumn(colName) {
+    const dist = getDistribution(data[colName]);
+
+    const trace = {
+      x: dist.labels,
+      y: dist.counts,
+      type: 'bar',
+      marker: {
+        color: '#007BFF'
+      }
+    };
+
+    const layout = {
+      title: `Distribution of ${colName}`,
+      xaxis: { title: colName },
+      yaxis: { title: 'Count' },
+      margin: { t: 40, b: 100 }
+    };
+
+    Plotly.newPlot('plot', [trace], layout, {responsive: true});
+  }
+
+  // Create legend buttons for each column
+  function createLegend() {
+    const legendDiv = document.getElementById('legend');
+    columns.forEach((col, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = col;
+      btn.className = i === 0 ? 'active' : '';
+      btn.onclick = () => {
+        // Remove active from all buttons
+        Array.from(legendDiv.children).forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentIndex = i;
+        renderColumn(col);
+      };
+      legendDiv.appendChild(btn);
+    });
+  }
+
+  // Initialize
+  createLegend();
+  renderColumn(columns[currentIndex]);
+</script>
+
+<!-- Pass data from Flask to JS safely -->
+<script type="application/json" id="data-json">{{ data|tojson }}</script>
+
+</body>
+</html>

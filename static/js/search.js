@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const columnHeaders = {
     'created_at': 'Date de création',
     'name': 'Nom',
-    'date_de_naissance': 'Date de naissance',
     'date_of_birth':'Date de naissance',
     'adresse': 'Adresse',
     'age': 'Age',
@@ -238,9 +237,14 @@ document.addEventListener('DOMContentLoaded', () => {
           else if (k == 'temperature' && p[k]!=null && p[k]!=''){
             p[k] = p[k] + ' °C'
           }
-          if (k == 'created_at' || k=='date_of_birth' && typeof p[k] == 'string' && p[k]!=''){
+          if (k=='date_of_birth' && typeof p[k] == 'string' && p[k]!=''){
             p[k] = new Date(p[k]).toISOString().split('T')[0];
           }
+          if (k === 'created_at' && typeof p[k] === 'string' && p[k] !== '') {
+            const date = new Date(p[k]);
+            const localDate = date.toISOString().replace('T', ' ').split('.')[0]; // "YYYY-MM-DD HH:MM:SS"
+            p[k] = localDate;
+          }   
           let content = p[k] || '';
           if (content.length > 30) {
             content = content.substring(0, 30) + '...';
@@ -278,38 +282,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  window.editPatient = function(id) {
-    fetch(`/get_patient/${id}`)
-      .then(res => res.json())
-      .then(patient => {
-        // Populate the edit form
-        document.getElementById('editId').value = patient.id;
-        document.getElementById('edit_name').value  = patient.name;
-        
-        // Populate all fields
-        const fields = columnVisibility[userType];
-        fields.forEach(field => {
-          const input = document.getElementById(`edit_${field}`);
-          if (input) {
-            input.value = patient[field] || '';
-          }
-        });
-        
-        // Show the modal
-        document.getElementById('editModalOverlay').classList.remove('hidden');
-      });
-  };
+window.editPatient = function(id) {
+  fetch(`/get_patient/${id}`)
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok || data.status === 'error') {
+        // Show error flash message
+        showToast(data.message || 'Une erreur est survenue lors de la récupération du patient.');
+        return;
+      }
+      // Populate the edit form
+      document.getElementById('editId').value = data.id;
+      document.getElementById('edit_name').value = data.name;
 
-  window.closeEditModal = function() {
-    document.getElementById('editModalOverlay').classList.add('hidden');
-  };
-  
-  // Event delegation for clicks outside the modal content
-  editModalOverlay.addEventListener('click', (e) => {
-    if (e.target === editModalOverlay) {
-      closeEditModal();
-    }
-  });
+      // Populate all fields based on visible columns
+      const fields = columnVisibility[userType];
+      fields.forEach(field => {
+        const input = document.getElementById(`edit_${field}`);
+        if (input) {
+          input.value = data[field] || '';
+        }
+      });
+
+      // Show the modal
+      document.getElementById('editModalOverlay').classList.remove('hidden');
+    })
+    .catch(err => {
+      console.error(err);
+      showToast(" Erreur reseau. Impossible de récupérer les données du patient.");
+    });
+};
+
+// Example flash message display function
+function showFlash(message) {
+  const flash = document.createElement('div');
+  flash.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-2';
+  flash.role = 'alert';
+  flash.innerHTML = `
+    <strong class="font-bold">Erreur: </strong>
+    <span class="block sm:inline">${message}</span>
+  `;
+
+  const flashContainer = document.getElementById('flash-container') || document.body;
+  flashContainer.appendChild(flash);
+
+  setTimeout(() => flash.remove(), 5000); // Auto-remove after 5 seconds
+}
 
   // Submit event for the edit form
   editForm.addEventListener('submit', (e) => {
