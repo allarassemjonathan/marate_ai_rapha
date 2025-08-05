@@ -79,13 +79,13 @@ def log_file(user_type, action, details=None):
     file_exists = os.path.exists(FILENAME)
 
     if file_exists:
-        with open(FILENAME, 'r') as f:
+        with open(FILENAME, 'r', encoding='latin-1'):
             lines = f.readlines()
 
         # Check if the first line matches today's date
         if lines and lines[0].strip() == today_str:
             # Append to file
-            with open(FILENAME, 'a') as f:
+            with open(FILENAME, 'a', encoding='latin-1') as f:
                 f.write('\nNouvelle evenement: ' + datetime.now().strftime('%H:%M:%S') + f' {user_type}, {action}, {details}')
             print("Appended to file.")
             return 200
@@ -94,7 +94,7 @@ def log_file(user_type, action, details=None):
 
 
     # File doesn't exist, is empty, or has a different date — overwrite
-    with open(FILENAME, 'w') as f:
+    with open(FILENAME, 'w' , encoding='latin-1') as f:
         f.write(today_str + '\n')
         f.write('Nouvelle evenement: ' + datetime.now().strftime('%H:%M:%S') + f' {user_type}, {action}, {details}')
         print('New info')
@@ -783,7 +783,7 @@ def generate_daily_report(date_of_report=None):
 def send_daily_report_email():
     today = date.today()
     # report = generate_daily_report(today)
-    report = '/n'.join(open('daily_log.txt', 'r').readlines())
+    report = '/n'.join(open('daily_log.txt', 'r', encoding='latin-1').readlines())
 
     # Compose email
     subject = f"Daily Action Report for {today.strftime('%Y-%m-%d')}"
