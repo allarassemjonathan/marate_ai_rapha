@@ -3,30 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patient Details</title>
+  <title> Deétails du patient</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center">
-  <div class="w-full max-w-4xl p-6 bg-white shadow-lg rounded-lg mt-10">
-    <h1 class="text-3xl font-bold text-center mb-6">Patient Details</h1>
+  <div class="w-full max-w-7xl p-6 bg-white shadow-lg rounded-lg mt-10">
+    <h1 class="text-3xl font-bold text-center mb-6">Détails</h1>
     <div class="space-y-2">
-      <p><strong>Name:</strong> {{ patient['name'] }}</p>
-      <p><strong>Date of Birth:</strong> {{ patient['date_of_birth'] }}</p>
+      <p><strong>Nom:</strong> {{ patient['name'] }}</p>
+      <p><strong>Date de naissance:</strong> {{ patient['date_of_birth'] }}</p>
       <p><strong>Adresse:</strong> {{ patient['adresse'] }}</p>
       <p><strong>Age:</strong> {{ patient['age'] }}</p>
     </div>
     <h2 class="text-2xl font-bold mt-8 mb-4">Visits</h2>
-    {% if visits %}
-      <ul class="space-y-2">
-      {% for visit in visits %}
-        <li class="bg-gray-100 p-3 rounded">{{ visit['visit_date'] }}: {{ visit['notes'] }}</li>
-      {% endfor %}
-      </ul>
+     {% if visits %}
+    <table class="min-w-full w-full table-auto border-collapse">
+        <thead class="table-header">
+          <tr id="tableHeader">
+              <th  class="text-left p-2 border-b">Date</th>
+              <th  class="text-left p-2 border-b">Age</th>
+              <th  class="text-left p-2 border-b">Température</th>
+              <th  class="text-left p-2 border-b">Taille</th>
+              <th  class="text-left p-2 border-b">Poids</th>
+              <th  class="text-left p-2 border-b">Hypothese de diagnostique</th>
+              <th  class="text-left p-2 border-b">Bilan</th>
+              <th  class="text-left p-2 border-b">Résultat du bilan</th>
+              <th  class="text-left p-2 border-b">Ordonnance</th>
+              <th  class="text-left p-2 border-b">Signature</th>
+          </tr>
+        </thead>
+        <tbody id="resultsTable" class="text-black-300 text-sm">
+        <!-- Results will be populated here -->
+         {% for visit in visits %}    
+          <tr>
+                  <td class="p-2 border-b">{{visit['created_at']}}</td>
+                  <td class="p-2 border-b">{{visit['age']}} ans</td>
+                  <td class="p-2 border-b">{{visit['temperature']}} °C</td>
+                  <td class="p-2 border-b">{{visit['taille']}} m</td>
+                  <td class="p-2 border-b">{{visit['poids']}} kg</td>
+                  <td class="p-2 border-b">{{visit['hypothese_de_diagnostique']}}</td>
+                  <td class="p-2 border-b">{{visit['bilan']}}</td>
+                  <td class="p-2 border-b">{{visit['resultat_bilan']}}</td>
+                  <td class="p-2 border-b">{{visit['ordonnance']}}</td>
+                  <td class="p-2 border-b">{{visit['signature']}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
     {% else %}
       <p class="text-gray-500">No visits recorded yet.</p>
     {% endif %}
-
-    <a href="/" class="inline-block mt-8 text-blue-500 hover:underline">Back to main page</a>
+    <a href="/" class="inline-block mt-8 text-blue-500 hover:underline">Retour page principale</a>
   </div>
 </body>
 </html>

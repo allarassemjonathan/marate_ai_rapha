@@ -1,3 +1,4 @@
+from collections import defaultdict
 from flask import Flask, render_template, request, jsonify, send_file, session, flash, redirect, url_for
 import sqlite3
 import smtplib
@@ -60,21 +61,81 @@ def init_db():
                     notes TEXT
                 )
             ''')
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS action_logs (
+                    id SERIAL PRIMARY KEY,
+                    timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
+                    user_type TEXT,
+                    action TEXT NOT NULL,
+                    details TEXT
+                )
+            ''')
             conn.commit()
 
+def log_file(user_type, action, details=None):
+    FILENAME = 'daily_log.txt'
+    today_str = datetime.now().strftime('%Y-%m-%d')
 
+    file_exists = os.path.exists(FILENAME)
+
+    if file_exists:
+        with open(FILENAME, 'r') as f:
+            lines = f.readlines()
+
+        # Check if the first line matches today's date
+        if lines and lines[0].strip() == today_str:
+            # Append to file
+            with open(FILENAME, 'a') as f:
+                f.write('\nNouvelle evenement: ' + datetime.now().strftime('%H:%M:%S') + f' {user_type}, {action}, {details}')
+            print("Appended to file.")
+            return 200
+        else:
+            print("Date mismatch or empty file — overwriting.")
+
+
+    # File doesn't exist, is empty, or has a different date — overwrite
+    with open(FILENAME, 'w') as f:
+        f.write(today_str + '\n')
+        f.write('Nouvelle evenement: ' + datetime.now().strftime('%H:%M:%S') + f' {user_type}, {action}, {details}')
+        print('New info')
+        return 200
+    print("File written with new date.")
+
+
+# def log_file(user_type, action, details=None):
+#     try:
+#         conn = get_db_connection()
+#         cur = conn.cursor()
+#         cur.execute(
+#             "INSERT INTO action_logs (user_type, action, details) VALUES (%s, %s, %s)",
+#             (user_type, action, details)
+#         )
+#         conn.commit()
+#         conn.close()
+#     except Exception as e:
+#         print(f"Error logging action: {e}")
 
 init_db()
 # on_startup()
 
 print('hello')
 app.secret_key = os.environ.get('FLASK_SECRET')
-
+Special_user = ''
 # Simple credential storage (in production, use a database)
 CREDENTIALS = {
     'medecins': os.environ.get('medecins'),
     'infirmiers': os.environ.get('infirmiers'), 
-    'receptionistes': os.environ.get('receptionistes')
+    'receptionistes': os.environ.get('receptionistes'),
+    'Dr_Toralta_G_.Josephine':os.environ.get('Dr_Toralta_G_.Josephine'),
+    'Dr_Djaury_Dadji_-A':os.environ.get('Dr_Djaury_Dadji_-A'),
+    'Dr_Ndortolnan_Azer':os.environ.get('Dr_Ndortolnan_Azer'), 
+    'Dr_Doumgo_Monna_Doni_Nelson':os.environ.get('Dr_Doumgo_Monna_Doni_Nelson'), 
+    'Dr_Ngetigal_Hyacinte':os.environ.get('Dr_Ngetigal_Hyacinte'), 
+    'Dr_Ousmane_Hamane_Gadji':os.environ.get('Dr_Ousmane_Hamane_Gadji'), 
+    'Dr_Toralta_Emmanuelle_Mantar':os.environ.get('Dr_Toralta_Emmanuelle_Mantar'), 
+    'Dr_Madjibeye_Mirielle':os.environ.get('Dr_Madjibeye_Mirielle'), 
+    'Dr_Robnodji_Adoucie':os.environ.get('Dr_Robnodji_Adoucie'), 
+    'Dr_Ndoubane_Bonheur': os.environ.get('Dr_Ndoubane_Bonheur')
 }
 
 # Decorator to require login
@@ -376,6 +437,12 @@ def generate_invoice(patient_id):
             tmp_file.seek(0)
 
             filename = f"facture_{meta['nom']}_{meta['prenom']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            
+            log_file(
+                session.get('user_type'),
+                'Facture généré',
+                f"Facture généré pour le patient {meta.get('nom')} {meta.get('prenom')}"
+            )
             return send_file(
                 tmp_file.name,
                 as_attachment=True,
@@ -396,7 +463,11 @@ def index():
     if session.get('logged_in'):
         user_type = session.get('user_type')
         print(user_type)
-        return render_template('index.html', user_type = user_type)
+        if user_type == 'receptionistes' or user_type == 'infirmiers':
+            username = user_type[:-1]
+        else:
+            username = session['username'].replace('_', ' ')
+        return render_template('index.html', user_type = user_type, username=username)
     return redirect(url_for('login'))
 
 @app.route('/search')
@@ -413,22 +484,51 @@ def search():
     conn.close()
     return jsonify(results)
 
-# @app.rout('/stat')
-# @login_required
-# def stat():
-#     conn = get_db_connection()
-#     cur = conn.cursor()
-#     cur.execute("SELECT * FROM patients")
-#     results = cur.fetchall()
-    
+@app.route('/stat')
+@login_required
+def stat():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT created_at, temperature, tension_arterielle, poids, taille
+        FROM patients
+        WHERE created_at IS NOT NULL
+        ORDER BY created_at ASC
+    """)
+    results = cur.fetchall()
+    conn.close()
+    return render_template('stat.html', data=results)
+
+
+@app.route('/distribution')
+def show_distribution():
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    columns = ['adresse', 'sexe', 'groupe_sanguin']
+    all_values = defaultdict(lambda: defaultdict(int))
+
+    for col in columns:
+        cur.execute(f"SELECT {col} FROM patients")
+        rows = cur.fetchall()
+        for (val,) in rows:
+            if val:
+                all_values[col][val] += 1
+
+    cur.close()
+    conn.close()
+
+    return render_template("distribution.html", distributions=all_values)
+
+from datetime import datetime, timezone, timedelta # chad timezone attempt
 from datetime import date
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
     data = request.get_json() or {}
-    
+    print(data)
     # List of known date fields in the table
-    date_fields = {'name', 'adresse', 'date_of_birth'} #'taille', 'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 'bilan', 'resultat_bilan', 'signature', 'renseignements_clinique', 'ordonnance', 'created_at'}
+    date_fields = {'name', 'adresse', 'date_of_birth', 'tension_arterielle'} #'taille', 'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 'bilan', 'resultat_bilan', 'signature', 'renseignements_clinique', 'ordonnance', 'created_at'}
 
     # Replace empty strings with None for date fields
     cleaned_data = {}
@@ -440,22 +540,29 @@ def add():
 
     data = cleaned_data
     if not data.get('name'):
+        print('issue is here 1 ')
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
 
     try:
-        data['created_at'] = date.today().isoformat()
+        gmt_plus1 = timezone(timedelta(hours=1))
+        data['created_at'] = datetime.now(gmt_plus1)
 
         # Fields that should be treated as floats in the DB
-        float_fields = {'age', 'poids', 'taille', 'tension_arterielle', 'temperature'}
+        float_fields = {'age', 'poids', 'taille', 'temperature'}
 
         for field in float_fields:
+            print(field)
             if field in data:
                 if data[field] == '':
+                    print(field, 'should be', None)
                     data[field] = None
                 else:
                     try:
+                        print(field)
+                        print(data[field])
                         data[field] = float(data[field])
                     except ValueError:
+                        print('issue is here 2 ')
                         return jsonify({'status': 'error', 'message': f'{field} must be a number'}), 400
 
         # Notify reception if temperature is missing
@@ -468,6 +575,8 @@ def add():
 
         print(data)
         print(data.items())
+        if session['user_type'] == 'medecins':
+            data['signature'] = session['username'].replace('_', ' ')
         # Use parameterized query
         columns = list(data.keys())
         values = list(data.values())
@@ -483,7 +592,11 @@ def add():
         cur.execute(query, values)
         conn.commit()
         conn.close()
-
+        log_file(
+            session.get('user_type'),
+            'Ajout d\'un patient',
+            f"Le patient '{data.get('name')}' a été ajouté"
+        )
         return jsonify({'status': 'success'})
 
     except Exception as e:
@@ -493,39 +606,70 @@ def add():
 @app.route('/delete/<int:rowid>', methods=['DELETE'])
 @login_required
 def delete(rowid):
+    user_type = session.get('user_type')
     conn = get_db_connection()
     cur = conn.cursor()
+    cur.execute('SELECT * FROM patients WHERE id = %s', (rowid, ))
+    row = cur.fetchall()
     cur.execute('DELETE FROM patients WHERE id = %s', (rowid,))
     conn.commit()
     conn.close()
+    log_file(user_type, 'Suppression d\'un patient', f"Le patient avec l'identifiant {rowid} a été supprimé. Voici les infos du patient supprimé {row}")
     return jsonify({'status': 'deleted'})
 
 @app.route('/patient/<int:patient_id>')
 @login_required
 def patient_detail(patient_id):
+    user_type = session.get('user_type')
+    log_file(user_type, 'Détails des patients', f"Les détails du patient avec l'identifiant {patient_id} ont été consulté.")
+
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT id, * FROM patients WHERE id = %s', (patient_id,))
-    patient = cur.fetchone()
+    cur.execute('SELECT * FROM patients WHERE id = %s', (patient_id,))
+    patients = cur.fetchall()
 
-    cur.execute('SELECT * FROM visits WHERE patient_id = %s', (patient_id,))
+    row_as_dicts = [dict(row) for row in patients]
+    
+    print(patients)
+    print(row_as_dicts[0])
+
+    name = row_as_dicts[0]['name']
+    print('name', name)
+    cur.execute('SELECT * FROM patients WHERE name = %s', (name,))
     visits = cur.fetchall()
-    columns = [desc[0] for desc in cur.description]
-    conn.close()
+    print(len(visits))
 
-    return render_template('patient.html', patient=dict(zip(columns, patient)) if patient else None, visits=visits) if patient else ("Patient not found", 404)
+    row_as_visits = [dict(row) for row in visits]
+    return render_template('patient.html', visits = row_as_visits, patient=row_as_dicts[0])
 
 @app.route('/get_patient/<int:patient_id>')
 @login_required
 def get_patient(patient_id):
+    user_type = session.get('user_type')
+    log_file(user_type, 'Patient sélectionné', f"Patient avec ID {patient_id} selectionné.")
+
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT id, * FROM patients WHERE id = %s', (patient_id,))
+    cur.execute('SELECT * FROM patients WHERE id = %s', (patient_id,))
     row = cur.fetchone()
+    print(row)
+
+    row =dict(row)
+    print(row)
     conn.close()
-    if row:
+    print(session['username'])
+    if user_type=='infirmiers' or user_type == 'receptionistes':
         return jsonify(row)
-    return jsonify({'status': 'error', 'message': 'Patient not found'}), 404
+    if row['signature'] is None:
+        return jsonify(row)
+    if session['username'] == 'Dr_Toralta_G_.Josephine':
+        print('ot here?')
+        return jsonify(row)
+    if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
+        return jsonify(row)
+    else:
+        print('ieah')
+        return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
 
 @app.route('/update/<int:patient_id>', methods=['PUT'])
 @login_required
@@ -556,8 +700,14 @@ def update_patient(patient_id):
     conn.commit()
     conn.close()
 
+    log_file(
+        session.get('user_type'),
+        'modification patient',
+        f"Patient avec ID {patient_id} a été modifié"
+    )
+
     if data.get('temperature') != '':
-        email_reception(data['name'], '', 'Cher medecin, vous avez un nouveau malade. Certaines informations ont ete modifie et il semble que votre malade est prêt.', None, acteur_med)
+        email_reception(data['name'], '', 'Cher medecin, vous avez un nouveau malade. Certaines informations ont été modifié et il semble que votre malade est prêt.', None, acteur_med)
 
     return jsonify({'status': 'success'})
 
@@ -565,6 +715,8 @@ def update_patient(patient_id):
 @app.route('/logout')
 @login_required
 def logout():
+    user_type = session.get('user_type')
+    log_file(user_type, 'logout', f"L'utilisateur '{user_type}' s'est déconnecté")
     session.clear()  # Clears all session data
     return redirect(url_for('login'))  # Redirects to login page
 
@@ -573,15 +725,92 @@ def login():
     if session.get('logged_in'):
         return redirect(url_for('index', user_type = session.get('user_type')))
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].replace(' ', '_')
         password = request.form['password']
         
         # Check credentials
+        print(username)
         if username in CREDENTIALS and CREDENTIALS[username] == password:
-            session['user_type'] = username
-            session['logged_in'] = True
-            return redirect(url_for('index', user_type = username))
+            physicians = {'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A','Dr_Ndortolnan_Azer', 'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji', 'Dr_Toralta_Emmanuelle_Mantar','Dr_Madjibeye_Mirielle', 'Dr_Robnodji_Adoucie', 'Dr_Ndoubane_Bonheur'}
+            print('username', username)
+            if username in physicians:
+                session['username'] = username
+                session['user_type'] = 'medecins'
+                session['logged_in'] = True
+            else:
+                session['user_type'] = username
+                session['logged_in'] = True
+            log_file(username, 'login', f"L'utilisateur '{username}' s'est connecté avec succés")
+            return redirect(url_for('index', user_type = session['user_type']))
         else:
-            flash('Invalid credentials')
+            flash('Rôle et/ou mot de passe incorrectes.')
+            log_file(username, 'La connection a échoué', "Failed login attempt")
     
     return render_template('login.html')
+
+from io import StringIO
+from datetime import date, timedelta
+
+def generate_daily_report(date_of_report=None):
+    if date_of_report is None:
+        date_of_report = date.today()
+
+    next_day = date_of_report + timedelta(days=1)
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT timestamp, user_type, action, details 
+        FROM action_logs
+        WHERE timestamp >= %s AND timestamp < %s
+        ORDER BY timestamp ASC
+        """,
+        (date_of_report, next_day)
+    )
+    logs = cur.fetchall()
+    conn.close()
+
+    output = StringIO()
+    output.write(f"Action Logs Report for {date_of_report.strftime('%Y-%m-%d')}\n\n")
+    for log in logs:
+        ts, user, action, details = log
+        output.write(f"UserType: {user or 'unknown'} | Action: {action} | Details: {details or ''}\n")
+
+    output.seek(0)
+    return output
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from threading import Thread
+@app.route('/report')
+def send_daily_report_email():
+    today = date.today()
+    # report = generate_daily_report(today)
+    report = '/n'.join(open('daily_log.txt', 'r').readlines())
+
+    # Compose email
+    subject = f"Daily Action Report for {today.strftime('%Y-%m-%d')}"
+    msg = MIMEMultipart()
+    msg['From'] = your_email
+    msg['To'] = your_email  # or list of recipients
+    msg['Subject'] = subject
+
+    print('sending')
+    # Attach the report as a text file
+    part = MIMEText(report)
+    part.add_header('Content-Disposition', 'attachment', filename=f'action_report_{today}.txt')
+    msg.attach(part)
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(your_email, your_password)
+        server.send_message(msg)
+        server.quit()
+        return """
+        Le rapport journalier des connections au logiciel a été envoyée!
+        <br>
+        Cliquer <a href="/">ici<a/> pour retour a la page principale
+        """
+        
+    except Exception as e:
+        return f"Failed to send daily report email: {e}"

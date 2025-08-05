@@ -1,0 +1,139 @@
+2025-08-04
+Nouvelle evenement: 18:29:18 medecins, login, L'utilisateur 'medecins' s'est connecté avec succés
+Nouvelle evenement: 19:46:28 medecins, Ajout d'un patient, Le patient 'test' a été ajouté
+Nouvelle evenement: 19:51:44 medecins, login, L'utilisateur 'medecins' s'est connecté avec succés
+Nouvelle evenement: 19:55:06 medecins, login, L'utilisateur 'medecins' s'est connecté avec succés
+Nouvelle evenement: 19:55:40 medecins, login, L'utilisateur 'medecins' s'est connecté avec succés
+Nouvelle evenement: 19:56:21 medecins, login, L'utilisateur 'medecins' s'est connecté avec succés
+Nouvelle evenement: 19:58:09 Dr Toralta G .Josephine, La connection a échoué, Failed login attempt
+Nouvelle evenement: 19:59:10 Dr Toralta G .Josephine, La connection a échoué, Failed login attempt
+Nouvelle evenement: 19:59:32 Dr Ngetigal Hyacinte, La connection a échoué, Failed login attempt
+Nouvelle evenement: 20:00:09 Dr Toralta G .Josephine, La connection a échoué, Failed login attempt
+Nouvelle evenement: 20:00:50 Dr Toralta G .Josephine, La connection a échoué, Failed login attempt
+Nouvelle evenement: 20:01:43 Dr Toralta G .Josephine, La connection a échoué, Failed login attempt
+Nouvelle evenement: 20:02:09 Dr Toralta G .Josephine, La connection a échoué, Failed login attempt
+Nouvelle evenement: 20:02:28 _D_r_ _T_o_r_a_l_t_a_ _G_ _._J_o_s_e_p_h_i_n_e_, La connection a échoué, Failed login attempt
+Nouvelle evenement: 20:02:45 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succés
+Nouvelle evenement: 20:03:16 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 20:03:36 Dr_Toralta_Emmanuelle_Mantar, login, L'utilisateur 'Dr_Toralta_Emmanuelle_Mantar' s'est connecté avec succés
+Nouvelle evenement: 20:04:33 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 20:04:51 Dr_Toralta_Emmanuelle_Mantar, login, L'utilisateur 'Dr_Toralta_Emmanuelle_Mantar' s'est connecté avec succés
+Nouvelle evenement: 20:06:21 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 20:06:34 Dr_Toralta_Emmanuelle_Mantar, login, L'utilisateur 'Dr_Toralta_Emmanuelle_Mantar' s'est connecté avec succés
+Nouvelle evenement: 20:16:50 medecins, Patient sélectionné, Patient avec ID 170 selectionné.
+Nouvelle evenement: 20:16:55 medecins, modification patient, Patient avec ID 170 a été modifié
+Nouvelle evenement: 20:17:38 medecins, Ajout d'un patient, Le patient 'test' a été ajouté
+Nouvelle evenement: 20:17:51 medecins, Suppression d'un patient, Le patient avec l'identifiant 170 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 170), ('name', 'test'), ('adresse', 'test'), ('age', 23), ('date_of_birth', None), ('poids', 120.0), ('taille', 1.9), ('tension_arterielle', 'tens'), ('temperature', 123.0), ('hypothese_de_diagnostique', 'hyp'), ('bilan', 'bilan'), ('resultat_bilan', 'conc'), ('signature', 'sign'), ('renseignements_clinique', 'rens'), ('ordonnance', 'ord'), ('created_at', datetime.datetime(2025, 8, 4, 23, 46, 26, 496100))])]
+Nouvelle evenement: 20:17:55 medecins, Détails des patients, Les détails du patient avec l'identifiant 171 ont été consulté.
+Nouvelle evenement: 20:18:46 medecins, Détails des patients, Les détails du patient avec l'identifiant 171 ont été consulté.
+Nouvelle evenement: 20:19:21 medecins, Détails des patients, Les détails du patient avec l'identifiant 171 ont été consulté.
+Nouvelle evenement: 20:21:32 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 20:31:53 Dr_Ngetigal_Hyacinte, login, L'utilisateur 'Dr_Ngetigal_Hyacinte' s'est connecté avec succés
+Nouvelle evenement: 20:32:18 medecins, Ajout d'un patient, Le patient 'testing' a été ajouté
+Nouvelle evenement: 20:32:53 medecins, Détails des patients, Les détails du patient avec l'identifiant 172 ont été consulté.
+Nouvelle evenement: 20:33:01 medecins, Détails des patients, Les détails du patient avec l'identifiant 161 ont été consulté.
+Nouvelle evenement: 20:36:34 medecins, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 20:38:37 medecins, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 20:50:46 medecins, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 20:50:53 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 20:51:26 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 20:54:50 medecins, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 20:54:55 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 20:58:40 medecins, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 20:58:46 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 20:59:59 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 21:00:50 medecins, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 21:00:57 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 21:01:05 medecins, Patient sélectionné, Patient avec ID 167 selectionné.
+Nouvelle evenement: 21:04:15 medecins, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 21:04:18 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 21:04:24 medecins, Patient sélectionné, Patient avec ID 169 selectionné.
+Nouvelle evenement: 21:04:29 medecins, Patient sélectionné, Patient avec ID 166 selectionné.
+Nouvelle evenement: 21:05:27 medecins, Patient sélectionné, Patient avec ID 166 selectionné.
+Nouvelle evenement: 21:06:50 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:07:08 Dr_Ndoubane_Bonheur, login, L'utilisateur 'Dr_Ndoubane_Bonheur' s'est connecté avec succés
+Nouvelle evenement: 21:07:15 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:07:34 Dr_Robnodji_Adoucie, login, L'utilisateur 'Dr_Robnodji_Adoucie' s'est connecté avec succés
+Nouvelle evenement: 21:07:41 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:07:47 Dr_Robnodji_Adoucie, La connection a échoué, Failed login attempt
+Nouvelle evenement: 21:07:56 receptionistes, login, L'utilisateur 'receptionistes' s'est connecté avec succés
+Nouvelle evenement: 21:09:53 Infirmiers, La connection a échoué, Failed login attempt
+Nouvelle evenement: 21:10:22 receptionistes, login, L'utilisateur 'receptionistes' s'est connecté avec succés
+Nouvelle evenement: 21:16:25 receptionistes, logout, L'utilisateur 'receptionistes' s'est déconnecté
+Nouvelle evenement: 21:16:34 receptionistes, login, L'utilisateur 'receptionistes' s'est connecté avec succés
+Nouvelle evenement: 21:16:39 receptionistes, logout, L'utilisateur 'receptionistes' s'est déconnecté
+Nouvelle evenement: 21:16:48 Infirmiers, La connection a échoué, Failed login attempt
+Nouvelle evenement: 21:19:20 infirmiers, login, L'utilisateur 'infirmiers' s'est connecté avec succés
+Nouvelle evenement: 21:19:34 infirmiers, Détails des patients, Les détails du patient avec l'identifiant 171 ont été consulté.
+Nouvelle evenement: 21:19:56 infirmiers, Patient sélectionné, Patient avec ID 166 selectionné.
+Nouvelle evenement: 21:20:07 infirmiers, Patient sélectionné, Patient avec ID 161 selectionné.
+Nouvelle evenement: 21:20:10 infirmiers, Patient sélectionné, Patient avec ID 161 selectionné.
+Nouvelle evenement: 21:24:57 infirmiers, Patient sélectionné, Patient avec ID 168 selectionné.
+Nouvelle evenement: 21:25:12 infirmiers, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 21:25:16 infirmiers, modification patient, Patient avec ID 172 a été modifié
+Nouvelle evenement: 21:25:19 infirmiers, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 21:25:25 infirmiers, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 21:25:30 infirmiers, modification patient, Patient avec ID 172 a été modifié
+Nouvelle evenement: 21:25:36 infirmiers, logout, L'utilisateur 'infirmiers' s'est déconnecté
+Nouvelle evenement: 21:25:43 receptionistes, login, L'utilisateur 'receptionistes' s'est connecté avec succés
+Nouvelle evenement: 21:25:48 receptionistes, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 21:26:18 receptionistes, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 21:26:25 receptionistes, modification patient, Patient avec ID 172 a été modifié
+Nouvelle evenement: 21:32:21 receptionistes, logout, L'utilisateur 'receptionistes' s'est déconnecté
+Nouvelle evenement: 21:32:41 Dr_Djaury_Dadji_-A, La connection a échoué, Failed login attempt
+Nouvelle evenement: 21:33:00 Dr_Djaury_Dadji_-A, La connection a échoué, Failed login attempt
+Nouvelle evenement: 21:36:08 Dr_Djaury_Dadji_-A, La connection a échoué, Failed login attempt
+Nouvelle evenement: 21:36:58 Dr_Ndortolnan_Azer, login, L'utilisateur 'Dr_Ndortolnan_Azer' s'est connecté avec succés
+Nouvelle evenement: 21:37:04 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:37:35 Dr_Djaury_Dadji_-A, login, L'utilisateur 'Dr_Djaury_Dadji_-A' s'est connecté avec succés
+Nouvelle evenement: 21:37:38 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:37:58 Dr_Doumgo_Monna_Doni_Nelson, login, L'utilisateur 'Dr_Doumgo_Monna_Doni_Nelson' s'est connecté avec succés
+Nouvelle evenement: 21:38:07 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:38:15 Dr_Ngetigal_Hyacinte, login, L'utilisateur 'Dr_Ngetigal_Hyacinte' s'est connecté avec succés
+Nouvelle evenement: 21:38:20 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:38:31 Dr_Ousmane_Hamane_Gadji, login, L'utilisateur 'Dr_Ousmane_Hamane_Gadji' s'est connecté avec succés
+Nouvelle evenement: 21:38:58 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:39:03 Dr_Toralta_Emmanuelle_Mantar, login, L'utilisateur 'Dr_Toralta_Emmanuelle_Mantar' s'est connecté avec succés
+Nouvelle evenement: 21:39:11 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:39:20 Dr_Madjibeye_Miriellee, La connection a échoué, Failed login attempt
+Nouvelle evenement: 21:39:44 Dr_Madjibeye_Miriellee, La connection a échoué, Failed login attempt
+Nouvelle evenement: 21:40:42 Dr_Madjibeye_Mirielle, login, L'utilisateur 'Dr_Madjibeye_Mirielle' s'est connecté avec succés
+Nouvelle evenement: 21:40:47 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:40:58 Dr_Robnodji_Adoucie, login, L'utilisateur 'Dr_Robnodji_Adoucie' s'est connecté avec succés
+Nouvelle evenement: 21:41:05 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:41:11 Dr_Ndoubane_Bonheur, login, L'utilisateur 'Dr_Ndoubane_Bonheur' s'est connecté avec succés
+Nouvelle evenement: 21:41:26 medecins, Détails des patients, Les détails du patient avec l'identifiant 171 ont été consulté.
+Nouvelle evenement: 21:41:32 medecins, Détails des patients, Les détails du patient avec l'identifiant 167 ont été consulté.
+Nouvelle evenement: 21:41:36 medecins, Patient sélectionné, Patient avec ID 167 selectionné.
+Nouvelle evenement: 21:44:47 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:45:01 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succés
+Nouvelle evenement: 21:45:09 medecins, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 21:47:47 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:48:10 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succés
+Nouvelle evenement: 21:48:15 medecins, Patient sélectionné, Patient avec ID 167 selectionné.
+Nouvelle evenement: 21:49:25 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 21:49:46 medecins, Patient sélectionné, Patient avec ID 169 selectionné.
+Nouvelle evenement: 21:49:51 medecins, Patient sélectionné, Patient avec ID 172 selectionné.
+Nouvelle evenement: 21:49:55 medecins, Patient sélectionné, Patient avec ID 169 selectionné.
+Nouvelle evenement: 21:49:58 medecins, Patient sélectionné, Patient avec ID 166 selectionné.
+Nouvelle evenement: 21:50:05 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:50:25 Dr_Toralta_Emmanuelle_Mantar, login, L'utilisateur 'Dr_Toralta_Emmanuelle_Mantar' s'est connecté avec succés
+Nouvelle evenement: 21:50:31 medecins, Patient sélectionné, Patient avec ID 167 selectionné.
+Nouvelle evenement: 21:50:31 medecins, Patient sélectionné, Patient avec ID 167 selectionné.
+Nouvelle evenement: 21:50:36 medecins, Patient sélectionné, Patient avec ID 165 selectionné.
+Nouvelle evenement: 21:50:42 medecins, Patient sélectionné, Patient avec ID 159 selectionné.
+Nouvelle evenement: 21:50:47 medecins, Patient sélectionné, Patient avec ID 137 selectionné.
+Nouvelle evenement: 21:50:55 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:51:12 Dr_Ousmane_Hamane_Gadji, login, L'utilisateur 'Dr_Ousmane_Hamane_Gadji' s'est connecté avec succés
+Nouvelle evenement: 21:51:17 medecins, Patient sélectionné, Patient avec ID 146 selectionné.
+Nouvelle evenement: 21:51:47 medecins, Suppression d'un patient, Le patient avec l'identifiant 172 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 172), ('name', 'testing'), ('adresse', 'testing'), ('age', 12), ('date_of_birth', datetime.date(2001, 1, 29)), ('poids', None), ('taille', None), ('tension_arterielle', None), ('temperature', None), ('hypothese_de_diagnostique', None), ('bilan', None), ('resultat_bilan', None), ('signature', 'Dr Ngetigal Hyacinte'), ('renseignements_clinique', None), ('ordonnance', None), ('created_at', datetime.datetime(2025, 8, 5, 0, 32, 16, 431506))])]
+Nouvelle evenement: 21:58:05 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 21:58:21 medecins, Patient sélectionné, Patient avec ID 142 selectionné.
+Nouvelle evenement: 22:04:11 medecins, Patient sélectionné, Patient avec ID 171 selectionné.
+Nouvelle evenement: 22:04:16 medecins, Détails des patients, Les détails du patient avec l'identifiant 171 ont été consulté.
+Nouvelle evenement: 22:07:36 medecins, Ajout d'un patient, Le patient 'Emily Soon' a été ajouté
+Nouvelle evenement: 22:15:37 medecins, Suppression d'un patient, Le patient avec l'identifiant 173 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 173), ('name', 'Emily Soon'), ('adresse', '123 rue de paris'), ('age', 12), ('date_of_birth', datetime.date(2001, 2, 18)), ('poids', 130.0), ('taille', None), ('tension_arterielle', None), ('temperature', None), ('hypothese_de_diagnostique', ''), ('bilan', ''), ('resultat_bilan', ''), ('signature', 'Dr Ousmane Hamane Gadji'), ('renseignements_clinique', ''), ('ordonnance', ''), ('created_at', datetime.datetime(2025, 8, 5, 2, 7, 35, 1441))])]
+Nouvelle evenement: 22:15:41 medecins, Suppression d'un patient, Le patient avec l'identifiant 171 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 171), ('name', 'test'), ('adresse', 'test etst'), ('age', 12), ('date_of_birth', datetime.date(2009, 2, 20)), ('poids', 123.0), ('taille', 187.0), ('tension_arterielle', None), ('temperature', None), ('hypothese_de_diagnostique', ''), ('bilan', 'bil'), ('resultat_bilan', ''), ('signature', 'Dr Toralta Emmanuelle Mantar'), ('renseignements_clinique', ''), ('ordonnance', 'ord1'), ('created_at', datetime.datetime(2025, 8, 5, 0, 17, 36, 619320))])]
+Nouvelle evenement: 22:16:47 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 22:17:09 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succés
+Nouvelle evenement: 22:17:14 medecins, Patient sélectionné, Patient avec ID 167 selectionné.
