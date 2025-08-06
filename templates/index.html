@@ -233,9 +233,14 @@
   <a href="{{ url_for('logout') }}" class="text-black font-medium hover:bg-white-600 px-4 py-2 rounded-lg transition duration-200 bg-white-500">
     Déconnexion
   </a>
+  {%if username == "Dr Toralta G .Josephine" %}
   <a href="{{ url_for('send_daily_report_email') }}" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
     Rapport d'activités
   </a>
+  <a href="{{ url_for('stat') }}" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
+    Statistiques (en teste)
+  </a>
+  {%endif%}
   <a>Bienvenue {{username}}</a>
 </nav>
 
@@ -257,8 +262,8 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto scrollbar rounded-xl mb-10 w-full">
-        <table class="min-w-full w-full table-auto border-collapse">
+    <div class="overflow-x-auto scrollbar rounded-xl mb-10 w-full">
+      <table class="min-w-full w-full table-auto border-collapse">
           <thead class="table-header">
             <tr id="tableHeader">
               <!-- Headers will be populated here -->
@@ -280,6 +285,21 @@
           
           <div class="relative">
             <input name="adresse" placeholder="Adresse" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            <input name="phone_number" placeholder="Numero" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            <input name="meeting" placeholder="Rendez-vous" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            <input name="new_cases" placeholder="Nouveaux cas" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
           
@@ -423,6 +443,21 @@
           <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
         
+       <div class="relative">
+            <input id = "edit_phone_number" name="phone_number" placeholder="Numero" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+
+        <div class="relative">
+            <input id="edit_meeting" name="meeting" placeholder="Rendez-vous" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            <input id="edit_new_cases" name="new_cases" placeholder="Nouveaux cas" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
         <div class="relative">
           <input id="edit_date_of_birth" name="date_of_birth" type="date" class="input-field w-full p-4 rounded-xl">
           <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
@@ -613,7 +648,7 @@
         row.className = 'table-row hover:bg-opacity-10';
         
         // Add all patient data cells
-        const fields = ['name', 'date_of_birth', 'adresse', 'age', 'poids', 'taille', 
+        const fields = ['name', 'date_of_birth', 'adresse', 'age', 'poids', 'taille', 'phone_number', 'meeting','new_cases',
                         'tension_arterielle', 'temperature', 'renseignements_clinique', 'hypothese_de_diagnostique', 
                         'bilan', 'resultat_bilan', 'ordonnance', 'signature'];
         
@@ -691,7 +726,10 @@
       document.getElementById('editId').value = patient.id;
       document.getElementById('edit_name').value = patient.name || '';
       document.getElementById('edit_adresse').value = patient.adresse || '';
-      document.getElementById('edit_date_of_birth').value = formatDate(patient.date_of_birth);
+      document.getElementById('edit_date_of_birth').value = patient.date_of_birth;
+      documeny.getElementById('edit_phone_number').value = patient.phone_number;
+      document.getElementById('edit_meeting').value = patient.edit_meeting;
+      document.getElementById('edit_new_cases').value = patient.edit_new_cases;
       document.getElementById('edit_age').value = patient.age || '';
       document.getElementById('edit_poids').value = patient.poids || '';
       document.getElementById('edit_taille').value = patient.taille || '';

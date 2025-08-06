@@ -463,7 +463,7 @@ def index():
     if session.get('logged_in'):
         user_type = session.get('user_type')
         print(user_type)
-        if user_type == 'receptionistes' or user_type == 'infirmiers' or user_type == 'medecins':
+        if user_type == 'receptionistes' or user_type == 'infirmiers':
             username = user_type[:-1]
         else:
             username = session['username'].replace('_', ' ')
@@ -483,22 +483,6 @@ def search():
     results = cur.fetchall()
     conn.close()
     return jsonify(results)
-
-@app.route('/stat')
-@login_required
-def stat():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT created_at, temperature, tension_arterielle, poids, taille
-        FROM patients
-        WHERE created_at IS NOT NULL
-        ORDER BY created_at ASC
-    """)
-    results = cur.fetchall()
-    conn.close()
-    return render_template('stat.html', data=results)
-
 
 @app.route('/distribution')
 def show_distribution():
@@ -662,7 +646,7 @@ def get_patient(patient_id):
     conn.close()
     print(session['username'])
 
-    if user_type=='infirmiers' or user_type == 'receptionistes' or user_type == 'medecins':
+    if user_type=='infirmiers' or user_type == 'receptionistes':
         return jsonify(row)
     if row['signature'] is None:
         return jsonify(row)
@@ -674,6 +658,23 @@ def get_patient(patient_id):
     else:
         print('ieah')
         return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
+
+# we will use later .. 
+
+@app.route('/stat')
+@login_required
+def stat():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('select COUNT(*) from patients')
+    count = dict(cur.fetchall()[0])['count']
+    cur.execute('select AVG(age) from patients')
+    avg_age = dict(cur.fetchall()[0])['avg']
+    cur.execute('select AVG(taille) from patients')
+    avg_height = dict(cur.fetchall()[0])['avg']
+    cur.execute('select AVG(poids) from patients')
+    avg_weight = dict(cur.fetchall()[0])['avg']
+    return f"{count} patients cette annee -- {round(avg_age)} ans en moyenne -- {round(avg_height)} cm en moyenne -- {round(avg_weight)} kg en moyenne "
 
 @app.route('/update/<int:patient_id>', methods=['PUT'])
 @login_required
@@ -809,9 +810,9 @@ def send_daily_report_email():
         server.send_message(msg)
         server.quit()
         return """
-        Le rapport journalier des connections au logiciel a été envoyée!
+        Le rapport journalier des connections au logiciel a été envoyée a l'email Josephinetoralta@gmail.com!
         <br>
-        Cliquer <a href="/">ici<a/> pour retour a la page principale
+        <a href="/">Retour menu <a/>
         """
         
     except Exception as e:
