@@ -12,15 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("userType");
   // Define which columns each user type can see
   const columnVisibility = {
-    'medecins': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'], // Columns 1-3
-    'infirmiers': ['created_at', 'name','date_of_birth','adresse','age','poids','taille','tension_arterielle','temperature'], // Columns 4-7  
-    'receptionistes': ['created_at', 'name','date_of_birth','adresse','age'] // Column 8
+    'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
+    'infirmiers': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature', 'meeting', 'new_cases', 'phone_number'],
+    'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
   };
 
     const columnHeaders = {
     'created_at': 'Date de création',
     'name': 'Nom',
-    'date_of_birth':'Date de naissance',
     'adresse': 'Adresse',
     'age': 'Age',
     'poids': 'Poids',
@@ -32,7 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
     'bilan': 'Bilan',
     'resultat_bilan': 'Conclusion du bilan',
     'ordonnance': 'Ordonnance',
-    'signature':'Signature'
+    'signature':'Signature', 
+    'meeting':'Rendez-vous',
+    'new_cases':'Nouveaux cas',
+    'phone_number':'Numero de telephone'
   };
 
   function createTableHeaders(){
@@ -201,75 +203,105 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 }
 
-  function loadPatients(q = '') {
-    fetch(`/search?q=${encodeURIComponent(q)}`)
-      .then(res => res.json())
-      .then(data => {
-        resultsTable.innerHTML = '';
-        data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-        data =data.slice(-20);
-        data.forEach(p => {
-          const tr = document.createElement('tr');
-          tr.className = "cursor-pointer";
+window.openInvoiceFromButton = function(button) {
+  const raw = button.getAttribute('data-patient');
+  const patient = JSON.parse(atob(raw));
+  openInvoiceModal(patient);
+};
 
-          // Open invoice modal when clicking the row
-          tr.onclick = () => openInvoiceModal(p);
-          
-          // Get the visibility columns for current user type
-          const visibleColumns = columnVisibility[userType] || [];
+function loadPatients(q = '') {
+  fetch(`/search?q=${encodeURIComponent(q)}`)
+    .then(res => res.json())
+    .then(data => {
+      resultsTable.innerHTML = '';
+      data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      data = data.slice(0, 20);
 
-          // The rest of the fields
-          visibleColumns.forEach(k => {
+      let currentActionRow = null;
+      let currentHighlightedRow = null;
+
+      data.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.className = "cursor-pointer hover:bg-blue-50 transition-colors duration-200";
+
+        const visibleColumns = columnVisibility[userType] || [];
+
+        visibleColumns.forEach(k => {
           const td = document.createElement('td');
           td.className = "p-2 border text-black";
-          if (k == 'age' && p[k]!=null && p[k]!=''){
-            p[k] = p[k] + ' ans'
-          }
-          else if (k == 'poids' && p[k]!=null && p[k]!=''){
-            p[k] = p[k] + ' kg'
-          }
-          else if (k =='taille' && p[k]!=null && p[k]!=''){
-            p[k] = p[k] + ' cm'
-          }
-          else if (k == 'tension_arterielle' && p[k]!=null && p[k]!='') {
-            p[k] = p[k] + ' mmHg'
-          }
-          else if (k == 'temperature' && p[k]!=null && p[k]!=''){
-            p[k] = p[k] + ' °C'
-          }
-          if (k=='date_of_birth' && typeof p[k] == 'string' && p[k]!=''){
+
+          if (k == 'age' && p[k]) p[k] += ' ans';
+          if (k == 'poids' && p[k]) p[k] += ' kg';
+          if (k == 'taille' && p[k]) p[k] += ' cm';
+          if (k == 'tension_arterielle' && p[k]) p[k] += ' mmHg';
+          if (k == 'temperature' && p[k]) p[k] += ' °C';
+          if (k == 'date_of_birth' && typeof p[k] === 'string') {
             p[k] = new Date(p[k]).toISOString().split('T')[0];
           }
-          if (k === 'created_at' && typeof p[k] === 'string' && p[k] !== '') {
+          if (k === 'created_at' && typeof p[k] === 'string') {
             const date = new Date(p[k]);
-            const localDate = date.toISOString().replace('T', ' ').split('.')[0]; // "YYYY-MM-DD HH:MM:SS"
-            p[k] = localDate;
-          }   
-          let content = p[k] || '';
-          if (content.length > 30) {
-            content = content.substring(0, 30) + '...';
+            p[k] = date.toISOString().replace('T', ' ').split('.')[0];
           }
+
+          let content = p[k] || '';
+          if (content.length > 30) content = content.substring(0, 30) + '...';
+
           td.textContent = content;
           td.title = p[k] || '';
           tr.appendChild(td);
         });
-          
-        // Action buttons
-        const actionTd = document.createElement('td');
-        actionTd.className = "p-2 border";
-        actionTd.innerHTML = `
-          <div class="flex space-x-2 justify-center">
-            <button class="text-blue-500 hover:text-blue-700" onclick="event.stopPropagation(); editPatient(${p.id})">Modifier</button>
-            <button class="text-red-500 hover:text-red-700" onclick="event.stopPropagation(); deletePatient(${p.id})">Supprimer</button>
-            <button class="text-green-500 hover:text-green-700" onclick="event.stopPropagation(); window.location.href='/patient/${p.id}'">Détails</button>
+
+        // Action row (initially hidden)
+        const actionRow = document.createElement('tr');
+        actionRow.className = "hidden bg-gray-50";
+        const actionCell = document.createElement('td');
+        actionCell.colSpan = visibleColumns.length + 1;
+        const safeJson = btoa(JSON.stringify(p));  // convert to base64
+        actionCell.innerHTML = `
+          <div class="flex space-x-4 items-center justify-center p-2 text-sm">
+            <button class="text-blue-500 hover:text-blue-700" onclick="editPatient(${p.id})">Modifier</button>
+            <button class="text-red-500 hover:text-red-700" onclick="deletePatient(${p.id})">Supprimer</button>
+            <button class="text-green-500 hover:text-green-700" onclick="window.location.href='/patient/${p.id}'">Détails</button>
+            <button
+              class="text-yellow-500 hover:text-yellow-600"
+              data-patient='${safeJson}'
+              onclick="openInvoiceFromButton(this)"
+            >Facture</button>
           </div>
         `;
-        tr.appendChild(actionTd);
-        resultsTable.prepend(tr);
+
+        actionRow.appendChild(actionCell);
+
+        // Toggle behavior
+        tr.onclick = () => {
+          const isSameRow = currentActionRow === actionRow;
+
+          // If same row clicked again → hide it
+          if (isSameRow) {
+            actionRow.classList.add('hidden');
+            tr.classList.remove('bg-blue-100');
+            currentActionRow = null;
+            currentHighlightedRow = null;
+          } else {
+            // Hide previous, show current
+            if (currentActionRow) currentActionRow.classList.add('hidden');
+            if (currentHighlightedRow) currentHighlightedRow.classList.remove('bg-blue-100');
+
+            actionRow.classList.remove('hidden');
+            tr.classList.add('bg-blue-100');
+
+            currentActionRow = actionRow;
+            currentHighlightedRow = tr;
+          }
+        };
+
+        resultsTable.appendChild(tr);
+        resultsTable.appendChild(actionRow);
       });
     });
+}
 
-  }
+
 
   window.deletePatient = function (id) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce patient?')) {
@@ -312,6 +344,7 @@ window.editPatient = function(id) {
       showToast(" Erreur reseau. Impossible de récupérer les données du patient.");
     });
 };
+
 
 // Example flash message display function
 function showFlash(message) {
