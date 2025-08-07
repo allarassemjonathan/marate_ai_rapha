@@ -157,7 +157,7 @@ class InvoicePDF(FPDF):
     def header(self):
         # Add logo if possible
         try:
-            logo_rapha = "https://allarassemjonathan.github.io/rapha_logo.png"
+            logo_Yaye = "https://allarassemjonathan.github.io/Yaye_logo.png"
             logo_url = "https://allarassemjonathan.github.io/marate_white.png"
             response = requests.get(logo_url, timeout=10)
             if response.status_code == 200:
@@ -166,7 +166,7 @@ class InvoicePDF(FPDF):
                     tmp_file.flush()
                     self.image(tmp_file.name, 10, 8, 40)
             
-            other_res= requests.get(logo_rapha, timeout=10)
+            other_res= requests.get(logo_Yaye, timeout=10)
             if other_res.status_code == 200:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
                     tmp_file.write(other_res.content)
@@ -178,7 +178,7 @@ class InvoicePDF(FPDF):
 
         self.set_font('Arial', 'B', 16)
         self.set_text_color(6, 182, 212)
-        self.cell(0, 10, 'Devis Cabinet RAPHA', border=False, ln=1, align='C')
+        self.cell(0, 10, 'Devis Cabinet Yaye', border=False, ln=1, align='C')
         self.ln(10)
 
     def footer(self):
@@ -231,7 +231,7 @@ class InvoicePDF(FPDF):
         self.cell(0, 10, f"Facture du mois de {mois_annee}", ln=1, align='C')
         if envoye_a:
             self.cell(0, 10, f"{envoye_a}", ln=1, align='C')
-        self.cell(0, 10, "doit au cabinet Rapha", ln=1, align='C')
+        self.cell(0, 10, "doit au cabinet Yaye", ln=1, align='C')
         self.ln(5)
 
         # Then the usual patient metadata below
