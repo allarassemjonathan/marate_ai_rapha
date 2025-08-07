@@ -326,12 +326,14 @@ window.editPatient = function(id) {
       // Populate the edit form
       document.getElementById('editId').value = data.id;
       document.getElementById('edit_name').value = data.name;
-
+      document.getElementById('edit_date_of_birth').value = data.date_of_birth;
+      console.log(data.date_of_birth);
       // Populate all fields based on visible columns
       const fields = columnVisibility[userType];
       fields.forEach(field => {
         const input = document.getElementById(`edit_${field}`);
         if (input) {
+          console.log(input);
           input.value = data[field] || '';
         }
       });
