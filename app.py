@@ -74,7 +74,13 @@ app.secret_key = os.environ.get('FLASK_SECRET')
 CREDENTIALS = {
     'medecins': os.environ.get('medecins'),
     'infirmiers': os.environ.get('infirmiers'), 
-    'receptionistes': os.environ.get('receptionistes')
+    'receptionistes': os.environ.get('receptionistes'), 
+    'Dr_Babacar':os.environ.get('Dr_Babacar'),
+    'Dr_Mbengue':os.environ.get('Dr_Mbengue'), 
+    'Inf_Astou': os.environ.get('Inf_Astou'),
+    'Inf_Fatoumata':os.environ.get('Inf_Fatoumata'),
+    'Int_Mareme': os.environ.get('Int_Mareme'),
+    'sagefemme':os.environ.get('sagefemme')
 }
 
 # Decorator to require login
