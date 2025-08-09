@@ -256,7 +256,13 @@ function loadPatients(q = '') {
         actionRow.className = "hidden bg-gray-50";
         const actionCell = document.createElement('td');
         actionCell.colSpan = visibleColumns.length + 1;
-        const safeJson = btoa(JSON.stringify(p));  // convert to base64
+        let safeJson;
+        try {
+          safeJson = btoa(unescape(encodeURIComponent(JSON.stringify(p))));
+        } catch (err) {
+          console.error("Encoding error for patient:", p.id, err);
+          safeJson = ""; // or handle differently
+        }
         actionCell.innerHTML = `
           <div class="flex space-x-4 items-center justify-center p-2 text-sm">
             <button class="text-blue-500 hover:text-blue-700" onclick="editPatient(${p.id})">Modifier</button>
