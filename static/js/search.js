@@ -235,9 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
           else if (k == 'tension_arterielle' && p[k]!=null && p[k]!='') {
             p[k] = p[k] + ' mmHg'
           }
-          else if (k == 'temperature' && p[k]!=null && p[k]!=''){
-            p[k] = p[k] + ' °C'
-          }
+          // else if (k == 'temperature' && p[k]!=null && p[k]!=''){
+          //   p[k] = p[k] + ' °C'
+          // }
           if (k == 'created_at' || k=='date_of_birth' && typeof p[k] == 'string' && p[k]!=''){
             p[k] = new Date(p[k]).toISOString().split('T')[0];
           }
@@ -257,7 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="flex space-x-2 justify-center">
             <button class="text-blue-500 hover:text-blue-700" onclick="event.stopPropagation(); editPatient(${p.id})">Modifier</button>
             <button class="text-red-500 hover:text-red-700" onclick="event.stopPropagation(); deletePatient(${p.id})">Supprimer</button>
-            <button class="text-green-500 hover:text-green-700" onclick="event.stopPropagation(); window.location.href='/patient/${p.id}'">Détails</button>
           </div>
         `;
         tr.appendChild(actionTd);
@@ -285,13 +284,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // Populate the edit form
         document.getElementById('editId').value = patient.id;
         document.getElementById('edit_name').value  = patient.name;
-        
+
         // Populate all fields
         const fields = columnVisibility[userType];
         fields.forEach(field => {
           const input = document.getElementById(`edit_${field}`);
           if (input) {
             input.value = patient[field] || '';
+          }
+          if (field=='created_at'){
+            const createdDate = patient.created_at
+            ? new Date(patient.created_at).toISOString().split('T')[0]
+            : '';
+
+            document.getElementById('edit_created_at').value = createdDate;
+            console.log(patient);
           }
         });
         

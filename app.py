@@ -449,7 +449,6 @@ def add():
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
 
     try:
-        data['created_at'] = date.today().isoformat()
 
         # Fields that should be treated as floats in the DB
         float_fields = {'age', 'poids', 'taille', 'tension_arterielle', 'temperature'}
@@ -458,11 +457,6 @@ def add():
             if field in data:
                 if data[field] == '':
                     data[field] = None
-                else:
-                    try:
-                        data[field] = float(data[field])
-                    except ValueError:
-                        return jsonify({'status': 'error', 'message': f'{field} must be a number'}), 400
 
         # Notify reception if temperature is missing
         if data.get('name') is not None:
@@ -530,6 +524,7 @@ def get_patient(patient_id):
     row = cur.fetchone()
     conn.close()
     if row:
+        print(row)
         return jsonify(row)
     return jsonify({'status': 'error', 'message': 'Patient not found'}), 404
 

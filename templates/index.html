@@ -220,6 +220,45 @@
   opacity: 1;
   transform: translateX(0);
 }
+/* Extra responsive tweaks */
+@media (max-width: 640px) {
+  /* Reduce padding and font size for smaller devices */
+  body {
+    padding: 0.5rem;
+  }
+
+  h2, h3 {
+    font-size: 1.25rem;
+  }
+
+  /* Stack inputs for forms on phones */
+  form.grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Table improvements */
+  table {
+    font-size: 0.85rem;
+  }
+  table th, table td {
+    padding: 0.5rem;
+    white-space: nowrap; /* prevent word wrapping that breaks layout */
+  }
+
+  /* Buttons fill width on phones */
+  button, .glow-button {
+    width: 100%;
+  }
+
+  /* Invoice modal tweaks for mobile */
+  #invoiceCard {
+    min-width: auto !important;
+    width: 100% !important;
+    min-height: auto !important;
+    max-height: 85vh !important;
+    padding: 1rem !important;
+  }
+}
   </style>
   
 </head>
@@ -287,22 +326,22 @@
           </div>
           
           <div class="relative">
-            <input name="poids" type="number" step="0.1" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
+            <input name="poids" type="number" step="0.001" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
           
           <div class="relative">
-            <input name="taille" type="number" step="0.01" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
+            <input name="taille" type="number" step="0.001" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
           
           <div class="relative">
-            <input name="tension_arterielle" placeholder="Tension" class="input-field w-full p-4 rounded-xl">
+            <input name="tension_arterielle" type="text" placeholder="Tension" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
           
           <div class="relative">
-            <input name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
+            <input name="temperature" type="text" placeholder="Température" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
 
@@ -337,7 +376,7 @@
           </div>
           
           <div class="relative">
-            <input name="date_creation" id="dateCreation" type="date" placeholder="Date de création" class="input-field w-full p-4 rounded-xl" disabled>
+            <input name="created_at" id="created_at" type="date" placeholder="Date de création" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
           <div class="md:col-span-2 mt-4">
@@ -422,22 +461,17 @@
         </div>
         
         <div class="relative">
-          <input id="edit_date_of_birth" name="date_of_birth" type="date" class="input-field w-full p-4 rounded-xl">
-          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-        </div>
-        
-        <div class="relative">
           <input id="edit_age" name="age" type="number" placeholder="Age" class="input-field w-full p-4 rounded-xl">
           <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
         
         <div class="relative">
-          <input id="edit_poids" name="poids" type="number" step="0.1" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
+          <input id="edit_poids" name="poids" type="number" step="0.001" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
           <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
         
         <div class="relative">
-          <input id="edit_taille" name="taille" type="number" step="0.01" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
+          <input id="edit_taille" name="taille" type="number" step="0.001" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
           <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
         
@@ -447,7 +481,7 @@
         </div>
         
         <div class="relative">
-          <input id="edit_temperature" name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
+          <input id="edit_temperature" name="temperature" type="number" step="0.001" placeholder="Température" class="input-field w-full p-4 rounded-xl">
           <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
         
@@ -473,6 +507,11 @@
 
         <div class="relative md:col-span-2">
           <input id="edit_signature" name="signature" placeholder="Signature du docteur" class="input-field w-full p-4 rounded-xl">
+        </div>
+
+        <div class="relative">
+          <input id="edit_created_at" name="created_at" type="date" class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
 
         <div class="sm:col-span-2 mt-4">
@@ -698,6 +737,7 @@
       document.getElementById('edit_ordonnance').value = patient.ordonnance || '';
       document.getElementById('edit_resultat_bilan').value = patient.resultat_bilan || '';
       document.getElementById('edit_signature').value = patient.signature || '';
+      document.getElementById('edit_created_at').value = patient.created_at || '';
       
       // Show modal
       document.getElementById('editModalOverlay').classList.remove('hidden');
