@@ -142,6 +142,7 @@ CREDENTIALS = {
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        # If either logged_in or username missing → go to login
         if not session.get('logged_in') or not session.get('username'):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
@@ -458,17 +459,17 @@ def generate_invoice(patient_id):
 @app.route('/')
 @login_required
 def index():
-    init_db()
-    # restore the db in drive
-    if session.get('logged_in'):
-        user_type = session.get('user_type')
-        print(user_type)
-        if user_type == 'receptionistes' or user_type == 'infirmiers':
-            username = user_type[:-1]
-        else:
-            username = session['username'].replace('_', ' ')
-        return render_template('index.html', user_type = user_type, username=username)
-    return redirect(url_for('login'))
+    init_db()  # Restore DB in drive, etc.
+
+    user_type = session.get('user_type')
+
+    if user_type in ['receptionistes', 'infirmiers']:
+        username = user_type[:-1]
+    else:
+        username = session['username'].replace('_', ' ')
+
+    return render_template('index.html', user_type=user_type, username=username)
+
 
 @app.route('/search')
 @login_required
@@ -727,31 +728,40 @@ def logout():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if session.get('logged_in'):
-        return redirect(url_for('index', user_type = session.get('user_type')))
+    # If already logged in, go to index
+    if session.get('logged_in') and session.get('username') and session.get('user_type'):
+        return redirect(url_for('index', user_type=session.get('user_type')))
+
     if request.method == 'POST':
-        username = request.form['username'].replace(' ', '_')
+        username_input = request.form['username'].replace(' ', '_')
         password = request.form['password']
-        
+
         # Check credentials
-        print(username)
-        if username in CREDENTIALS and CREDENTIALS[username] == password:
-            physicians = {'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A','Dr_Ndortolnan_Azer', 'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji', 'Dr_Toralta_Emmanuelle_Mantar','Dr_Madjibeye_Mirielle', 'Dr_Robnodji_Adoucie', 'Dr_Ndoubane_Bonheur'}
-            print('username', username)
-            if username in physicians:
-                session['username'] = username
+        if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
+            physicians = {
+                'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A', 'Dr_Ndortolnan_Azer',
+                'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji',
+                'Dr_Toralta_Emmanuelle_Mantar', 'Dr_Madjibeye_Mirielle',
+                'Dr_Robnodji_Adoucie', 'Dr_Ndoubane_Bonheur'
+            }
+
+            # Always set both username & user_type
+            if username_input in physicians:
+                session['username'] = username_input
                 session['user_type'] = 'medecins'
-                session['logged_in'] = True
             else:
-                session['user_type'] = username
-                session['logged_in'] = True
-            log_file(username, 'login', f"L'utilisateur '{username}' s'est connecté avec succés")
-            return redirect(url_for('index', user_type = session['user_type']))
+                session['username'] = username_input  # ✅ Added so it's never missing
+                session['user_type'] = username_input
+
+            session['logged_in'] = True
+            log_file(username_input, 'login', f"L'utilisateur '{username_input}' s'est connecté avec succès")
+            return redirect(url_for('index', user_type=session['user_type']))
         else:
-            flash('Rôle et/ou mot de passe incorrectes.')
-            log_file(username, 'La connection a échoué', "Failed login attempt")
-    
+            flash('Rôle et/ou mot de passe incorrects.')
+            log_file(username_input, 'La connexion a échoué', "Failed login attempt")
+
     return render_template('login.html')
+
 
 from io import StringIO
 from datetime import date, timedelta
