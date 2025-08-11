@@ -1,2 +1,4 @@
-2025-08-10
-Nouvelle evenement: 23:31:23 infirmiers, login, L'utilisateur 'infirmiers' s'est connecté avec succés
+2025-08-11
+Nouvelle evenement: 06:32:08 medecins, login, L'utilisateur 'medecins' s'est connecté avec succés
+Nouvelle evenement: 06:38:06 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succés
+Nouvelle evenement: 06:38:36 medecins, logout, L'utilisateur 'medecins' s'est déconnecté

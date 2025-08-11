@@ -142,7 +142,7 @@ CREDENTIALS = {
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not session.get('logged_in'):
+        if not session.get('logged_in') or not session.get('username'):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
