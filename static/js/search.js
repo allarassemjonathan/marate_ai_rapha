@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Define which columns each user type can see
   const columnVisibility = {
     'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
-    'infirmiers': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature', 'meeting', 'new_cases', 'phone_number'],
+    'infirmiers': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
     'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
   };
 
@@ -260,7 +260,13 @@ function loadPatients(q = '') {
         try {
           safeJson = btoa(unescape(encodeURIComponent(JSON.stringify(p))));
         } catch (err) {
-          console.error("Encoding error for patient:", p.id, err);
+           console.error("❌ Encoding error for patient:", p.id);
+          console.error("Problematic patient data:", p);
+          console.error("First few fields:", {
+            name: p.name,
+            adresse: p.adresse,
+            telephone: p.telephone
+          });
           safeJson = ""; // or handle differently
         }
         actionCell.innerHTML = `
