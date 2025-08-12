@@ -1,0 +1,272 @@
+# Marate AI Rapha - Medical Management System
+
+## Overview
+Marate AI Rapha is a comprehensive Flask-based medical patient management system designed for dental clinic "Cabinet RAPHA". It provides role-based access control, patient management, PDF invoice generation, email notifications, and activity logging.
+
+## Features
+
+### 🏥 Patient Management
+- Complete patient record system with medical data
+- CRUD operations with role-based permissions
+- Patient search and filtering
+- Visit history tracking
+
+### 👥 User Roles & Access Control
+- **Doctors (medecins)**: Full access to their own patients
+- **Nurses (infirmiers)**: Access to vital signs and basic patient info
+- **Receptionists (receptionistes)**: Access to contact and appointment info
+- Individual doctor accounts with signature tracking
+
+### 📄 PDF Invoice Generation
+- Professional invoice templates with company branding
+- Insurance calculation with percentage-based coverage
+- Itemized billing with sections and articles
+- Automatic filename generation
+
+### 📧 Email Notifications
+- Automated notifications for patient workflow
+- Daily activity reports for administration
+- SMTP integration with HTML content and attachments
+
+### 📊 Activity Logging
+- Complete audit trail of all system activities
+- File-based and database logging
+- User action tracking with timestamps
+
+## Technology Stack
+- **Backend**: Python Flask
+- **Database**: PostgreSQL (with legacy SQLite support)
+- **Frontend**: HTML5, JavaScript, Tailwind CSS
+- **PDF**: FPDF library
+- **Email**: Python smtplib
+- **Deployment**: Gunicorn-ready
+
+## Installation & Setup
+
+### Prerequisites
+- Python 3.7+
+- PostgreSQL database
+- SMTP email account (Gmail recommended)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/allarassemjonathan/marate_ai_rapha.git
+cd marate_ai_rapha
+```
+
+### 2. Create Virtual Environment
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Environment Variables
+Create a `.env` file with the following variables:
+```bash
+# Database
+DATABASE_URL=postgresql://username:password@host:port/database
+
+# Flask
+FLASK_SECRET=your-secret-key-here
+
+# Email Configuration
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+EMAIL=your-email@gmail.com
+CODE=your-app-password
+NURSES_EMAIL=nurses@clinic.com
+PHYSI_EMAIL=doctors@clinic.com
+
+# User Credentials
+medecins=doctor_password
+infirmiers=nurse_password
+receptionistes=reception_password
+Dr_Toralta_G_.Josephine=admin_password
+# Add other doctor accounts as needed
+```
+
+### 5. Initialize Database
+```bash
+python3 -c "from app import init_db; init_db()"
+```
+
+### 6. Run the Application
+```bash
+# Development
+python3 app.py
+
+# Production
+gunicorn app:app
+```
+
+## Testing
+
+### Unit Testing Suite
+This project includes a comprehensive unit testing suite covering:
+
+- ✅ Authentication & Authorization
+- ✅ Patient Management (CRUD)
+- ✅ Role-based Access Control
+- ✅ PDF Generation
+- ✅ Email Functionality
+- ✅ Activity Logging
+- ✅ Integration Workflows
+
+### Running Tests
+
+#### Install Test Dependencies
+```bash
+pip install pytest pytest-flask pytest-mock pytest-cov
+```
+
+#### Run All Tests
+```bash
+pytest --cov=app --cov-report=html
+```
+
+#### Run Specific Test Categories
+```bash
+# Authentication tests
+pytest tests/test_auth.py -v
+
+# Patient management tests
+pytest tests/test_patient_management.py -v
+
+# PDF generation tests
+pytest tests/test_pdf_generation.py -v
+```
+
+#### Test Coverage Report
+After running tests, view the coverage report:
+```bash
+open htmlcov/index.html
+```
+
+### Test Structure
+```
+tests/
+├── conftest.py                 # Test fixtures and configuration
+├── test_auth.py               # Authentication tests
+├── test_patient_management.py # Patient CRUD tests
+├── test_access_control.py     # Permission tests
+├── test_pdf_generation.py     # Invoice generation tests
+├── test_email_functionality.py # Email system tests
+├── test_logging.py            # Activity logging tests
+├── test_utilities.py          # Helper function tests
+└── test_integration.py        # End-to-end workflow tests
+```
+
+## Usage
+
+### User Workflows
+
+#### Receptionist Workflow
+1. Log in with receptionist credentials
+2. Add new patients with contact information
+3. Schedule appointments
+4. View patient contact details
+
+#### Nurse Workflow
+1. Log in with nurse credentials
+2. Access patient list
+3. Update vital signs (temperature, blood pressure, weight, height)
+4. Add clinical observations
+
+#### Doctor Workflow
+1. Log in with individual doctor credentials
+2. Review patients assigned to them
+3. Add medical diagnoses and treatment plans
+4. Generate prescriptions and invoices
+5. Access complete patient history
+
+### Key Features
+
+#### Patient Management
+- **Add Patient**: Complete patient registration form
+- **Search Patients**: Real-time search by name or address
+- **Update Records**: Role-based editing permissions
+- **View History**: Complete patient visit history
+
+#### Invoice Generation
+1. Select patient from list
+2. Click "Facture" button
+3. Fill in insurance information
+4. Add treatment sections and items
+5. Generate professional PDF invoice
+
+#### Activity Monitoring
+- All user actions are logged automatically
+- Daily reports can be generated
+- Complete audit trail for compliance
+
+## Security Features
+
+### Authentication
+- Role-based login system
+- Session management with timeout
+- Password protection for all user types
+
+### Authorization  
+- Doctors can only modify their own patients
+- Nurses have limited access to medical data
+- Receptionists can only access contact information
+- Special admin access for head doctor
+
+### Data Protection
+- Parameterized database queries prevent SQL injection
+- Input validation and sanitization
+- Audit logging for all operations
+- Session security measures
+
+## API Endpoints
+
+### Authentication
+- `GET /login` - Login page
+- `POST /login` - Authenticate user
+- `GET /logout` - Logout and clear session
+
+### Patient Management
+- `GET /` - Main dashboard
+- `GET /search` - Search patients
+- `POST /add` - Add new patient
+- `PUT /update/<id>` - Update patient
+- `DELETE /delete/<id>` - Delete patient
+- `GET /patient/<id>` - Patient detail page
+- `GET /get_patient/<id>` - Get patient JSON data
+
+### Invoice & Reports
+- `POST /generate_invoice/<id>` - Generate PDF invoice
+- `GET /stat` - System statistics
+- `GET /report` - Daily activity report
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add comprehensive tests for new features
+4. Ensure all tests pass
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For support and questions, please contact the development team or create an issue in the repository.
+
+## Medical Compliance
+
+This system is designed for medical practice management and includes:
+- Patient privacy protection
+- Role-based access control
+- Complete audit trails
+- Data validation for medical information
+- Insurance processing capabilities
+
+Always ensure compliance with local medical data protection regulations (HIPAA, GDPR, etc.) when deploying in production.
