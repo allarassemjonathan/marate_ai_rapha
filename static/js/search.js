@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("userType");
   // Define which columns each user type can see
   const columnVisibility = {
-    'manager': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
-    'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
-    'infirmiers': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
-    'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
+    'manager': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
+    'medecins': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
+    'infirmiers': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
+    'receptionistes': ['created_at', 'date_of_birth', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
   };
 
     const columnHeaders = {
@@ -236,13 +236,16 @@ function loadPatients(q = '') {
           if (k == 'taille' && p[k]) p[k] += ' cm';
           if (k == 'tension_arterielle' && p[k]) p[k] += ' mmHg';
           // if (k == 'temperature' && p[k]) p[k] += ' °C';
-          if (k == 'date_of_birth' && typeof p[k] === 'string') {
+          // if (k == 'date_of_birth' && typeof p[k] === 'string') {
+          //   p[k] = new Date(p[k]).toISOString().split('T')[0];
+          // }
+          if (k == 'created_at' || k=='date_of_birth' && typeof p[k] == 'string' && p[k]!=''){
             p[k] = new Date(p[k]).toISOString().split('T')[0];
           }
-          if (k === 'created_at' && typeof p[k] === 'string') {
-            const date = new Date(p[k]);
-            p[k] = date.toISOString().replace('T', ' ').split('.')[0];
-          }
+          // if (k === 'created_at' && typeof p[k] === 'string') {
+          //   const date = new Date(p[k]);
+          //   p[k] = date.toISOString().replace('T', ' ').split('.')[0];
+          // }
 
           let content = p[k] || '';
           if (content.length > 30) content = content.substring(0, 30) + '...';
@@ -340,14 +343,32 @@ window.editPatient = function(id) {
       document.getElementById('editId').value = data.id;
       document.getElementById('edit_name').value = data.name;
       document.getElementById('edit_date_of_birth').value = data.date_of_birth;
-      console.log(data.date_of_birth);
+      // console.log(data.date_of_birth);
       // Populate all fields based on visible columns
       const fields = columnVisibility[userType];
       fields.forEach(field => {
         const input = document.getElementById(`edit_${field}`);
+        console.log(field);
         if (input) {
-          console.log(input);
+          // console.log(input);
           input.value = data[field] || '';
+        }
+        if (field=='created_at'){
+            const createdDate = data.created_at
+            ? new Date(data.created_at).toISOString().split('T')[0]
+            : '';
+
+            document.getElementById('edit_created_at').value = createdDate;
+            console.log("hereeeeeeeee");
+          }
+        if (field == 'date_of_birth'){
+          const birthdate = data.date_of_birth
+            ? new Date(data.date_of_birth).toISOString().split('T')[0]
+            : '';
+
+            document.getElementById('edit_date_of_birth').value = birthdate;
+            console.log("here");
+            console.log(data.date_of_birth);
         }
       });
 

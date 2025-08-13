@@ -233,7 +233,7 @@
   <a href="{{ url_for('logout') }}" class="text-black font-medium hover:bg-white-600 px-4 py-2 rounded-lg transition duration-200 bg-white-500">
     Déconnexion
   </a>
-  {%if username == "Dr Toralta G .Josephine" %}
+  {%if username == "Dr Mbengue" %}
   <a href="{{ url_for('send_daily_report_email') }}" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
     Rapport d'activités
   </a>
@@ -359,7 +359,7 @@
           </div>
 
           <div class="relative">
-            <input name="date_creation" id="dateCreation" type="datetime-local" placeholder="Date de création" class="input-field w-full p-4 rounded-xl" disabled>
+            <input name="created_at" id="created_at" type="date" placeholder="Date de création" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
           <div class="md:col-span-2 mt-4">
@@ -506,6 +506,11 @@
         
         <div class="relative md:col-span-2">
           <textarea id="edit_ordonnance" name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
+        </div>
+
+        <div class="relative">
+          <input id="edit_created_at" name="created_at" type="date" class="input-field w-full p-4 rounded-xl">
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
 
         <div class="sm:col-span-2 mt-4">
@@ -740,7 +745,7 @@
       document.getElementById('edit_bilan').value = patient.bilan || '';
       document.getElementById('edit_ordonnance').value = patient.ordonnance || '';
       document.getElementById('edit_resultat_bilan').value = patient.resultat_bilan || '';
-      
+      document.getElementById('edit_created_at').value = patient.created_at || '';
       // Show modal
       document.getElementById('editModalOverlay').classList.remove('hidden');
     }

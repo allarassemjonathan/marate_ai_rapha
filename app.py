@@ -541,6 +541,10 @@ def add():
                 data['signature'] = session['username'].replace('_', ' ')
             else:
                 data['signature'] = 'medecins'
+        elif session['user_type'] == 'manager':
+            data['signature'] = session['user_type']
+        else:
+            data['signature'] = 'Permission doit etre confirmer'
         # Use parameterized query
         columns = list(data.keys())
         values = list(data.values())
@@ -778,7 +782,7 @@ def send_daily_report_email():
     subject = f"Daily Action Report for {today.strftime('%Y-%m-%d')}"
     msg = MIMEMultipart()
     msg['From'] = your_email
-    msg['To'] =  "Josephinetoralta@gmail.com"
+    msg['To'] =  "yayeastourendezvous@gmail.com"
     msg['Subject'] = subject
 
     print('sending')
@@ -794,7 +798,7 @@ def send_daily_report_email():
         server.send_message(msg)
         server.quit()
         return """
-        Le rapport journalier des connections au logiciel a été envoyée a l'email Josephinetoralta@gmail.com!
+        Le rapport journalier des connections au logiciel a été envoyée a l'email yayeastourendezvous@gmail.com!
         <br>
         <a href="/">Retour menu <a/>
         """
