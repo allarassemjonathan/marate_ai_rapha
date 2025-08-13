@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("userType");
   // Define which columns each user type can see
   const columnVisibility = {
+    'manager': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
     'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
     'infirmiers': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
     'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
@@ -234,7 +235,7 @@ function loadPatients(q = '') {
           if (k == 'poids' && p[k]) p[k] += ' kg';
           if (k == 'taille' && p[k]) p[k] += ' cm';
           if (k == 'tension_arterielle' && p[k]) p[k] += ' mmHg';
-          if (k == 'temperature' && p[k]) p[k] += ' °C';
+          // if (k == 'temperature' && p[k]) p[k] += ' °C';
           if (k == 'date_of_birth' && typeof p[k] === 'string') {
             p[k] = new Date(p[k]).toISOString().split('T')[0];
           }

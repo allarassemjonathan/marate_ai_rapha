@@ -126,16 +126,9 @@ CREDENTIALS = {
     'medecins': os.environ.get('medecins'),
     'infirmiers': os.environ.get('infirmiers'), 
     'receptionistes': os.environ.get('receptionistes'),
-    'Dr_Toralta_G_.Josephine':os.environ.get('Dr_Toralta_G_.Josephine'),
-    'Dr_Djaury_Dadji_-A':os.environ.get('Dr_Djaury_Dadji_-A'),
-    'Dr_Ndortolnan_Azer':os.environ.get('Dr_Ndortolnan_Azer'), 
-    'Dr_Doumgo_Monna_Doni_Nelson':os.environ.get('Dr_Doumgo_Monna_Doni_Nelson'), 
-    'Dr_Ngetigal_Hyacinte':os.environ.get('Dr_Ngetigal_Hyacinte'), 
-    'Dr_Ousmane_Hamane_Gadji':os.environ.get('Dr_Ousmane_Hamane_Gadji'), 
-    'Dr_Toralta_Emmanuelle_Mantar':os.environ.get('Dr_Toralta_Emmanuelle_Mantar'), 
-    'Dr_Madjibeye_Mirielle':os.environ.get('Dr_Madjibeye_Mirielle'), 
-    'Dr_Robnodji_Adoucie':os.environ.get('Dr_Robnodji_Adoucie'), 
-    'Dr_Ndoubane_Bonheur': os.environ.get('Dr_Ndoubane_Bonheur')
+    'Dr_Babacar':os.environ.get('Dr_Babacar'),
+    'Dr_Mbengue':os.environ.get('Dr_Mbengue'), 
+    'manager':os.environ.get('manager')
 }
 
 # Decorator to require login
@@ -213,7 +206,7 @@ def email_reception(firstname, lastname, body, plot, recipient_email):
     # You could include additional validation for the URL here if needed
     return jsonify(success=True)
 
-
+cabinet_name = "Yaye"
 # PDF generation using fpdf==1.7.2
 class InvoicePDF(FPDF):
     def header(self):
@@ -228,19 +221,19 @@ class InvoicePDF(FPDF):
                     tmp_file.flush()
                     self.image(tmp_file.name, 10, 8, 40)
             
-            other_res= requests.get(logo_rapha, timeout=10)
-            if other_res.status_code == 200:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
-                    tmp_file.write(other_res.content)
-                    tmp_file.flush()
-                    self.image(tmp_file.name, 160, 8, 40)
+            # other_res= requests.get(logo_rapha, timeout=10)
+            # if other_res.status_code == 200:
+            #     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
+            #         tmp_file.write(other_res.content)
+            #         tmp_file.flush()
+            #         self.image(tmp_file.name, 160, 8, 40)
 
         except Exception as e:
             print(f"Could not load logo: {e}")
 
         self.set_font('Arial', 'B', 16)
         self.set_text_color(6, 182, 212)
-        self.cell(0, 10, 'Devis Cabinet RAPHA', border=False, ln=1, align='C')
+        self.cell(0, 10, f'Devis Cabinet {cabinet_name}', border=False, ln=1, align='C')
         self.ln(10)
 
     def footer(self):
@@ -248,23 +241,6 @@ class InvoicePDF(FPDF):
         self.set_font('Arial', 'I', 8)
         self.set_text_color(128)
         self.cell(0, 10, f'Page {self.page_no()}', align='C')
-
-    def add_patient_info(self, patient):
-        self.set_font('Arial', '', 11)
-        self.set_text_color(0)
-
-        self.cell(100, 10, f"Nom: {patient['name']}", ln=0)
-        self.cell(90, 10, "Cabinet dentaire la renaissance", ln=1)
-
-        self.cell(100, 10, f"Adresse: {patient['adresse'] or 'N/A'}", ln=0)
-        self.cell(90, 10, "Kantara Sacko, Rue 22, Medina Dakar", ln=1)
-
-        self.cell(100, 10, f"Date de naissance: {patient['date_of_birth'] or 'N/A'}", ln=0)
-        self.cell(90, 10, "cablarenaissance@gmail.com", ln=1)
-
-        self.cell(100, 10, f"Date de facture: {datetime.now().strftime('%d/%m/%Y %H:%M')}", ln=0)
-        self.cell(90, 10, "(+221) 78 635 95 65", ln=1)
-        self.ln(5)
 
     def add_invoice_header(self, meta):
         dic =  { "January": "Janvier",
@@ -293,7 +269,7 @@ class InvoicePDF(FPDF):
         self.cell(0, 10, f"Facture du mois de {mois_annee}", ln=1, align='C')
         if envoye_a:
             self.cell(0, 10, f"{envoye_a}", ln=1, align='C')
-        self.cell(0, 10, "doit au cabinet Rapha", ln=1, align='C')
+        self.cell(0, 10, f"doit au cabinet {cabinet_name}", ln=1, align='C')
         self.ln(5)
 
         # Then the usual patient metadata below
@@ -533,7 +509,7 @@ def add():
         data['created_at'] = datetime.now(gmt_plus1)
 
         # Fields that should be treated as floats in the DB
-        float_fields = {'age', 'poids', 'taille', 'temperature'}
+        float_fields = {'age', 'poids', 'taille'}
 
         for field in float_fields:
             print(field)
@@ -736,13 +712,11 @@ def login():
         username_input = request.form['username'].replace(' ', '_')
         password = request.form['password']
 
+        print(username_input, password)
         # Check credentials
         if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
             physicians = {
-                'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A', 'Dr_Ndortolnan_Azer',
-                'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji',
-                'Dr_Toralta_Emmanuelle_Mantar', 'Dr_Madjibeye_Mirielle',
-                'Dr_Robnodji_Adoucie', 'Dr_Ndoubane_Bonheur'
+                'Dr_Babacar', 'Dr_Mbengue'
             }
 
             # Always set both username & user_type
