@@ -1,77 +1,11 @@
-2025-08-12
-Nouvelle evenement: 20:23:14 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
-Nouvelle evenement: 20:55:40 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 21:00:38 Dr_Babacar, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 21:01:35 Dr_Babacar, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 21:01:50 Dr_Babacar, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 21:03:23 Dr_Babacar, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 21:05:02 Dr_Babacar, login, L'utilisateur 'Dr_Babacar' s'est connecté avec succès
-Nouvelle evenement: 21:05:20 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 21:11:15 manager, login, L'utilisateur 'manager' s'est connecté avec succès
-Nouvelle evenement: 21:14:53 manager, logout, L'utilisateur 'manager' s'est déconnecté
-Nouvelle evenement: 21:18:17 Dr_Babacar, login, L'utilisateur 'Dr_Babacar' s'est connecté avec succès
-Nouvelle evenement: 21:28:57 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 21:29:09 Dr_Babacar, login, L'utilisateur 'Dr_Babacar' s'est connecté avec succès
-Nouvelle evenement: 21:42:32 medecins, Ajout d'un patient, Le patient 'test' a été ajouté
-Nouvelle evenement: 21:42:52 medecins, Patient sélectionné, Patient avec ID 36 selectionné.
-Nouvelle evenement: 21:44:17 medecins, Détails des patients, Les détails du patient avec l'identifiant 36 ont été consulté.
-Nouvelle evenement: 21:44:27 medecins, Patient sélectionné, Patient avec ID 36 selectionné.
-Nouvelle evenement: 21:44:50 medecins, modification patient, Patient avec ID 36 a été modifié
-Nouvelle evenement: 21:45:22 medecins, Suppression d'un patient, Le patient avec l'identifiant 36 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 36), ('name', 'test'), ('adresse', 'test'), ('age', 12), ('date_of_birth', None), ('poids', 3.453), ('taille', 3.214), ('tension_arterielle', '11/7'), ('temperature', '34^7'), ('hypothese_de_diagnostique', 'test'), ('bilan', 'test'), ('resultat_bilan', 'test'), ('signature', 'Dr Babacar'), ('renseignements_clinique', 'test'), ('ordonnance', 'test'), ('created_at', datetime.date(2025, 8, 13)), ('phone_number', '77  363 13 12'), ('meeting', 'rendez-vous'), ('new_cases', 'nouveaux cas')])]
-Nouvelle evenement: 21:46:26 medecins, Ajout d'un patient, Le patient 'nom' a été ajouté
-Nouvelle evenement: 21:47:56 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 21:48:18 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 21:48:31 medecins, Suppression d'un patient, Le patient avec l'identifiant 37 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 37), ('name', 'nom'), ('adresse', 'addresse'), ('age', 12), ('date_of_birth', datetime.date(2001, 2, 18)), ('poids', 3.138), ('taille', 1.231), ('tension_arterielle', '11/7'), ('temperature', '3^2'), ('hypothese_de_diagnostique', 'hypothese'), ('bilan', 'bilan'), ('resultat_bilan', 'conclusion'), ('signature', 'Dr Babacar'), ('renseignements_clinique', 'renseignement'), ('ordonnance', 'ordonnance'), ('created_at', datetime.date(2025, 8, 13)), ('phone_number', '77 645 32 21'), ('meeting', 'rendez-vous'), ('new_cases', 'nouveaux cas')])]
-Nouvelle evenement: 21:49:20 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 21:49:41 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 21:50:31 medecins, Ajout d'un patient, Le patient 'test' a été ajouté
-Nouvelle evenement: 21:50:38 medecins, Patient sélectionné, Patient avec ID 38 selectionné.
-Nouvelle evenement: 21:51:00 medecins, modification patient, Patient avec ID 38 a été modifié
-Nouvelle evenement: 21:51:54 medecins, Facture généré, Facture généré pour le patient test germaine
-Nouvelle evenement: 21:55:56 medecins, Facture généré, Facture généré pour le patient test germaine
-Nouvelle evenement: 21:59:11 medecins, Facture généré, Facture généré pour le patient test germaine
-Nouvelle evenement: 22:01:50 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:02:14 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:02:24 medecins, Détails des patients, Les détails du patient avec l'identifiant 38 ont été consulté.
-Nouvelle evenement: 22:09:16 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:09:56 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:10:08 medecins, Patient sélectionné, Patient avec ID 38 selectionné.
-Nouvelle evenement: 22:12:56 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:13:36 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:13:42 medecins, Patient sélectionné, Patient avec ID 38 selectionné.
-Nouvelle evenement: 22:14:01 medecins, modification patient, Patient avec ID 38 a été modifié
-Nouvelle evenement: 22:15:40 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:15:58 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:16:14 medecins, Patient sélectionné, Patient avec ID 38 selectionné.
-Nouvelle evenement: 22:16:25 medecins, modification patient, Patient avec ID 38 a été modifié
-Nouvelle evenement: 22:16:30 medecins, Patient sélectionné, Patient avec ID 38 selectionné.
-Nouvelle evenement: 22:18:22 medecins, Ajout d'un patient, Le patient 'test' a été ajouté
-Nouvelle evenement: 22:18:39 medecins, Suppression d'un patient, Le patient avec l'identifiant 38 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 38), ('name', 'test'), ('adresse', 'addresse'), ('age', 12), ('date_of_birth', datetime.date(2001, 2, 18)), ('poids', 3.554), ('taille', 1.453), ('tension_arterielle', '11/7'), ('temperature', '34^5'), ('hypothese_de_diagnostique', 'hyp'), ('bilan', 'bil'), ('resultat_bilan', 'conc'), ('signature', 'Dr Mbengue'), ('renseignements_clinique', 'ren'), ('ordonnance', 'ord'), ('created_at', datetime.date(2025, 7, 13)), ('phone_number', '77 645 32 12'), ('meeting', 'rdv'), ('new_cases', 'new cases')])]
-Nouvelle evenement: 22:18:59 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:22:11 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:22:32 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:23:47 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:25:12 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:25:18 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:25:27 medecins, modification patient, Patient avec ID 39 a été modifié
-Nouvelle evenement: 22:25:34 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:28:00 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:29:20 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:30:04 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:31:42 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:32:18 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:33:23 medecins, Patient sélectionné, Patient avec ID 39 selectionné.
-Nouvelle evenement: 22:33:38 medecins, modification patient, Patient avec ID 39 a été modifié
-Nouvelle evenement: 22:34:23 medecins, Facture généré, Facture généré pour le patient test jean
-Nouvelle evenement: 22:34:37 medecins, Détails des patients, Les détails du patient avec l'identifiant 39 ont été consulté.
-Nouvelle evenement: 22:34:43 medecins, Suppression d'un patient, Le patient avec l'identifiant 39 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 39), ('name', 'test'), ('adresse', 'test'), ('age', 23), ('date_of_birth', datetime.date(2001, 2, 17)), ('poids', 3.453), ('taille', 1.387), ('tension_arterielle', '11/7'), ('temperature', '11*7'), ('hypothese_de_diagnostique', 'hypothese'), ('bilan', 'bilan'), ('resultat_bilan', 'conc'), ('signature', 'Dr Mbengue'), ('renseignements_clinique', 'renseignement'), ('ordonnance', 'ord'), ('created_at', datetime.date(2025, 8, 13)), ('phone_number', '77 777 21 38'), ('meeting', 'rdv'), ('new_cases', 'oui')])]
-Nouvelle evenement: 22:35:15 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:35:35 manager, login, L'utilisateur 'manager' s'est connecté avec succès
-Nouvelle evenement: 22:36:30 manager, Ajout d'un patient, Le patient 'test' a été ajouté
-Nouvelle evenement: 22:39:10 manager, Patient sélectionné, Patient avec ID 40 selectionné.
-Nouvelle evenement: 22:39:18 manager, modification patient, Patient avec ID 40 a été modifié
-Nouvelle evenement: 22:41:50 manager, Ajout d'un patient, Le patient 'test' a été ajouté
-Nouvelle evenement: 22:42:03 manager, Suppression d'un patient, Le patient avec l'identifiant 40 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 40), ('name', 'test'), ('adresse', 'test'), ('age', 12), ('date_of_birth', datetime.date(1999, 1, 1)), ('poids', 2.321), ('taille', 1.231), ('tension_arterielle', '11/7'), ('temperature', '11^5'), ('hypothese_de_diagnostique', 'hyp'), ('bilan', 'bil'), ('resultat_bilan', 'con'), ('signature', None), ('renseignements_clinique', 'rens'), ('ordonnance', 'ord'), ('created_at', datetime.date(2025, 8, 13)), ('phone_number', '77 656 12 12'), ('meeting', 'rdv'), ('new_cases', 'non')])]
-Nouvelle evenement: 22:42:07 manager, Patient sélectionné, Patient avec ID 41 selectionné.
-Nouvelle evenement: 22:43:03 manager, modification patient, Patient avec ID 41 a été modifié
-Nouvelle evenement: 22:43:24 manager, logout, L'utilisateur 'manager' s'est déconnecté
+2025-08-13
+Nouvelle evenement: 20:57:15 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
+Nouvelle evenement: 22:40:41 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 22:40:53 receptionistes, login, L'utilisateur 'receptionistes' s'est connecté avec succès
+Nouvelle evenement: 22:41:16 receptionistes, logout, L'utilisateur 'receptionistes' s'est déconnecté
+Nouvelle evenement: 22:41:26 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
+Nouvelle evenement: 22:41:40 medecins, Patient sélectionné, Patient avec ID 9 selectionné.
+Nouvelle evenement: 22:41:47 medecins, Patient sélectionné, Patient avec ID 13 selectionné.
+Nouvelle evenement: 22:44:49 medecins, Patient sélectionné, Patient avec ID 9 selectionné.
+Nouvelle evenement: 22:44:53 medecins, Patient sélectionné, Patient avec ID 13 selectionné.
+Nouvelle evenement: 22:45:33 medecins, Patient sélectionné, Patient avec ID 13 selectionné.

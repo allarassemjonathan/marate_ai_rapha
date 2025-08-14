@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'manager': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
     'medecins': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
     'infirmiers': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
-    'receptionistes': ['created_at', 'date_of_birth', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
+    'receptionistes': ['created_at', 'date_of_birth', 'name','adresse','phone_number','meeting', 'new_cases','age']
   };
 
     const columnHeaders = {
@@ -35,7 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     'signature':'Signature', 
     'meeting':'Rendez-vous',
     'new_cases':'Nouveaux cas',
-    'phone_number':'Numero de telephone'
+    'phone_number':'Numero de telephone',
+    'date_of_birth':'Date de naissance'
+
   };
 
   function createTableHeaders(){
