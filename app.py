@@ -128,7 +128,10 @@ CREDENTIALS = {
     'receptionistes': os.environ.get('receptionistes'),
     'Dr_Babacar':os.environ.get('Dr_Babacar'),
     'Dr_Mbengue':os.environ.get('Dr_Mbengue'), 
-    'manager':os.environ.get('manager')
+    'manager':os.environ.get('manager'),
+    'Inf_Fatoumata':os.environ.get('Inf_Fatoumata'),
+    'Inf_Mariam': os.environ.get('Inf_Mariam'),
+    'Inf_Sassou':os.environ.get('Inf_Sassou')
 }
 
 # Decorator to require login
@@ -720,7 +723,7 @@ def login():
         # Check credentials
         if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
             physicians = {
-                'Dr_Babacar', 'Dr_Mbengue'
+                'Dr_Babacar', 'Dr_Mbengue', 'Inf_Fatoumata', 'Inf_Mariam', 'Inf_Sassou'
             }
 
             # Always set both username & user_type

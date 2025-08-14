@@ -220,7 +220,37 @@
 #toastContainer > div.show {
   opacity: 1;
   transform: translateX(0);
+}/* Extra responsive tweaks */
+@media (max-width: 640px) {
+
+  /* Invoice modal tweaks for mobile */
+  #invoiceCard {
+    min-width: auto !important;
+    width: 100% !important;
+    min-height: auto !important;
+    max-height: 85vh !important;
+    padding: 1rem !important;
+  }
 }
+
+/* make sure images dont eat half screens */
+@media (max-width: 640px) {
+  img {
+    max-height: 60px !important;
+  }
+}
+
+/* reduce padding and margins on small screens */
+@media (max-width: 640px) {
+  .p-8 {
+    padding: 1rem !important;
+  }
+  .mb-10 {
+    margin-bottom: 1.5rem !important;
+  }
+}
+
+
   </style>
   
 </head>

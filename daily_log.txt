@@ -1,11 +1,8 @@
-2025-08-13
-Nouvelle evenement: 20:57:15 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:40:41 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:40:53 receptionistes, login, L'utilisateur 'receptionistes' s'est connecté avec succès
-Nouvelle evenement: 22:41:16 receptionistes, logout, L'utilisateur 'receptionistes' s'est déconnecté
-Nouvelle evenement: 22:41:26 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:41:40 medecins, Patient sélectionné, Patient avec ID 9 selectionné.
-Nouvelle evenement: 22:41:47 medecins, Patient sélectionné, Patient avec ID 13 selectionné.
-Nouvelle evenement: 22:44:49 medecins, Patient sélectionné, Patient avec ID 9 selectionné.
-Nouvelle evenement: 22:44:53 medecins, Patient sélectionné, Patient avec ID 13 selectionné.
-Nouvelle evenement: 22:45:33 medecins, Patient sélectionné, Patient avec ID 13 selectionné.
+2025-08-14
+Nouvelle evenement: 18:42:28 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 19:03:28 Inf_Mariam, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 19:25:04 Inf_Mariam, login, L'utilisateur 'Inf_Mariam' s'est connecté avec succès
+Nouvelle evenement: 19:25:36 medecins, Ajout d'un patient, Le patient 'Allah Taroum Megane Longoh' a été ajouté
+Nouvelle evenement: 19:25:53 medecins, Suppression d'un patient, Le patient avec l'identifiant 49 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 49), ('name', 'Allah Taroum Megane Longoh'), ('adresse', None), ('age', None), ('date_of_birth', None), ('poids', None), ('taille', None), ('tension_arterielle', None), ('temperature', ''), ('hypothese_de_diagnostique', ''), ('bilan', ''), ('resultat_bilan', ''), ('signature', 'Inf Mariam'), ('renseignements_clinique', ''), ('ordonnance', ''), ('created_at', datetime.date(2025, 8, 14)), ('phone_number', ''), ('meeting', ''), ('new_cases', '')])]
+Nouvelle evenement: 19:33:08 Inf_Mariam, login, L'utilisateur 'Inf_Mariam' s'est connecté avec succès
+Nouvelle evenement: 19:42:32 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
