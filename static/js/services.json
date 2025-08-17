@@ -54,11 +54,6 @@
             "unitPrice": 15000,
             "category": "Analyses"
         },
-        "vaccination": {
-            "label": "Vaccination",
-            "unitPrice": 25.00,
-            "category": "Soins"
-        },
         "injection": {
             "label": "Injection",
             "unitPrice": 1000,
