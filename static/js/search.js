@@ -1,9 +1,179 @@
+window.populateDropdown = function(dropdownList) {
+    dropdownList.innerHTML = '';
+    
+    // Group items by category
+    const categories = {};
+    Object.entries(serviceItems).forEach(([key, item]) => {
+        if (!categories[item.category]) {
+            categories[item.category] = [];
+        }
+        categories[item.category].push({key, ...item});
+    });
+    
+    // Create dropdown items grouped by category
+    Object.entries(categories).forEach(([category, items]) => {
+        // Category header
+        const categoryHeader = document.createElement('div');
+        categoryHeader.className = 'px-3 py-2 bg-gray-100 text-gray-600 text-xs font-semibold uppercase tracking-wide';
+        categoryHeader.textContent = category;
+        dropdownList.appendChild(categoryHeader);
+        
+        // Category items
+        items.forEach(item => {
+            const dropdownItem = document.createElement('div');
+            dropdownItem.className = 'dropdown-item flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-gray-50 border-b border-gray-100';
+            dropdownItem.innerHTML = `
+                <span>${item.label}</span>
+                <span class="text-gray-500 text-sm">${item.unitPrice.toLocaleString()} Fcfa</span>
+            `;
+            dropdownItem.onclick = () => window.selectService(dropdownItem, item);
+            dropdownList.appendChild(dropdownItem);
+        });
+    });
+};
+
+window.toggleDropdown = function(input) {
+    const container = input.closest('.dropdown-container');
+    const dropdown = container.querySelector('.dropdown-list');
+    
+    // Close all other dropdowns
+    document.querySelectorAll('.dropdown-container').forEach(otherContainer => {
+        if (otherContainer !== container) {
+            const otherDropdown = otherContainer.querySelector('.dropdown-list');
+            otherDropdown.style.display = 'none';
+            otherContainer.classList.remove('dropdown-open');
+        }
+    });
+    
+    // Toggle current dropdown
+    const isVisible = dropdown.style.display === 'block';
+    dropdown.style.display = isVisible ? 'none' : 'block';
+    container.classList.toggle('dropdown-open', !isVisible);
+    
+    if (!isVisible) {
+        window.populateDropdown(dropdown);
+    }
+};
+
+window.filterDropdown = function(input) {
+    const container = input.closest('.dropdown-container');
+    const dropdown = container.querySelector('.dropdown-list');
+    const searchTerm = input.value.toLowerCase();
+    
+    if (searchTerm.length === 0) {
+        window.populateDropdown(dropdown);
+        return;
+    }
+    
+    dropdown.innerHTML = '';
+    
+    // Filter and display matching items
+    Object.entries(serviceItems).forEach(([key, item]) => {
+        if (item.label.toLowerCase().includes(searchTerm) || 
+            item.category.toLowerCase().includes(searchTerm)) {
+            
+            const dropdownItem = document.createElement('div');
+            dropdownItem.className = 'dropdown-item flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-gray-50 border-b border-gray-100';
+            dropdownItem.innerHTML = `
+                <span>${item.label}</span>
+                <span class="text-gray-500 text-sm">${item.unitPrice.toLocaleString()} Fcfa</span>
+            `;
+            dropdownItem.onclick = () => window.selectService(dropdownItem, item);
+            dropdown.appendChild(dropdownItem);
+        }
+    });
+    
+    dropdown.style.display = 'block';
+    container.classList.add('dropdown-open');
+};
+
+window.selectService = function(dropdownItem, serviceItem) {
+    const container = dropdownItem.closest('.dropdown-container');
+    const input = container.querySelector('.item-libelle');
+    const articleRow = container.closest('.article-row');
+    const quantiteInput = articleRow.querySelector('.item-quantite');
+    const montantInput = articleRow.querySelector('.item-montant');
+    
+    // Set the service name and price
+    input.value = serviceItem.label;
+    montantInput.value = serviceItem.unitPrice;
+    
+    // Store the unit price as data attribute for future calculations
+    montantInput.setAttribute('data-unit-price', serviceItem.unitPrice);
+    
+    // Update section subtotal
+    const sectionDiv = articleRow.closest('.section-container');
+    window.updateSectionSubtotal(sectionDiv);
+    
+    // Close dropdown
+    const dropdown = container.querySelector('.dropdown-list');
+    dropdown.style.display = 'none';
+    container.classList.remove('dropdown-open');
+};
+
+window.addArticle = function(button) {
+    const sectionDiv = button.closest('.section-container');
+    const articleList = sectionDiv.querySelector('.articles-list');
+
+    const row = document.createElement('div');
+    row.className = 'article-row grid grid-cols-1 md:grid-cols-3 gap-4 items-center';
+
+    // MODIFIED: Added dropdown container to libelle input
+    row.innerHTML = `
+        <div class="dropdown-container relative">
+            <div class="relative">
+                <input type="text" 
+                       class="item-libelle input-field w-full p-3 rounded-xl border border-gray-600 pr-10" 
+                       placeholder="Libellé" 
+                       onclick="toggleDropdown(this)" 
+                       oninput="filterDropdown(this)"
+                       autocomplete="off"
+                       required>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg class="dropdown-arrow w-4 h-4 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="dropdown-list absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto" style="display: none;"></div>
+        </div>
+        <input type="number" class="item-quantite input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Quantité" min="1" step="1" value="1" required>
+        <input type="number" class="item-montant input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Montant (Fcfa)" min="0" step="1" value="0" required>
+        <div class="col-span-1 md:col-span-3 text-right">
+            <button type="button" onclick="removeArticle(this)" class="text-red-500 hover:text-red-500 text-sm">Supprimer l'article</button>
+        </div>
+    `;
+
+    articleList.appendChild(row);
+
+    // Add event listeners to update subtotal when quantity or price changes
+    const qtyInput = row.querySelector('.item-quantite');
+    const priceInput = row.querySelector('.item-montant');
+
+    [qtyInput, priceInput].forEach(input => {
+        input.addEventListener('input', () => updateSectionSubtotal(sectionDiv));
+    });
+
+    // NEW: Populate dropdown for the new article
+    const dropdownList = row.querySelector('.dropdown-list');
+    populateDropdown(dropdownList);
+
+    updateSectionSubtotal(sectionDiv);
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('addForm');
   const resultsTable = document.getElementById('resultsTable');
   const searchBox = document.getElementById('searchBox');
   const editModalOverlay = document.getElementById('editModalOverlay');
   const editForm = document.getElementById('editForm');
+  // Predefined service items with their unit prices (NEW ADDITION)
+const serviceItems = {
+    'consultation_generale': {
+        label: 'Consultation générale',
+        unitPrice: 15000
+    }
+};
   
   let currentPatientId = null;
 // class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider"

@@ -1,0 +1,83 @@
+{
+        "consultation_generale": {
+            "label": "Consultation générale",
+            "unitPrice": 3000,
+            "category": "Consultations"
+        },
+        "consultation_post_natale": {
+            "label": "Consultation post-natale",
+            "unitPrice": 3000,
+            "category": "Consultations"
+        },
+        "consultation_pre_natale": {
+            "label": "Consultation pré-natale",
+            "unitPrice": 3000,
+            "category": "Consultations"
+        },
+        "Plannification_fam": {
+            "label": "Plannification familiale",
+            "unitPrice": 5000,
+            "category": "Consultations"
+        },
+        "echographie": {
+            "label": "Échographie",
+            "unitPrice": 10000,
+            "category": "Examens"
+        },
+        "circoncision": {
+            "label": "Circoncision",
+            "unitPrice": 20000,
+            "category": "Examens"
+        },
+        "pansement_simple": {
+            "label": "Pansement simple",
+            "unitPrice": 1000,
+            "category": "Analyses"
+        },
+        "pansement_souture": {
+            "label": "Pansement souture",
+            "unitPrice": 5000,
+            "category": "Analyses"
+        },
+        "Mise_en_obs_commune": {
+            "label": "Mise en observation (salle commune)",
+            "unitPrice": 5000,
+            "category": "Analyses"
+        },
+        "Mise_en_obs_simple": {
+            "label": "Mise en observation (simple)",
+            "unitPrice": 3000,
+            "category": "Analyses"
+        },
+        "Mise_en_obs_clim": {
+            "label": "Mise en observation (salle climatisee)",
+            "unitPrice": 15000,
+            "category": "Analyses"
+        },
+        "vaccination": {
+            "label": "Vaccination",
+            "unitPrice": 25.00,
+            "category": "Soins"
+        },
+        "injection": {
+            "label": "Injection",
+            "unitPrice": 1000,
+            "category": "Soins"
+        },
+        "Control_tension": {
+            "label": "Controle tension",
+            "unitPrice": 500,
+            "category": "Soins"
+        },
+        "Control_glyc": {
+            "label": "Controle glycemie",
+            "unitPrice": 1500,
+            "category": "Soins"
+        },
+        "Control_poids": {
+            "label": "Controle poids",
+            "unitPrice": 500,
+            "category": "Soins"
+        }
+
+    }

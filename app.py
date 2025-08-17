@@ -484,6 +484,12 @@ def show_distribution():
 
     return render_template("distribution.html", distributions=all_values)
 
+
+@app.route('/payment_wave')
+@login_required
+def payments():
+    return render_template('payment_wave.html')
+    
 from datetime import datetime, timezone, timedelta # chad timezone attempt
 from datetime import date
 @app.route('/add', methods=['POST'])
