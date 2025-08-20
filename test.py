@@ -25,3 +25,5 @@ plt.ylabel("Nombre de patients")
 plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
 plt.show()
+
+print('MELO TESTING')
