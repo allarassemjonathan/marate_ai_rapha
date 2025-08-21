@@ -229,8 +229,35 @@ function loadPatients(q = '') {
         visibleColumns.forEach(k => {
           const td = document.createElement('td');
           td.className = "p-2 border text-black";
+          
+          if (k == 'age' && p[k]){
 
-          if (k == 'age' && p[k]) p[k] += ' ans';
+            let ageFloat = parseFloat(p[k]);
+            let years = Math.floor(ageFloat); // integer part -> full years
+
+            let remaining = ageFloat - years; // fractional part -> 0.75
+            let months = Math.floor(remaining * 12); // convert fraction to months
+
+            let remainingDaysFraction = (remaining * 12) - months; // leftover fraction of a month
+            let days = Math.floor(remainingDaysFraction * 30); // approximate days
+            
+            console.log(p['name']);
+            console.log(ageFloat);
+            console.log(p[k]);
+            console.log(years);
+            console.log(months);
+            p[k] = '' 
+            if (p['age_days']!==0){
+              p[k] = p['age_days'] + " jours "
+            }
+            if (p['age_months'] !== 0){
+              p[k] = p['age_months'] + " mois " + p[k]
+            }
+            if (p['age_years'] !== 0){
+              p[k] =p['age_years'] + " ans " + p[k]
+            }
+            
+          }
           if (k == 'poids' && p[k]) p[k] += ' kg';
           if (k == 'taille' && p[k]) p[k] += ' cm';
           if (k == 'tension_arterielle' && p[k]) p[k] += ' mmHg';
@@ -339,7 +366,29 @@ window.editPatient = function(id) {
       document.getElementById('editId').value = data.id;
       document.getElementById('edit_name').value = data.name;
       document.getElementById('edit_date_of_birth').value = data.date_of_birth;
-      console.log(data.date_of_birth);
+      console.log(data.age);
+      // Convert age into years, months, days
+
+      if (data.age != undefined && data.age != null){
+         const ageFloat = parseFloat(data.age);
+
+        // Extract years, months, days
+        const years = Math.floor(ageFloat);
+        const months = Math.floor((ageFloat - years) * 12);
+        const days = Math.floor((((ageFloat - years) * 12) - months) * 30);
+
+        console.log(`Age parsed → ${years} years, ${months} months, ${days} days`);
+
+        // Fill inputs if they exist in your form
+        const yearInput = document.getElementById("edit_age_years");
+        const monthInput = document.getElementById("edit_age_months");
+        const dayInput = document.getElementById("edit_age_days");
+
+        if (yearInput) yearInput.value = data['age_years'];
+        if (monthInput) monthInput.value = data['age_months'];
+        if (dayInput) dayInput.value = data['age_days'];
+      }
+
       // Populate all fields based on visible columns
       const fields = columnVisibility[userType];
       fields.forEach(field => {

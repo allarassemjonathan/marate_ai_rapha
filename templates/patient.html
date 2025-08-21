@@ -11,9 +11,21 @@
     <h1 class="text-3xl font-bold text-center mb-6">Détails</h1>
     <div class="space-y-2">
       <p><strong>Nom:</strong> {{ patient['name'] }}</p>
-      <p><strong>Date de naissance:</strong> {{ patient['date_of_birth'] }}</p>
-      <p><strong>Adresse:</strong> {{ patient['adresse'] }}</p>
-      <p><strong>Age:</strong> {{ patient['age'] }}</p>
+      <p><strong>Date de naissance:</strong>
+        {% if patient['date_of_birth'] %}
+          {{ patient['date_of_birth'] }}
+        {%else%}
+          Aucune
+        {%endif%}
+        </p>
+      <p><strong>Adresse:</strong> 
+        {% if patient['adresse']%}
+          {{ patient['adresse'] }}
+        {%else%}
+          Aucune
+        {%endif%}   
+      </p>
+      
     </div>
     <h2 class="text-2xl font-bold mt-8 mb-4">Visits</h2>
      {% if visits %}
@@ -21,7 +33,9 @@
         <thead class="table-header">
           <tr id="tableHeader">
               <th  class="text-left p-2 border-b">Date</th>
-              <th  class="text-left p-2 border-b">Age</th>
+              <th  class="text-left p-2 border-b">Age (annee)</th>
+              <th  class="text-left p-2 border-b">Age (mois)</th>
+              <th  class="text-left p-2 border-b">Age (jours)</th>
               <th  class="text-left p-2 border-b">Température</th>
               <th  class="text-left p-2 border-b">Taille</th>
               <th  class="text-left p-2 border-b">Poids</th>
@@ -37,7 +51,9 @@
          {% for visit in visits %}    
           <tr>
                   <td class="p-2 border-b">{{visit['created_at']}}</td>
-                  <td class="p-2 border-b">{{visit['age']}} ans</td>
+                  <td class="p-2 border-b">{{visit['age_years']}} ans</td>
+                  <td class="p-2 border-b">{{visit['age_months']}} mois</td>
+                  <td class="p-2 border-b">{{visit['age_days']}} jours</td>
                   <td class="p-2 border-b">{{visit['temperature']}} °C</td>
                   <td class="p-2 border-b">{{visit['taille']}} m</td>
                   <td class="p-2 border-b">{{visit['poids']}} kg</td>
