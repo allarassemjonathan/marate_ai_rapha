@@ -861,7 +861,7 @@ def login():
                 'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A', 'Dr_Ndortolnan_Azer',
                 'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji',
                 'Dr_Toralta_Emmanuelle_Mantar', 'Dr_Madjibeye_Mirielle',
-                'Dr_Robnodji_Adoucie', 'Dr_Ndoubane_Bonheur'
+                'Dr_Robnodji_Adoucie', 'Dr_Ndoubabe_Bonheur'
             }
 
             # Always set both username & user_type
