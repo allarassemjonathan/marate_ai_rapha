@@ -1,2 +1,4 @@
-2025-08-16
-Nouvelle evenement: 22:59:06 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
+2025-08-20
+Nouvelle evenement: 23:51:38 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 23:51:55 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
+Nouvelle evenement: 23:52:01 medecins, Patient sélectionné, Patient avec ID 53 selectionné.

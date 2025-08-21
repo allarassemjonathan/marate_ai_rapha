@@ -640,7 +640,7 @@ def get_patient(patient_id):
         return jsonify(row)
     if row['signature'] is None:
         return jsonify(row)
-    if session['username'] == 'Dr_Toralta_G_.Josephine':
+    if session['username'] == 'Dr_Mbengue':
         print('ot here?')
         return jsonify(row)
     if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):

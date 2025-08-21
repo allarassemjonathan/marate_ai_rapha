@@ -171,8 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
 const serviceItems = {
     'consultation_generale': {
         label: 'Consultation générale',
-        unitPrice: 15000
-    }
+        unitPrice: 15000,
+        category: 'Consultations'
+    },
+
 };
   
   let currentPatientId = null;
