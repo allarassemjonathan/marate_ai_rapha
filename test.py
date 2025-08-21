@@ -8,11 +8,22 @@ conn = psycopg2.connect("postgresql://postgres:QUFfTNqAGwNVhBWGbIkkxKfxEyHogGKE@
 
 # Query and load into DataFrame
 cur = conn.cursor()
-cur.execute("""
-    UPDATE patients
-    SET
-        age_years  = FLOOR(age),
-        age_months = FLOOR(0),
-        age_days   = FLOOR(0)
-    """)
-conn.commit()
+cur.execute("SELECT * FROM patients")
+rows = cur.fetchall()
+columns = [desc[0] for desc in cur.description]
+df = pd.DataFrame(rows, columns=columns)
+
+# Count occurrences of each 'adresse'
+adresse_counts = df['adresse'].value_counts()
+
+# Plot
+plt.figure(figsize=(10, 6))
+adresse_counts.plot(kind='bar', color='seagreen')
+plt.title("Nombre de patients par adresse")
+plt.xlabel("Adresse")
+plt.ylabel("Nombre de patients")
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+
+print('MELO TESTING')
