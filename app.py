@@ -524,6 +524,7 @@ def add():
             cleaned_data[k] = v
 
     data = cleaned_data
+    print(data)
     if not data.get('name'):
         print('issue is here 1 ')
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
@@ -532,8 +533,49 @@ def add():
         gmt_plus1 = timezone(timedelta(hours=1))
         data['created_at'] = datetime.now(gmt_plus1)
 
+        print('this time is good')
+        # reading the age
+        if data['age_years'] == '':
+            years = 0
+            data['age_years'] = 0
+            print('worked', data['age_years'])
+        else:
+            years = int(data['age_years'])
+            print(years)
+
+
+        if data['age_months'] == '':
+            months = 0
+            data['age_months'] = 0
+            print('worked', data['age_months'])
+        else:
+            months = int(data['age_months'])
+            print(months)
+
+
+        print(data['age_days'])
+        if data['age_days'] == '':
+            days = 0
+            data['age_days'] = 0
+            print('worked', data['age_days'])
+        else:
+            print('ever?')
+            days = int(str(data["age_days"]))
+            print('ever?')
+            # print('value', days)
+
+        print(days, months, years)
+
+        # Convert months and days to fractional years
+        age_in_years = years + months/12 + days/365
+
+        # Now you can store `age_in_years` in your DB
+        data['age'] = round(age_in_years, 10) 
+
+        print('what are we doing', data['age'])
+
         # Fields that should be treated as floats in the DB
-        float_fields = {'age', 'poids', 'taille', 'temperature'}
+        float_fields = {'age', 'poids', 'taille', 'temperature', 'age_years', 'age_months', 'age_days'}
 
         for field in float_fields:
             print(field)
@@ -685,7 +727,7 @@ def update_patient(patient_id):
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
 
     # List of known date fields in the table
-    date_fields = {'name', 'adresse', 'age', 'date_of_birth', 'poids', 'taille', 'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 'bilan', 'resultat_bilan', 'signature', 'renseignements_clinique', 'ordonnance', 'created_at'}
+    date_fields = {'name', 'adresse', 'age', 'date_of_birth', 'poids', 'taille', 'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 'bilan', 'resultat_bilan', 'signature', 'renseignements_clinique', 'ordonnance', 'created_at', 'age_months', 'age_days', 'age_years'}
 
 
     # Replace empty strings with None for date fields
@@ -696,6 +738,7 @@ def update_patient(patient_id):
         else:
             cleaned_data[k] = v
 
+    print('cleaned data', cleaned_data)
     set_clause = ", ".join([f"{k} = %s" for k in cleaned_data.keys()])
     values = list(cleaned_data.values())
     values.append(patient_id)

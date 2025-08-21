@@ -116,12 +116,24 @@
       <div>
         <label class="block text-sm font-medium text-cyan-300 mb-1">Mot de passe</label>
         <input type="password" name="password" required placeholder="••••••••" class="input-field w-full p-4 rounded-xl">
+            <span 
+        class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 hover:text-gray-700 select-none" 
+        onclick="togglePassword()"
+      >
+        👁
+      </span>
       </div>
 
       <div>
         <button type="submit" class="glow-button w-full py-3 rounded-xl text-lg">Se connecter</button>
       </div>
     </form>
+    <script>
+  function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+  }
+</script>
   </div>
 </body>
 </html>
