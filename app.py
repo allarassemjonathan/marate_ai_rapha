@@ -141,7 +141,7 @@ CREDENTIALS = {
     'Dr_Toralta_Emmanuelle_Mantar':os.environ.get('Dr_Toralta_Emmanuelle_Mantar'), 
     'Dr_Madjibeye_Mirielle':os.environ.get('Dr_Madjibeye_Mirielle'), 
     'Dr_Robnodji_Adoucie':os.environ.get('Dr_Robnodji_Adoucie'), 
-    'Dr_Ndoubane_Bonheur': os.environ.get('Dr_Ndoubane_Bonheur')
+    'Dr_Ndoubabe_Bonheur': os.environ.get('Dr_Ndoubane_Bonheur')
 }
 
 # Decorator to require login
