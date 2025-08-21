@@ -703,6 +703,12 @@ def get_patient(patient_id):
         return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
 
 # we will use later .. 
+import matplotlib
+matplotlib.use('Agg')  # Must be set before importing pyplot
+import matplotlib.pyplot as plt
+import pandas as pd
+import io
+import base64
 
 @app.route('/stat')
 @login_required
@@ -717,7 +723,77 @@ def stat():
     avg_height = dict(cur.fetchall()[0])['avg']
     cur.execute('select AVG(poids) from patients')
     avg_weight = dict(cur.fetchall()[0])['avg']
-    return f"{count} patients cette annee -- {round(avg_age)} ans en moyenne -- {round(avg_height)} cm en moyenne -- {round(avg_weight)} kg en moyenne "
+    return render_template("stat.html", 
+                           count=count, 
+                           avg_age=round(avg_age),
+                           avg_height=round(avg_height),
+                           avg_weight=round(avg_weight))
+
+
+@app.route('/stat/chart')
+@login_required
+def stat_chart():
+    # Connect and fetch top 10 addresses
+    conn = get_db_connection()
+    query = """
+        SELECT adresse, COUNT(*) AS count
+        FROM patients
+        GROUP BY adresse
+        ORDER BY count DESC
+        LIMIT 10;
+    """
+    df = pd.read_sql(query, conn)
+    conn.close()
+
+    # Plot horizontal bar chart
+    plt.figure(figsize=(10,6))
+    plt.barh(df['adresse'], df['count'], color='skyblue')
+    plt.xlabel("Nombre de patients")
+    plt.ylabel("Addresses")
+    plt.title("Top 10 quartiers les plus représentées")
+    plt.gca().invert_yaxis()
+    plt.tight_layout()
+
+    # Save plot to BytesIO
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    plt.close()
+    buf.seek(0)
+
+    return send_file(buf, mimetype='image/png')
+
+@app.route('/age_histogram')
+@login_required
+def age_histogram():
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    # Get all ages
+    cur.execute("SELECT age FROM patients WHERE age IS NOT NULL")
+    rows = cur.fetchall()
+    conn.close()
+
+    if not rows:
+        return "No age data available"
+
+    # Extract ages from dicts
+    ages = [row['age'] for row in rows]
+
+    # Generate histogram
+    plt.figure(figsize=(10, 6))
+    plt.hist(ages, bins=range(0, int(max(ages)) + 2), color='#3498db', edgecolor='black')
+    plt.title("Histogramme des âges des patients")
+    plt.xlabel("Âge (années)")
+    plt.ylabel("Nombre de patients")
+    plt.grid(axis='y', alpha=0.75)
+
+    # Save to in-memory buffer
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    plt.close()
+
+    return send_file(buffer, mimetype='image/png')
 
 @app.route('/update/<int:patient_id>', methods=['PUT'])
 @login_required
