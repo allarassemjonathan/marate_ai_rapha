@@ -1,3 +1,9 @@
+# we will use later .. 
+import matplotlib
+matplotlib.use('Agg')  # Must be set before importing pyplot
+import matplotlib.pyplot as plt
+import pandas as pd
+import io
 from collections import defaultdict
 from flask import Flask, render_template, request, jsonify, send_file, session, flash, redirect, url_for
 import sqlite3
@@ -702,13 +708,7 @@ def get_patient(patient_id):
         print('ieah')
         return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
 
-# we will use later .. 
-import matplotlib
-matplotlib.use('Agg')  # Must be set before importing pyplot
-import matplotlib.pyplot as plt
-import pandas as pd
-import io
-import base64
+
 
 @app.route('/stat')
 @login_required
