@@ -3,3 +3,11 @@ Nouvelle evenement: 17:48:42 medecins, logout, L'utilisateur 'medecins' s'est dé
 Nouvelle evenement: 17:48:58 Dr_Ndoubabe_Bonheur, login, L'utilisateur 'Dr_Ndoubabe_Bonheur' s'est connecté avec succès
 Nouvelle evenement: 17:49:04 Dr_Ndoubabe_Bonheur, logout, L'utilisateur 'Dr_Ndoubabe_Bonheur' s'est déconnecté
 Nouvelle evenement: 17:49:39 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 18:32:40 Dr_Ndoubabe_Bonheur, login, L'utilisateur 'Dr_Ndoubabe_Bonheur' s'est connecté avec succès
+Nouvelle evenement: 21:05:32 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 21:05:43 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 22:35:28 medecins, Patient sélectionné, Patient avec ID 466 selectionné.
+Nouvelle evenement: 22:39:10 medecins, Patient sélectionné, Patient avec ID 466 selectionné.
+Nouvelle evenement: 22:39:16 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 22:39:47 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 22:40:14 medecins, Patient sélectionné, Patient avec ID 473 selectionné.
