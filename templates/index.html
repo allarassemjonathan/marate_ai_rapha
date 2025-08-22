@@ -221,6 +221,17 @@
   opacity: 1;
   transform: translateX(0);
 }
+table {
+  table-layout: auto;   /* let cells shrink naturally */
+  width: 100%;          /* but fit inside the container */
+}
+
+td, th {
+  white-space: nowrap;  /* prevent wrapping in cells */
+  max-width: 120px;     /* cap column width */
+  overflow: hidden;
+  text-overflow: ellipsis; /* show ... if text is too long */
+}
   </style>
   
 </head>
@@ -262,8 +273,8 @@
         </div>
       </div>
 
-    <div class="overflow-x-auto scrollbar rounded-xl mb-10 w-full">
-      <table class="min-w-full w-full table-auto border-collapse">
+    <div class="rounded-xl mb-10 w-full overflow-hidden">
+      <table class=" w-full table-fixed border-collapse text-sm">
           <thead class="table-header">
             <tr id="tableHeader">
               <!-- Headers will be populated here -->
