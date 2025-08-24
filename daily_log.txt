@@ -1,5 +1,21 @@
-2025-08-21
-Nouvelle evenement: 17:48:42 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 17:48:58 Dr_Ndoubabe_Bonheur, login, L'utilisateur 'Dr_Ndoubabe_Bonheur' s'est connecté avec succès
-Nouvelle evenement: 17:49:04 Dr_Ndoubabe_Bonheur, logout, L'utilisateur 'Dr_Ndoubabe_Bonheur' s'est déconnecté
-Nouvelle evenement: 17:49:39 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+2025-08-24
+Nouvelle evenement: 18:18:24 Dr_Major_Ndiaye, logout, L'utilisateur 'Dr_Major_Ndiaye' s'est déconnecté
+Nouvelle evenement: 18:18:32 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 18:23:17 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 18:23:25 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 18:23:56 medecins, Ajout d'un patient, Le patient 'testing' a été ajouté
+Nouvelle evenement: 18:25:52 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 18:25:57 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 18:30:00 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 18:31:19 Dr_Major_Ndiaye, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 18:31:28 Dr_Major_Ndiaye, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 18:31:51 Dr_Major_Ndiaye, login, L'utilisateur 'Dr_Major_Ndiaye' s'est connecté avec succès
+Nouvelle evenement: 18:36:58 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 18:37:05 infirmiers, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 18:37:28 infirmiers, login, L'utilisateur 'infirmiers' s'est connecté avec succès
+Nouvelle evenement: 18:38:32 infirmiers, Patient sélectionné, Patient avec ID 2 selectionné.
+Nouvelle evenement: 18:38:37 infirmiers, modification patient, Patient avec ID 2 a été modifié
+Nouvelle evenement: 18:45:45 infirmiers, login, L'utilisateur 'infirmiers' s'est connecté avec succès
+Nouvelle evenement: 18:48:15 infirmiers, Facture généré, Facture généré pour le patient All joe
+Nouvelle evenement: 18:54:27 infirmiers, Facture généré, Facture généré pour le patient joe all
+Nouvelle evenement: 18:56:49 infirmiers, Facture généré, Facture généré pour le patient joe All

@@ -129,19 +129,9 @@ app.secret_key = os.environ.get('FLASK_SECRET')
 Special_user = ''
 # Simple credential storage (in production, use a database)
 CREDENTIALS = {
-    'medecins': os.environ.get('medecins'),
     'infirmiers': os.environ.get('infirmiers'), 
     'receptionistes': os.environ.get('receptionistes'),
-    'Dr_Toralta_G_.Josephine':os.environ.get('Dr_Toralta_G_.Josephine'),
-    'Dr_Djaury_Dadji_-A':os.environ.get('Dr_Djaury_Dadji_-A'),
-    'Dr_Ndortolnan_Azer':os.environ.get('Dr_Ndortolnan_Azer'), 
-    'Dr_Doumgo_Monna_Doni_Nelson':os.environ.get('Dr_Doumgo_Monna_Doni_Nelson'), 
-    'Dr_Ngetigal_Hyacinte':os.environ.get('Dr_Ngetigal_Hyacinte'), 
-    'Dr_Ousmane_Hamane_Gadji':os.environ.get('Dr_Ousmane_Hamane_Gadji'), 
-    'Dr_Toralta_Emmanuelle_Mantar':os.environ.get('Dr_Toralta_Emmanuelle_Mantar'), 
-    'Dr_Madjibeye_Mirielle':os.environ.get('Dr_Madjibeye_Mirielle'), 
-    'Dr_Robnodji_Adoucie':os.environ.get('Dr_Robnodji_Adoucie'), 
-    'Dr_Ndoubabe_Bonheur': os.environ.get('Dr_Ndoubabe_Bonheur')
+    'Dr_Major_Ndiaye':os.environ.get('Dr_Major_Ndiaye')
 }
 
 # Decorator to require login
@@ -219,13 +209,13 @@ def email_reception(firstname, lastname, body, plot, recipient_email):
     # You could include additional validation for the URL here if needed
     return jsonify(success=True)
 
-
+cabinet_name = "Ma Sha Allah"
 # PDF generation using fpdf==1.7.2
 class InvoicePDF(FPDF):
     def header(self):
         # Add logo if possible
         try:
-            logo_rapha = "https://allarassemjonathan.github.io/rapha_logo.png"
+            # logo_rapha = "https://allarassemjonathan.github.io/rapha_logo.png"
             logo_url = "https://allarassemjonathan.github.io/marate_white.png"
             response = requests.get(logo_url, timeout=10)
             if response.status_code == 200:
@@ -234,19 +224,19 @@ class InvoicePDF(FPDF):
                     tmp_file.flush()
                     self.image(tmp_file.name, 10, 8, 40)
             
-            other_res= requests.get(logo_rapha, timeout=10)
-            if other_res.status_code == 200:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
-                    tmp_file.write(other_res.content)
-                    tmp_file.flush()
-                    self.image(tmp_file.name, 160, 8, 40)
+            # other_res= requests.get(logo_rapha, timeout=10)
+            # if other_res.status_code == 200:
+            #     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
+            #         tmp_file.write(other_res.content)
+            #         tmp_file.flush()
+            #         self.image(tmp_file.name, 160, 8, 40)
 
         except Exception as e:
             print(f"Could not load logo: {e}")
 
         self.set_font('Arial', 'B', 16)
         self.set_text_color(6, 182, 212)
-        self.cell(0, 10, 'Devis Cabinet RAPHA', border=False, ln=1, align='C')
+        self.cell(0, 10, f'Devis Cabinet {cabinet_name}', border=False, ln=1, align='C')
         self.ln(10)
 
     def footer(self):
@@ -255,22 +245,6 @@ class InvoicePDF(FPDF):
         self.set_text_color(128)
         self.cell(0, 10, f'Page {self.page_no()}', align='C')
 
-    def add_patient_info(self, patient):
-        self.set_font('Arial', '', 11)
-        self.set_text_color(0)
-
-        self.cell(100, 10, f"Nom: {patient['name']}", ln=0)
-        self.cell(90, 10, "Cabinet dentaire la renaissance", ln=1)
-
-        self.cell(100, 10, f"Adresse: {patient['adresse'] or 'N/A'}", ln=0)
-        self.cell(90, 10, "Kantara Sacko, Rue 22, Medina Dakar", ln=1)
-
-        self.cell(100, 10, f"Date de naissance: {patient['date_of_birth'] or 'N/A'}", ln=0)
-        self.cell(90, 10, "cablarenaissance@gmail.com", ln=1)
-
-        self.cell(100, 10, f"Date de facture: {datetime.now().strftime('%d/%m/%Y %H:%M')}", ln=0)
-        self.cell(90, 10, "(+221) 78 635 95 65", ln=1)
-        self.ln(5)
 
     def add_invoice_header(self, meta):
         dic =  { "January": "Janvier",
@@ -299,7 +273,7 @@ class InvoicePDF(FPDF):
         self.cell(0, 10, f"Facture du mois de {mois_annee}", ln=1, align='C')
         if envoye_a:
             self.cell(0, 10, f"{envoye_a}", ln=1, align='C')
-        self.cell(0, 10, "doit au cabinet Rapha", ln=1, align='C')
+        self.cell(0, 10, f"doit au cabinet {cabinet_name}", ln=1, align='C')
         self.ln(5)
 
         # Then the usual patient metadata below
@@ -799,6 +773,10 @@ def age_histogram():
 @login_required
 def update_patient(patient_id):
     data = request.get_json() or {}
+    if session['user_type'] == 'medecins':
+        data['signature'] = session['username'].replace('_', ' ')
+    else:
+        data['signature'] = session['user_type']
     if not data.get('name'):
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
 
@@ -858,10 +836,7 @@ def login():
         # Check credentials
         if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
             physicians = {
-                'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A', 'Dr_Ndortolnan_Azer',
-                'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji',
-                'Dr_Toralta_Emmanuelle_Mantar', 'Dr_Madjibeye_Mirielle',
-                'Dr_Robnodji_Adoucie', 'Dr_Ndoubabe_Bonheur'
+                'Dr_Major_Ndiaye'
             }
 
             # Always set both username & user_type
