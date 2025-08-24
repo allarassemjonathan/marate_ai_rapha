@@ -799,6 +799,8 @@ def age_histogram():
 @login_required
 def update_patient(patient_id):
     data = request.get_json() or {}
+    if session['user_type'] == 'medecins':
+        data['signature'] = session['username'].replace('_', ' ')
     if not data.get('name'):
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
 
