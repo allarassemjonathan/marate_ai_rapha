@@ -652,6 +652,7 @@ def patient_detail(patient_id):
     row_as_visits = [dict(row) for row in visits]
     return render_template('patient.html', visits = row_as_visits, patient=row_as_dicts[0])
 
+BOSS = 'Dr_Major_Ndiaye'
 @app.route('/get_patient/<int:patient_id>')
 @login_required
 def get_patient(patient_id):
@@ -669,18 +670,19 @@ def get_patient(patient_id):
     conn.close()
     print(session['username'])
 
-    if user_type=='infirmiers' or user_type == 'receptionistes':
-        return jsonify(row)
-    if row['signature'] is None:
-        return jsonify(row)
-    if session['username'] == 'Dr_Toralta_G_.Josephine':
-        print('ot here?')
-        return jsonify(row)
-    if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
-        return jsonify(row)
-    else:
-        print('ieah')
-        return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
+    return jsonify(row)
+    # if user_type=='infirmiers' or user_type == 'receptionistes':
+    #     return jsonify(row)
+    # if row['signature'] is None:
+    #     return jsonify(row)
+    # if session['username'] == BOSS:
+    #     print('ot here?')
+    #     return jsonify(row)
+    # if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
+    #     return jsonify(row)
+    # else:
+    #     print('ieah')
+    #     return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
 
 
 
@@ -898,7 +900,7 @@ def send_daily_report_email():
     subject = f"Daily Action Report for {today.strftime('%Y-%m-%d')}"
     msg = MIMEMultipart()
     msg['From'] = your_email
-    msg['To'] =  "Josephinetoralta@gmail.com"
+    msg['To'] =  "jonathanjerabe@gmail.com"
     msg['Subject'] = subject
 
     print('sending')
@@ -914,7 +916,7 @@ def send_daily_report_email():
         server.send_message(msg)
         server.quit()
         return """
-        Le rapport journalier des connections au logiciel a été envoyée a l'email Josephinetoralta@gmail.com!
+        Le rapport journalier des connections au logiciel a été envoyée a l'email jonathanjerabe@gmail.com!
         <br>
         <a href="/">Retour menu <a/>
         """
