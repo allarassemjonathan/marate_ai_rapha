@@ -3,3 +3,4 @@ Nouvelle evenement: 00:43:46 Dr_Major_Ndiaye, La connexion a échoué, Failed logi
 Nouvelle evenement: 00:43:57 Dr_Major_Ndiaye, login, L'utilisateur 'Dr_Major_Ndiaye' s'est connecté avec succès
 Nouvelle evenement: 00:44:05 medecins, Détails des patients, Les détails du patient avec l'identifiant 2 ont été consulté.
 Nouvelle evenement: 00:44:13 medecins, Patient sélectionné, Patient avec ID 2 selectionné.
+Nouvelle evenement: 00:50:39 Dr_Major_Ndiaye, login, L'utilisateur 'Dr_Major_Ndiaye' s'est connecté avec succès
