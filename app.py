@@ -587,6 +587,8 @@ def add():
                 data['signature'] = session['username'].replace('_', ' ')
             else:
                 data['signature'] = 'medecins'
+        else:
+            data['signature'] = session['user_type']
         # Use parameterized query
         columns = list(data.keys())
         values = list(data.values())
