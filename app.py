@@ -131,7 +131,8 @@ Special_user = ''
 CREDENTIALS = {
     'infirmiers': os.environ.get('infirmiers'), 
     'receptionistes': os.environ.get('receptionistes'),
-    'Dr_Major_Ndiaye':os.environ.get('Dr_Major_Ndiaye')
+    'Dr_Major_Ndiaye':os.environ.get('Dr_Major_Ndiaye'),
+    'medecins':os.environ.get('medecins')
 }
 
 # Decorator to require login
@@ -445,6 +446,8 @@ def index():
 
     if user_type in ['receptionistes', 'infirmiers']:
         username = user_type[:-1]
+        if user_type == 'receptionistes':
+            username = 'réceptionnistes'
     else:
         username = session['username'].replace('_', ' ')
 

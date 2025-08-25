@@ -1,39 +1,5 @@
-2025-08-24
-Nouvelle evenement: 18:18:24 Dr_Major_Ndiaye, logout, L'utilisateur 'Dr_Major_Ndiaye' s'est déconnecté
-Nouvelle evenement: 18:18:32 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
-Nouvelle evenement: 18:23:17 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 18:23:25 medecins, modification patient, Patient avec ID 1 a été modifié
-Nouvelle evenement: 18:23:56 medecins, Ajout d'un patient, Le patient 'testing' a été ajouté
-Nouvelle evenement: 18:25:52 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 18:25:57 medecins, modification patient, Patient avec ID 1 a été modifié
-Nouvelle evenement: 18:30:00 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 18:31:19 Dr_Major_Ndiaye, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 18:31:28 Dr_Major_Ndiaye, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 18:31:51 Dr_Major_Ndiaye, login, L'utilisateur 'Dr_Major_Ndiaye' s'est connecté avec succès
-Nouvelle evenement: 18:36:58 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 18:37:05 infirmiers, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 18:37:28 infirmiers, login, L'utilisateur 'infirmiers' s'est connecté avec succès
-Nouvelle evenement: 18:38:32 infirmiers, Patient sélectionné, Patient avec ID 2 selectionné.
-Nouvelle evenement: 18:38:37 infirmiers, modification patient, Patient avec ID 2 a été modifié
-Nouvelle evenement: 18:45:45 infirmiers, login, L'utilisateur 'infirmiers' s'est connecté avec succès
-Nouvelle evenement: 18:48:15 infirmiers, Facture généré, Facture généré pour le patient All joe
-Nouvelle evenement: 18:54:27 infirmiers, Facture généré, Facture généré pour le patient joe all
-Nouvelle evenement: 18:56:49 infirmiers, Facture généré, Facture généré pour le patient joe All
-Nouvelle evenement: 19:06:23 Dr_Major_Ndiaye, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 19:06:34 infirmiers, login, L'utilisateur 'infirmiers' s'est connecté avec succès
-Nouvelle evenement: 19:06:41 infirmiers, Patient sélectionné, Patient avec ID 3 selectionné.
-Nouvelle evenement: 19:06:54 infirmiers, modification patient, Patient avec ID 3 a été modifié
-Nouvelle evenement: 19:06:58 infirmiers, Patient sélectionné, Patient avec ID 3 selectionné.
-Nouvelle evenement: 19:11:28 infirmiers, Patient sélectionné, Patient avec ID 3 selectionné.
-Nouvelle evenement: 19:11:31 infirmiers, logout, L'utilisateur 'infirmiers' s'est déconnecté
-Nouvelle evenement: 19:11:37 Dr_Major_Ndiaye, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 19:11:44 Dr_Major_Ndiaye, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 19:12:02 Dr_Major_Ndiaye, login, L'utilisateur 'Dr_Major_Ndiaye' s'est connecté avec succès
-Nouvelle evenement: 19:12:16 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 1), ('name', 'joe'), ('adresse', '123 abs'), ('age', 0), ('date_of_birth', None), ('poids', None), ('taille', None), ('tension_arterielle', None), ('temperature', None), ('hypothese_de_diagnostique', None), ('bilan', 'tests'), ('resultat_bilan', None), ('signature', 'Dr Toralta G .Josephine'), ('renseignements_clinique', None), ('ordonnance', None), ('created_at', datetime.date(2025, 8, 24)), ('phone_number', ''), ('meeting', ''), ('new_cases', ''), ('age_years', 0), ('age_months', 0), ('age_days', 0)])]
-Nouvelle evenement: 19:16:44 medecins, Ajout d'un patient, Le patient 'trsdwer' a été ajouté
-Nouvelle evenement: 19:36:40 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 19:36:51 Dr_Major_Ndiaye, login, L'utilisateur 'Dr_Major_Ndiaye' s'est connecté avec succès
-Nouvelle evenement: 19:41:23 medecins, Ajout d'un patient, Le patient 'test' a été ajouté
-Nouvelle evenement: 19:41:31 medecins, Suppression d'un patient, Le patient avec l'identifiant 6 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 6), ('name', 'test'), ('adresse', 'test'), ('age', 0), ('date_of_birth', None), ('poids', None), ('taille', None), ('tension_arterielle', None), ('temperature', None), ('hypothese_de_diagnostique', ''), ('bilan', ''), ('resultat_bilan', ''), ('signature', 'Dr Major Ndiaye'), ('renseignements_clinique', ''), ('ordonnance', ''), ('created_at', datetime.date(2025, 8, 24)), ('phone_number', ''), ('meeting', ''), ('new_cases', ''), ('age_years', 0), ('age_months', 0), ('age_days', 0)])]
-Nouvelle evenement: 19:59:13 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 19:59:19 infirmiers, login, L'utilisateur 'infirmiers' s'est connecté avec succès
+2025-08-25
+Nouvelle evenement: 00:43:46 Dr_Major_Ndiaye, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 00:43:57 Dr_Major_Ndiaye, login, L'utilisateur 'Dr_Major_Ndiaye' s'est connecté avec succès
+Nouvelle evenement: 00:44:05 medecins, Détails des patients, Les détails du patient avec l'identifiant 2 ont été consulté.
+Nouvelle evenement: 00:44:13 medecins, Patient sélectionné, Patient avec ID 2 selectionné.
