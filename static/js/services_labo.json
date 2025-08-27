@@ -1,0 +1,12 @@
+{
+    "NFS Labo Niang -- sous traitance": {
+        "label": "NFS Labo Niang -- sous traitance",
+        "unitPrice":3000,
+        "category": "Laboratoire Niang"
+    }, 
+    "NFS Labo Niang -- public": {
+        "label": "NFS Labo Niang -- public",
+        "unitPrice": 5000,
+        "category": "Laboratoire Niang"
+    }
+}

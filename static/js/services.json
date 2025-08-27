@@ -73,6 +73,763 @@
             "label": "Controle poids",
             "unitPrice": 500,
             "category": "Soins"
+        },
+        "NFS Labo Niang -- public": {
+            "label": "NFS Labo Niang -- public",
+            "unitPrice": 5000,
+            "category": "Laboratoire Niang"
+        },
+        "AgHbs Labo Niang -- sous traitance": {
+            "label": "AgHbs Labo Niang -- sous traitance",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "AgHbs Labo Niang -- public": {
+            "label": "AgHbs Labo Niang -- public",
+            "unitPrice": 5000,
+            "category": "Laboratoire Niang"
+        },
+        "Transaminases Labo Niang -- sous traitance": {
+            "label": "Transaminases Labo Niang -- sous traitance",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Transaminases Labo Niang -- public": {
+            "label": "Transaminases Labo Niang -- public",
+            "unitPrice": 5000,
+            "category": "Laboratoire Niang"
+        },
+        "Bilirubine Totale et directe Labo Niang -- sous traitance": {
+            "label": "Bilirubine Totale et directe Labo Niang -- sous traitance",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Bilirubine Totale et directe Labo Niang -- public": {
+            "label": "Bilirubine Totale et directe Labo Niang -- public",
+            "unitPrice": 6000,
+            "category": "Laboratoire Niang"
+        },
+        "Cholestérol Total/HDL/LDL/Triglycéride Labo Niang -- sous traitance": {
+            "label": "Cholestérol Total/HDL/LDL/Triglycéride Labo Niang -- sous traitance",
+            "unitPrice": 6000,
+            "category": "Laboratoire Niang"
+        },
+        "Cholestérol Total/HDL/LDL/Triglycéride Labo Niang -- public": {
+            "label": "Cholestérol Total/HDL/LDL/Triglycéride Labo Niang -- public",
+            "unitPrice": 8000,
+            "category": "Laboratoire Niang"
+        },
+        "HbA1c Labo Niang -- sous traitance": {
+            "label": "HbA1c Labo Niang -- sous traitance",
+            "unitPrice": 7000,
+            "category": "Laboratoire Niang"
+        },
+        "HbA1c Labo Niang -- public": {
+            "label": "HbA1c Labo Niang -- public",
+            "unitPrice": 10000,
+            "category": "Laboratoire Niang"
+        },
+        "Glycémie Labo Niang -- sous traitance": {
+            "label": "Glycémie Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "Glycémie Labo Niang -- public": {
+            "label": "Glycémie Labo Niang -- public",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Azotémie (Urée) Labo Niang -- sous traitance": {
+            "label": "Azotémie (Urée) Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "Azotémie (Urée) Labo Niang -- public": {
+            "label": "Azotémie (Urée) Labo Niang -- public",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Uricémie (Acide urique) Labo Niang -- sous traitance": {
+            "label": "Uricémie (Acide urique) Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "Uricémie (Acide urique) Labo Niang -- public": {
+            "label": "Uricémie (Acide urique) Labo Niang -- public",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Créatininémie Labo Niang -- sous traitance": {
+            "label": "Créatininémie Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "Créatininémie Labo Niang -- public": {
+            "label": "Créatininémie Labo Niang -- public",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Calcémie Labo Niang -- sous traitance": {
+            "label": "Calcémie Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "Calcémie Labo Niang -- public": {
+            "label": "Calcémie Labo Niang -- public",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Magnésémie Labo Niang -- sous traitance": {
+            "label": "Magnésémie Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "Magnésémie Labo Niang -- public": {
+            "label": "Magnésémie Labo Niang -- public",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "GGT Labo Niang -- sous traitance": {
+            "label": "GGT Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "GGT Labo Niang -- public": {
+            "label": "GGT Labo Niang -- public",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "PAL Labo Niang -- sous traitance": {
+            "label": "PAL Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "PAL Labo Niang -- public": {
+            "label": "PAL Labo Niang -- public",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Vitesse de Sédimentation (VS) Labo Niang -- sous traitance": {
+            "label": "Vitesse de Sédimentation (VS) Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "Vitesse de Sédimentation (VS) Labo Niang -- public": {
+            "label": "Vitesse de Sédimentation (VS) Labo Niang -- public",
+            "unitPrice": 2000,
+            "category": "Laboratoire Niang"
+        },
+        "Test d’Emmel (TE) Labo Niang -- sous traitance": {
+            "label": "Test d’Emmel (TE) Labo Niang -- sous traitance",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "Test d’Emmel (TE) Labo Niang -- public": {
+            "label": "Test d’Emmel (TE) Labo Niang -- public",
+            "unitPrice": 2500,
+            "category": "Laboratoire Niang"
+        },
+        "GSRH Labo Niang -- sous traitance": {
+            "label": "GSRH Labo Niang -- sous traitance",
+            "unitPrice": 2000,
+            "category": "Laboratoire Niang"
+        },
+        "GSRH Labo Niang -- public": {
+            "label": "GSRH Labo Niang -- public",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "ASLO Labo Niang -- sous traitance": {
+            "label": "ASLO Labo Niang -- sous traitance",
+            "unitPrice": 2000,
+            "category": "Laboratoire Niang"
+        },
+        "ASLO Labo Niang -- public": {
+            "label": "ASLO Labo Niang -- public",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "CRP Labo Niang -- sous traitance": {
+            "label": "CRP Labo Niang -- sous traitance",
+            "unitPrice": 2000,
+            "category": "Laboratoire Niang"
+        },
+        "CRP Labo Niang -- public": {
+            "label": "CRP Labo Niang -- public",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "Facteurs rhumatoïdes Labo Niang -- sous traitance": {
+            "label": "Facteurs rhumatoïdes Labo Niang -- sous traitance",
+            "unitPrice": 2000,
+            "category": "Laboratoire Niang"
+        },
+        "Facteurs rhumatoïdes Labo Niang -- public": {
+            "label": "Facteurs rhumatoïdes Labo Niang -- public",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "BW Labo Niang -- sous traitance": {
+            "label": "BW Labo Niang -- sous traitance",
+            "unitPrice": 2000,
+            "category": "Laboratoire Niang"
+        },
+        "BW Labo Niang -- public": {
+            "label": "BW Labo Niang -- public",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "Widal et Félix Labo Niang -- sous traitance": {
+            "label": "Widal et Félix Labo Niang -- sous traitance",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "Widal et Félix Labo Niang -- public": {
+            "label": "Widal et Félix Labo Niang -- public",
+            "unitPrice": 6000,
+            "category": "Laboratoire Niang"
+        },
+        "G-test Labo Niang -- sous traitance": {
+            "label": "G-test Labo Niang -- sous traitance",
+            "unitPrice": 1000,
+            "category": "Laboratoire Niang"
+        },
+        "G-test Labo Niang -- public": {
+            "label": "G-test Labo Niang -- public",
+            "unitPrice": 1500,
+            "category": "Laboratoire Niang"
+        },
+        "Bandelette urinaire Labo Niang -- sous traitance": {
+            "label": "Bandelette urinaire Labo Niang -- sous traitance",
+            "unitPrice": 500,
+            "category": "Laboratoire Niang"
+        },
+        "Bandelette urinaire Labo Niang -- public": {
+            "label": "Bandelette urinaire Labo Niang -- public",
+            "unitPrice": 1000,
+            "category": "Laboratoire Niang"
+        },
+        "HIV Labo Niang -- sous traitance": {
+            "label": "HIV Labo Niang -- sous traitance",
+            "unitPrice": 0,
+            "category": "Laboratoire Niang"
+        },
+        "NFS+ TR Labo Niang -- sous traitance": {
+            "label": "NFS+ TR Labo Niang -- sous traitance",
+            "unitPrice": 6000,
+            "category": "Laboratoire Niang"
+        },
+        "NFS+ TR Labo Niang -- public": {
+            "label": "NFS+ TR Labo Niang -- public",
+            "unitPrice": 8000,
+            "category": "Laboratoire Niang"
+        },
+        "Protidémie Labo Niang -- sous traitance": {
+            "label": "Protidémie Labo Niang -- sous traitance",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Protidémie Labo Niang -- public": {
+            "label": "Protidémie Labo Niang -- public",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "Phosphore Labo Niang -- sous traitance": {
+            "label": "Phosphore Labo Niang -- sous traitance",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Phosphore Labo Niang -- public": {
+            "label": "Phosphore Labo Niang -- public",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "Albuminémie Labo Niang -- sous traitance": {
+            "label": "Albuminémie Labo Niang -- sous traitance",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Albuminémie Labo Niang -- public": {
+            "label": "Albuminémie Labo Niang -- public",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "PU 24H Labo Niang -- sous traitance": {
+            "label": "PU 24H Labo Niang -- sous traitance",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "PU 24H Labo Niang -- public": {
+            "label": "PU 24H Labo Niang -- public",
+            "unitPrice": 6000,
+            "category": "Laboratoire Niang"
+        },
+        "TP TCK Labo Niang -- sous traitance": {
+            "label": "TP TCK Labo Niang -- sous traitance",
+            "unitPrice": 6000,
+            "category": "Laboratoire Niang"
+        },
+        "TP TCK Labo Niang -- public": {
+            "label": "TP TCK Labo Niang -- public",
+            "unitPrice": 8000,
+            "category": "Laboratoire Niang"
+        },
+        "Fer sérique Labo Niang -- sous traitance": {
+            "label": "Fer sérique Labo Niang -- sous traitance",
+            "unitPrice": 12000,
+            "category": "Laboratoire Niang"
+        },
+        "Fer sérique Labo Niang -- public": {
+            "label": "Fer sérique Labo Niang -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Niang"
+        },
+        "Ferritine Labo Niang -- sous traitance": {
+            "label": "Ferritine Labo Niang -- sous traitance",
+            "unitPrice": 10000,
+            "category": "Laboratoire Niang"
+        },
+        "Ferritine Labo Niang -- public": {
+            "label": "Ferritine Labo Niang -- public",
+            "unitPrice": 12000,
+            "category": "Laboratoire Niang"
+        },
+        "Micro albuminurie Labo Niang -- sous traitance": {
+            "label": "Micro albuminurie Labo Niang -- sous traitance",
+            "unitPrice": 5000,
+            "category": "Laboratoire Niang"
+        },
+        "Micro albuminurie Labo Niang -- public": {
+            "label": "Micro albuminurie Labo Niang -- public",
+            "unitPrice": 6000,
+            "category": "Laboratoire Niang"
+        },
+        "Waler rose Labo Niang -- sous traitance": {
+            "label": "Waler rose Labo Niang -- sous traitance",
+            "unitPrice": 5000,
+            "category": "Laboratoire Niang"
+        },
+        "Waler rose Labo Niang -- public": {
+            "label": "Waler rose Labo Niang -- public",
+            "unitPrice": 6000,
+            "category": "Laboratoire Niang"
+        }, 
+        "KAOP -- sous traitance":{
+            "label": "KAOP -- sous traitance",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        }, 
+        "KAOP -- public":{
+            "label": "KAOP -- public",
+            "unitPrice": 5000,
+            "category": "Laboratoire Niang"
+        },
+        "GE + FROTTIS -- public":{
+            "label": "GE + FROTTIS-- public",
+            "unitPrice": 4000,
+            "category": "Laboratoire Niang"
+        },
+        "GE + FROTTIS -- sous traitance":{
+            "label": "GE + FROTTIS -- sous traitance",
+            "unitPrice": 2000,
+            "category": "Laboratoire Niang"
+        },
+        "Recherche de Schistosome dans les urines -- sous traitance":{
+            "label": "Recherche de Schistosome dans les urines -- sous traitance",
+            "unitPrice": 3000,
+            "category": "Laboratoire Niang"
+        },
+        "Recherche de Schistosome dans les urines -- public":{
+            "label": "Recherche de Schistosome dans les urines -- public",
+            "unitPrice": 6000,
+            "category": "Laboratoire Niang"
+        },  
+        "Sérum salé": { 
+        "label": "Sérum salé",
+        "unitPrice": 3000,
+        "category": "médicament"
+        },
+        "Ringer": { 
+            "label": "Ringer",
+            "unitPrice": 2000,
+            "category": "médicament"
+        },
+        "Sérum glucose": { 
+            "label": "Sérum glucose",
+            "unitPrice": 2000,
+            "category": "médicament"
+        },
+        "Terlipressine": { 
+            "label": "Terlipressine",
+            "unitPrice": 2500,
+            "category": "médicament"
+        },
+        "Kerlipen": { 
+            "label": "Kerlipen",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Restovia": { 
+            "label": "Restovia",
+            "unitPrice": 3000,
+            "category": "médicament"
+        },
+        "Diclofenac": { 
+            "label": "Diclofenac",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Diazepam (Valium)": { 
+            "label": "Diazepam (Valium)",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Vogalène": { 
+            "label": "Vogalène",
+            "unitPrice": 500,
+            "category": "médicament"
+        },
+        "ECG": { 
+            "label": "ECG",
+            "unitPrice": 10000,
+            "category": "service"
+        },
+        "Multivit. Calcium Magnesium": { 
+            "label": "Multivit. Calcium Magnesium",
+            "unitPrice": 3000,
+            "category": "médicament"
+        },
+        "Amox CP": { 
+            "label": "Amox CP",
+            "unitPrice": 1250,
+            "category": "médicament"
+        },
+        "Panodil": { 
+            "label": "Panodil",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Novalgine": { 
+            "label": "Novalgine",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Flagyl SP": { 
+            "label": "Flagyl SP",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Diclovona": { 
+            "label": "Diclovona",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Arbem SP": { 
+            "label": "Arbem SP",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Tenifime": { 
+            "label": "Tenifime",
+            "unitPrice": 750,
+            "category": "médicament"
+        },
+        "Salbutamol SP": { 
+            "label": "Salbutamol SP",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Doxy": { 
+            "label": "Doxy",
+            "unitPrice": 500,
+            "category": "médicament"
+        },
+        "Eng 500": { 
+            "label": "Eng 500",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Pana SP": { 
+            "label": "Pana SP",
+            "unitPrice": 1250,
+            "category": "médicament"
+        },
+        "VAT": { 
+            "label": "VAT",
+            "unitPrice": 1500,
+            "category": "taxe"
+        },
+        "Flagyl inj": { 
+            "label": "Flagyl inj",
+            "unitPrice": 3000,
+            "category": "médicament"
+        },
+        "Flagyl CP": { 
+            "label": "Flagyl CP",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "SAT": { 
+            "label": "SAT",
+            "unitPrice": 3000,
+            "category": "taxe"
+        },
+        "Ciflox": { 
+            "label": "Ciflox",
+            "unitPrice": 3500,
+            "category": "médicament"
+        },
+        "Parmi CP": { 
+            "label": "Parmi CP",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Nyataïne": { 
+            "label": "Nyataïne",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Pramipexole": { 
+            "label": "Pramipexole",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Chini": { 
+            "label": "Chini",
+            "unitPrice": 2000,
+            "category": "médicament"
+        },
+        "Nidagone": { 
+            "label": "Nidagone",
+            "unitPrice": 2000,
+            "category": "médicament"
+        },
+        "Vit C inj": { 
+            "label": "Vit C inj",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Diclo inj": { 
+            "label": "Diclo inj",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Betaméthasone": { 
+            "label": "Betaméthasone",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Ciprolen": { 
+            "label": "Ciprolen",
+            "unitPrice": 3500,
+            "category": "médicament"
+        },
+        "Ciflox CP": { 
+            "label": "Ciflox CP",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Coltin": { 
+            "label": "Coltin",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Flagyl 250": { 
+            "label": "Flagyl 250",
+            "unitPrice": 500,
+            "category": "médicament"
+        },
+        "Fen": { 
+            "label": "Fen",
+            "unitPrice": 500,
+            "category": "médicament"
+        },
+        "Vit C CP": { 
+            "label": "Vit C CP",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Dextro": { 
+            "label": "Dextro",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Meco (enalapril)": { 
+            "label": "Meco (enalapril)",
+            "unitPrice": 3000,
+            "category": "médicament"
+        },
+        "Terlipressine (1 dose)": { 
+            "label": "Terlipressine (1 dose)",
+            "unitPrice": 5000,
+            "category": "médicament"
+        },
+        "Genta Golin": { 
+            "label": "Genta Golin",
+            "unitPrice": 1250,
+            "category": "médicament"
+        },
+        "Metro SP Prah": { 
+            "label": "Metro SP Prah",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Cotri SP (Bactri)": { 
+            "label": "Cotri SP (Bactri)",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Amax SP": { 
+            "label": "Amox SP",
+            "unitPrice": 1250,
+            "category": "médicament"
+        },
+        "Salbutamol inj": { 
+            "label": "Salbutamol inj",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Glyséo": { 
+            "label": "Glyséo",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Atrolina inj": { 
+            "label": "Atrolina inj",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Hydrocortisone": { 
+            "label": "Hydrocortisone",
+            "unitPrice": 750,
+            "category": "médicament"
+        },
+        "Disphélim": { 
+            "label": "Disphélim",
+            "unitPrice": 1500,
+            "category": "médicament"
+        },
+        "Tramadol": { 
+            "label": "Tramadol",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Vasizole": { 
+            "label": "Vasizole",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Diazépam": { 
+            "label": "Diazépam",
+            "unitPrice": 1000,
+            "category": "médicament"
+        },
+        "Dichora": { 
+            "label": "Dichora",
+            "unitPrice": 500,
+            "category": "médicament"
+        },
+        "Texfgonoseno": { 
+            "label": "Texfgonoseno",
+            "unitPrice": 3000,
+            "category": "médicament"
+        },
+        "Mionel": { 
+            "label": "Mionel",
+            "unitPrice": 2000,
+            "category": "médicament"
+        },
+        "Nébulisation": { 
+            "label": "Nébulisation",
+            "unitPrice": 5000,
+            "category": "service"
+        },
+          "NFS -- partenaire": {  
+            "label": "NFS -- partenaire", 
+            "unitPrice": 4000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "NFS -- public": {  
+            "label": "NFS -- public", 
+            "unitPrice": 5000, 
+            "category": "Laboratoire Diallo" 
+        },
+
+        "NFS + TAUX DE RETICULOCYTES -- partenaire": {  
+            "label": "NFS + TAUX DE RETICULOCYTES -- partenaire", 
+            "unitPrice": 6000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "NFS + TAUX DE RETICULOCYTES -- public": {  
+            "label": "NFS + TAUX DE RETICULOCYTES -- public", 
+            "unitPrice": 7000, 
+            "category": "Laboratoire Diallo" 
+        },
+
+        "TEST D’EMMEL -- partenaire": {  
+            "label": "TEST D’EMMEL -- partenaire", 
+            "unitPrice": 3000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "TEST D’EMMEL -- public": {  
+            "label": "TEST D’EMMEL -- public", 
+            "unitPrice": 4000, 
+            "category": "Laboratoire Diallo" 
+        },
+
+        "VITESSE DE SEDIMENTATION -- partenaire": {  
+            "label": "VITESSE DE SEDIMENTATION -- partenaire", 
+            "unitPrice": 1500, 
+            "category": "Laboratoire Diallo" 
+        },
+        "VITESSE DE SEDIMENTATION -- public": {  
+            "label": "VITESSE DE SEDIMENTATION -- public", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Diallo" 
+        },
+
+        "NFS SUR TUBE CITRATE -- partenaire": {  
+            "label": "NFS SUR TUBE CITRATE -- partenaire", 
+            "unitPrice": 5000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "NFS SUR TUBE CITRATE -- public": {  
+            "label": "NFS SUR TUBE CITRATE -- public", 
+            "unitPrice": 6000, 
+            "category": "Laboratoire Diallo" 
+        },
+
+        "GROUPAGE SANGUIN -- partenaire": {  
+            "label": "GROUPAGE SANGUIN -- partenaire", 
+            "unitPrice": 3000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "GROUPAGE SANGUIN -- public": {  
+            "label": "GROUPAGE SANGUIN -- public", 
+            "unitPrice": 4000, 
+            "category": "Laboratoire Diallo" 
+        },
+
+        "GS + PHENOTYPE KELL -- partenaire": {  
+            "label": "GS + PHENOTYPE KELL -- partenaire", 
+            "unitPrice": 20000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "GS + PHENOTYPE KELL -- public": {  
+            "label": "GS + PHENOTYPE KELL -- public", 
+            "unitPrice": 25000, 
+            "category": "Laboratoire Diallo" 
+        },
+
+        "RAI (dépistage) -- partenaire": {  
+            "label": "RAI (dépistage) -- partenaire", 
+            "unitPrice": 10000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "RAI (dépistage) -- public": {  
+            "label": "RAI (dépistage) -- public", 
+            "unitPrice": 12000, 
+            "category": "Laboratoire Diallo" 
         }
 
     }
