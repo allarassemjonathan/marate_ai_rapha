@@ -830,6 +830,986 @@
             "label": "RAI (dépistage) -- public", 
             "unitPrice": 12000, 
             "category": "Laboratoire Diallo" 
-        }
+        },
+          "Coombs direct -- partenaire": {  
+            "label": "Coombs direct -- partenaire", 
+            "unitPrice": 9000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Coombs direct -- public": {  
+            "label": "Coombs direct -- public", 
+            "unitPrice": 10000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
 
+        "Coombs indirect -- partenaire": {  
+            "label": "Coombs indirect -- partenaire", 
+            "unitPrice": 9000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Coombs indirect -- public": {  
+            "label": "Coombs indirect -- public", 
+            "unitPrice": 10000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "TP + INR -- partenaire": {  
+            "label": "TP + INR -- partenaire", 
+            "unitPrice": 3000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "TP + INR -- public": {  
+            "label": "TP + INR -- public", 
+            "unitPrice": 4000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "TCK ou TCA -- partenaire": {  
+            "label": "TCK ou TCA -- partenaire", 
+            "unitPrice": 3000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "TCK ou TCA -- public": {  
+            "label": "TCK ou TCA -- public", 
+            "unitPrice": 4000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Fibrinogène -- partenaire": {  
+            "label": "Fibrinogène -- partenaire", 
+            "unitPrice": 4000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Fibrinogène -- public": {  
+            "label": "Fibrinogène -- public", 
+            "unitPrice": 6000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Electrophorèse Hémoglobine -- partenaire": {  
+            "label": "Electrophorèse Hémoglobine -- partenaire", 
+            "unitPrice": 10000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Electrophorèse Hémoglobine -- public": {  
+            "label": "Electrophorèse Hémoglobine -- public", 
+            "unitPrice": 15000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Glycémie à jeun -- partenaire": {  
+            "label": "Glycémie à jeun -- partenaire", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Glycémie à jeun -- public": {  
+            "label": "Glycémie à jeun -- public", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Azotémie ou Urée -- partenaire": {  
+            "label": "Azotémie ou Urée -- partenaire", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Azotémie ou Urée -- public": {  
+            "label": "Azotémie ou Urée -- public", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Uricémie ou Acide urique -- partenaire": {  
+            "label": "Uricémie ou Acide urique -- partenaire", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Uricémie ou Acide urique -- public": {  
+            "label": "Uricémie ou Acide urique -- public", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Calcémie -- partenaire": {  
+            "label": "Calcémie -- partenaire", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Calcémie -- public": {  
+            "label": "Calcémie -- public", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Magnésémie -- partenaire": {  
+            "label": "Magnésémie -- partenaire", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Magnésémie -- public": {  
+            "label": "Magnésémie -- public", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Phosphorémie -- partenaire": {  
+            "label": "Phosphorémie -- partenaire", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Phosphorémie -- public": {  
+            "label": "Phosphorémie -- public", 
+            "unitPrice": 3000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Phosphore urinaire -- partenaire": {  
+            "label": "Phosphore urinaire -- partenaire", 
+            "unitPrice": 4000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Phosphore urinaire -- public": {  
+            "label": "Phosphore urinaire -- public", 
+            "unitPrice": 5000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Créatininémie -- partenaire": {  
+            "label": "Créatininémie -- partenaire", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Créatininémie -- public": {  
+            "label": "Créatininémie -- public", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Transaminases -- partenaire": {  
+            "label": "Transaminases -- partenaire", 
+            "unitPrice": 6000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Transaminases -- public": {  
+            "label": "Transaminases -- public", 
+            "unitPrice": 8000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Bilirubine totale et directe -- partenaire": {  
+            "label": "Bilirubine totale et directe -- partenaire", 
+            "unitPrice": 6000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Bilirubine totale et directe -- public": {  
+            "label": "Bilirubine totale et directe -- public", 
+            "unitPrice": 8000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Gamma GT -- partenaire": {  
+            "label": "Gamma GT -- partenaire", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Gamma GT -- public": {  
+            "label": "Gamma GT -- public", 
+            "unitPrice": 3000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "PAL -- partenaire": {  
+            "label": "PAL -- partenaire", 
+            "unitPrice": 3000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "PAL -- public": {  
+            "label": "PAL -- public", 
+            "unitPrice": 3500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Protidémie -- partenaire": {  
+            "label": "Protidémie -- partenaire", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Protidémie -- public": {  
+            "label": "Protidémie -- public", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Albuminémie -- partenaire": {  
+            "label": "Albuminémie -- partenaire", 
+            "unitPrice": 2000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Albuminémie -- public": {  
+            "label": "Albuminémie -- public", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "PU 24h -- partenaire": {  
+            "label": "PU 24h -- partenaire", 
+            "unitPrice": 2500, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "PU 24h -- public": {  
+            "label": "PU 24h -- public", 
+            "unitPrice": 3000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Fer sérique -- partenaire": {  
+            "label": "Fer sérique -- partenaire", 
+            "unitPrice": 4000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Fer sérique -- public": {  
+            "label": "Fer sérique -- public", 
+            "unitPrice": 6000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Ferritine -- partenaire": {  
+            "label": "Ferritine -- partenaire", 
+            "unitPrice": 12000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Ferritine -- public": {  
+            "label": "Ferritine -- public", 
+            "unitPrice": 15000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+
+        "Ferritine glycosylée -- partenaire": {  
+            "label": "Ferritine glycosylée -- partenaire", 
+            "unitPrice": 70000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        },
+        "Ferritine glycosylée -- public": {  
+            "label": "Ferritine glycosylée -- public", 
+            "unitPrice": 70000, 
+            "category": "Laboratoire Alpha Bio Citoyen" 
+        }, 
+        "Spermogramme -- partenaire": { 
+            "label": "Spermogramme -- partenaire",
+            "unitPrice": 20000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Spermogramme -- public": { 
+            "label": "Spermogramme -- public", 
+            "unitPrice": 25000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Spermonoculture -- partenaire": { 
+            "label": "Spermonoculture -- partenaire", 
+            "unitPrice": 13000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Spermonoculture -- public": { 
+            "label": "Spermonoculture -- public", 
+            "unitPrice": 15000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Recherche Sperme dans urine -- partenaire": { 
+            "label": "Recherche Sperme dans urine -- partenaire", 
+            "unitPrice": 9000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Recherche Sperme dans urine -- public": { 
+            "label": "Recherche Sperme dans urine -- public", 
+            "unitPrice": 10000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Test Hunner -- partenaire": { 
+            "label": "Test Hunner -- partenaire", 
+            "unitPrice": 14000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Test Hunner -- public": { 
+            "label": "Test Hunner -- public", 
+            "unitPrice": 16000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Testosterone Homme -- partenaire": { 
+            "label": "Testosterone Homme -- partenaire", 
+            "unitPrice": 14000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Testosterone Homme -- public": { 
+            "label": "Testosterone Homme -- public", 
+            "unitPrice": 16000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Testosterone femme - Enfant -- partenaire": {
+            "label": "Testosterone femme - Enfant -- partenaire", 
+            "unitPrice": 23000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Testosterone femme - Enfant -- public": { 
+            "label": "Testosterone femme - Enfant -- public", 
+            "unitPrice": 26000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "AMH -- partenaire": {
+            "label": "AMH -- partenaire", 
+            "unitPrice": 25000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "AMH -- public": { 
+            "label": "AMH -- public", 
+            "unitPrice": 25000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Oestradiol -- partenaire": { 
+            "label": "Oestradiol -- partenaire", 
+            "unitPrice": 12000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "Oestradiol -- public": { 
+            "label": "Oestradiol -- public", 
+            "unitPrice": 15000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "FSH -- partenaire": { 
+            "label": "FSH -- partenaire", 
+            "unitPrice": 12000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "FSH -- public": { 
+            "label": "FSH -- public", 
+            "unitPrice": 15000, 
+            "category": "Laboratoire Diallo" 
+        },
+        "BHCG -- partenaire": {
+            "label": "BHCG -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "BHCG -- public": {
+            "label": "BHCG -- public",
+            "unitPrice": 20500,
+            "category": "Laboratoire Diallo"
+        },
+        "LH -- partenaire": {
+            "label": "LH -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "LH -- public": {
+            "label": "LH -- public",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "Prolactine -- partenaire": {
+            "label": "Prolactine -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "Prolactine -- public": {
+            "label": "Prolactine -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Progestérone -- partenaire": {
+            "label": "Progestérone -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "Progestérone -- public": {
+            "label": "Progestérone -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Testostérone biodisponible -- partenaire": {
+            "label": "Testostérone biodisponible -- partenaire",
+            "unitPrice": 27000,
+            "category": "Laboratoire Diallo"
+        },
+        "Testostérone biodisponible -- public": {
+            "label": "Testostérone biodisponible -- public",
+            "unitPrice": 30000,
+            "category": "Laboratoire Diallo"
+        },
+        "Biopsie simple -- partenaire": {
+            "label": "Biopsie simple -- partenaire",
+            "unitPrice": 35000,
+            "category": "Laboratoire Diallo"
+        },
+        "Biopsie simple -- public": {
+            "label": "Biopsie simple -- public",
+            "unitPrice": 40000,
+            "category": "Laboratoire Diallo"
+        },
+        "Pièce opératoire -- partenaire": {
+            "label": "Pièce opératoire -- partenaire",
+            "unitPrice": 40000,
+            "category": "Laboratoire Diallo"
+        },
+        "Pièce opératoire -- public": {
+            "label": "Pièce opératoire -- public",
+            "unitPrice": 50000,
+            "category": "Laboratoire Diallo"
+        },
+        "AFP -- partenaire": {
+            "label": "AFP -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "AFP -- public": {
+            "label": "AFP -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "CA 15-3 -- partenaire": {
+            "label": "CA 15-3 -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "CA 15-3 -- public": {
+            "label": "CA 15-3 -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "CA 19-9 -- partenaire": {
+            "label": "CA 19-9 -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "CA 19-9 -- public": {
+            "label": "CA 19-9 -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "CA 125 -- partenaire": {
+            "label": "CA 125 -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "CA 125 -- public": {
+            "label": "CA 125 -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "ACE -- partenaire": {
+            "label": "ACE -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "ACE -- public": {
+            "label": "ACE -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "PSA L (libre) -- partenaire": {
+            "label": "PSA L (libre) -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "PSA L (libre) -- public": {
+            "label": "PSA L (libre) -- public",
+            "unitPrice": 14000,
+            "category": "Laboratoire Diallo"
+        },
+        "PSA T (Total) -- partenaire": {
+            "label": "PSA T (Total) -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "PSA T (Total) -- public": {
+            "label": "PSA T (Total) -- public",
+            "unitPrice": 14000,
+            "category": "Laboratoire Diallo"
+        },
+        "CANDIDA ET LEVURE + AFG -- partenaire": {
+            "label": "CANDIDA ET LEVURE + AFG -- partenaire",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "CANDIDA ET LEVURE + AFG -- public": {
+            "label": "CANDIDA ET LEVURE + AFG -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "DERMATOPHYTES -- partenaire": {
+            "label": "DERMATOPHYTES -- partenaire",
+            "unitPrice": 13000,
+            "category": "Laboratoire Diallo"
+        },
+        "DERMATOPHYTES -- public": {
+            "label": "DERMATOPHYTES -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "AAN (Ac anti-nucléaire) -- partenaire": {
+            "label": "AAN (Ac anti-nucléaire) -- partenaire",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "AAN (Ac anti-nucléaire) -- public": {
+            "label": "AAN (Ac anti-nucléaire) -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "DNA (Ac anti DNA natif) -- partenaire": {
+            "label": "DNA (Ac anti DNA natif) -- partenaire",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "DNA (Ac anti DNA natif) -- public": {
+            "label": "DNA (Ac anti DNA natif) -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti CCP (anti peptide citrulliné) -- partenaire": {
+            "label": "Ac anti CCP (anti peptide citrulliné) -- partenaire",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti CCP (anti peptide citrulliné) -- public": {
+            "label": "Ac anti CCP (anti peptide citrulliné) -- public",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "ECT (anti ENA ECT) -- partenaire": {
+            "label": "ECT (anti ENA ECT) -- partenaire",
+            "unitPrice": 25000,
+            "category": "Laboratoire Diallo"
+        },
+        "ECT (anti ENA ECT) -- public": {
+            "label": "ECT (anti ENA ECT) -- public",
+            "unitPrice": 35000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti cellule pariétales gastriques -- partenaire": {
+            "label": "Ac anti cellule pariétales gastriques -- partenaire",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti cellule pariétales gastriques -- public": {
+            "label": "Ac anti cellule pariétales gastriques -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti facteur intrinsèque -- partenaire": {
+            "label": "Ac anti facteur intrinsèque -- partenaire",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti facteur intrinsèque -- public": {
+            "label": "Ac anti facteur intrinsèque -- public",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti-cellules pariétales -- partenaire": {
+            "label": "Ac anti-cellules pariétales -- partenaire",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti-cellules pariétales -- public": {
+            "label": "Ac anti-cellules pariétales -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Anti cardiolipides IgG -- partenaire": {
+            "label": "Anti cardiolipides IgG -- partenaire",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Anti cardiolipides IgG -- public": {
+            "label": "Anti cardiolipides IgG -- public",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac Anticardiolipides IgM -- partenaire": {
+            "label": "Ac Anticardiolipides IgM -- partenaire",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac Anticardiolipides IgM -- public": {
+            "label": "Ac Anticardiolipides IgM -- public",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti B2 glucoproteines IgG -- partenaire": {
+            "label": "Ac anti B2 glucoproteines IgG -- partenaire",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti B2 glucoproteines IgG -- public": {
+            "label": "Ac anti B2 glucoproteines IgG -- public",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti-mitochondrie -- partenaire": {
+            "label": "Ac anti-mitochondrie -- partenaire",
+            "unitPrice": 20000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti-mitochondrie -- public": {
+            "label": "Ac anti-mitochondrie -- public",
+            "unitPrice": 25000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti-LMK -- partenaire": {
+            "label": "Ac anti-LMK -- partenaire",
+            "unitPrice": 20000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti-LMK -- public": {
+            "label": "Ac anti-LMK -- public",
+            "unitPrice": 25000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti-muscle -- partenaire": {
+            "label": "Ac anti-muscle -- partenaire",
+            "unitPrice": 20000,
+            "category": "Laboratoire Diallo"
+        },
+        "Ac anti-muscle -- public": {
+            "label": "Ac anti-muscle -- public",
+            "unitPrice": 25000,
+            "category": "Laboratoire Diallo"
+        },
+        "Frottis cervicaux -- partenaire": {
+            "label": "Frottis cervicaux -- partenaire",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "Frottis cervicaux -- public": {
+            "label": "Frottis cervicaux -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "COPROCULTURE -- partenaire": {
+            "label": "COPROCULTURE -- partenaire",
+            "unitPrice": 9000,
+            "category": "Laboratoire Diallo"
+        },
+        "COPROCULTURE -- public": {
+            "label": "COPROCULTURE -- public",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "PUS ET DIVERS -- partenaire": {
+            "label": "PUS ET DIVERS -- partenaire",
+            "unitPrice": 9000,
+            "category": "Laboratoire Diallo"
+        },
+        "PUS ET DIVERS -- public": {
+            "label": "PUS ET DIVERS -- public",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "CHLAMYDIA (direct) -- partenaire": {
+            "label": "CHLAMYDIA (direct) -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "CHLAMYDIA (direct) -- public": {
+            "label": "CHLAMYDIA (direct) -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "MYCOPLASMA (direct) -- partenaire": {
+            "label": "MYCOPLASMA (direct) -- partenaire",
+            "unitPrice": 8000,
+            "category": "Laboratoire Diallo"
+        },
+        "MYCOPLASMA (direct) -- public": {
+            "label": "MYCOPLASMA (direct) -- public",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "LIQUIDE DE PONCTION -- partenaire": {
+            "label": "LIQUIDE DE PONCTION -- partenaire",
+            "unitPrice": 8000,
+            "category": "Laboratoire Diallo"
+        },
+        "LIQUIDE DE PONCTION -- public": {
+            "label": "LIQUIDE DE PONCTION -- public",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "H. PYLORI (selles) -- partenaire": {
+            "label": "H. PYLORI (selles) -- partenaire",
+            "unitPrice": 12000,
+            "category": "Laboratoire Diallo"
+        },
+        "H. PYLORI (selles) -- public": {
+            "label": "H. PYLORI (selles) -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "H. KIT (Test respiratoire à l'Urée) -- partenaire": {
+            "label": "H. KIT (Test respiratoire à l'Urée) -- partenaire",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "H. KIT (Test respiratoire à l'Urée) -- public": {
+            "label": "H. KIT (Test respiratoire à l'Urée) -- public",
+            "unitPrice": 20000,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE CHLAMYDIA -- partenaire": {
+            "label": "SEROLOGIE CHLAMYDIA -- partenaire",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE CHLAMYDIA -- public": {
+            "label": "SEROLOGIE CHLAMYDIA -- public",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE MYCOPLASMA -- partenaire": {
+            "label": "SEROLOGIE MYCOPLASMA -- partenaire",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE MYCOPLASMA -- public": {
+            "label": "SEROLOGIE MYCOPLASMA -- public",
+            "unitPrice": 17500,
+            "category": "Laboratoire Diallo"
+        },
+        "KAOP -- partenaire": {
+            "label": "KAOP -- partenaire",
+            "unitPrice": 5000,
+            "category": "Laboratoire Diallo"
+        },
+        "GE + FROTTIS -- partenaire": {
+            "label": "GE + FROTTIS -- partenaire",
+            "unitPrice": 5000,
+            "category": "Laboratoire Diallo"
+        },
+        "BILHARZIOSE URINAIRE -- partenaire": {
+            "label": "BILHARZIOSE URINAIRE -- partenaire",
+            "unitPrice": 4500,
+            "category": "Laboratoire Diallo"
+        },
+        "BILHARZIOSE URINAIRE -- public": {
+            "label": "BILHARZIOSE URINAIRE -- public",
+            "unitPrice": 6000,
+            "category": "Laboratoire Diallo"
+        },
+        "QBC PALU -- partenaire": {
+            "label": "QBC PALU -- partenaire",
+            "unitPrice": 7000,
+            "category": "Laboratoire Diallo"
+        },
+        "QBC PALU -- public": {
+            "label": "QBC PALU -- public",
+            "unitPrice": 10000,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE TOXOPLASMOSE -- partenaire": {
+            "label": "SEROLOGIE TOXOPLASMOSE -- partenaire",
+            "unitPrice": 13000,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE TOXOPLASMOSE -- public": {
+            "label": "SEROLOGIE TOXOPLASMOSE -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "SCOTCH TEST (recherche parasites intestinaux) -- partenaire": {
+            "label": "SCOTCH TEST (recherche parasites intestinaux) -- partenaire",
+            "unitPrice": 5000,
+            "category": "Laboratoire Diallo"
+        },
+        "SCOTCH TEST (recherche parasites intestinaux) -- public": {
+            "label": "SCOTCH TEST (recherche parasites intestinaux) -- public",
+            "unitPrice": 5000,
+            "category": "Laboratoire Diallo"
+        },
+        "ADENO VIRUS -- partenaire": {
+            "label": "ADENO VIRUS -- partenaire",
+            "unitPrice": 6000,
+            "category": "Laboratoire Diallo"
+        },
+        "ADENO VIRUS -- public": {
+            "label": "ADENO VIRUS -- public",
+            "unitPrice": 8000,
+            "category": "Laboratoire Diallo"
+        },
+        "ROTA VIRUS -- partenaire": {
+            "label": "ROTA VIRUS -- partenaire",
+            "unitPrice": 6000,
+            "category": "Laboratoire Diallo"
+        },
+        "ROTA VIRUS -- public": {
+            "label": "ROTA VIRUS -- public",
+            "unitPrice": 8000,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE RUBEOLÉ -- partenaire": {
+            "label": "SEROLOGIE RUBEOLÉ -- partenaire",
+            "unitPrice": 13000,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE RUBEOLÉ -- public": {
+            "label": "SEROLOGIE RUBEOLÉ -- public",
+            "unitPrice": 15000,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE HÉPATITE E IgG -- partenaire": {
+            "label": "SEROLOGIE HÉPATITE E IgG -- partenaire",
+            "unitPrice": 30000,
+            "category": "Laboratoire Diallo"
+        },
+        "SEROLOGIE HÉPATITE E IgG -- public": {
+            "label": "SEROLOGIE HÉPATITE E IgG -- public",
+            "unitPrice": 35000,
+            "category": "Laboratoire Diallo"
+        },
+        "HbA1C -- partenaire": { "label": "HbA1C -- partenaire", "unitPrice": 8000, "category": "Laboratoire Diallo" },
+        "HbA1C -- public": { "label": "HbA1C -- public", "unitPrice": 10000, "category": "Laboratoire Diallo" },
+
+        "Micro albuminurie -- partenaire": { "label": "Micro albuminurie -- partenaire", "unitPrice": 8000, "category": "Laboratoire Diallo" },
+        "Micro albuminurie -- public": { "label": "Micro albuminurie -- public", "unitPrice": 10000, "category": "Laboratoire Diallo" },
+
+        "Bilan lipidique -- partenaire": { "label": "Bilan lipidique -- partenaire", "unitPrice": 7000, "category": "Laboratoire Diallo" },
+        "Bilan lipidique -- public": { "label": "Bilan lipidique -- public", "unitPrice": 10000, "category": "Laboratoire Diallo" },
+
+        "Cholesterol Total -- partenaire": { "label": "Cholesterol Total -- partenaire", "unitPrice": 2000, "category": "Laboratoire Diallo" },
+        "Cholesterol Total -- public": { "label": "Cholesterol Total -- public", "unitPrice": 2500, "category": "Laboratoire Diallo" },
+
+        "Chol HDL -- partenaire": { "label": "Chol HDL -- partenaire", "unitPrice": 2000, "category": "Laboratoire Diallo" },
+        "Chol HDL -- public": { "label": "Chol HDL -- public", "unitPrice": 2500, "category": "Laboratoire Diallo" },
+
+        "Chol LDL (formule de Fiedwald) -- partenaire": { "label": "Chol LDL (formule de Fiedwald) -- partenaire", "unitPrice": 2000, "category": "Laboratoire Diallo" },
+        "Chol LDL (formule de Fiedwald) -- public": { "label": "Chol LDL (formule de Fiedwald) -- public", "unitPrice": 2500, "category": "Laboratoire Diallo" },
+
+        "Triglycérides -- partenaire": { "label": "Triglycérides -- partenaire", "unitPrice": 3000, "category": "Laboratoire Diallo" },
+        "Triglycérides -- public": { "label": "Triglycérides -- public", "unitPrice": 0, "category": "Laboratoire Diallo" },
+
+        "ASLO -- partenaire": { "label": "ASLO -- partenaire", "unitPrice": 3000, "category": "Laboratoire Diallo" },
+        "ASLO -- public": { "label": "ASLO -- public", "unitPrice": 5000, "category": "Laboratoire Diallo" },
+
+        "CRP -- partenaire": { "label": "CRP -- partenaire", "unitPrice": 3000, "category": "Laboratoire Diallo" },
+        "CRP -- public": { "label": "CRP -- public", "unitPrice": 4000, "category": "Laboratoire Diallo" },
+
+        "HLM ou Compte d’Addis -- partenaire": { "label": "HLM ou Compte d’Addis -- partenaire", "unitPrice": 3000, "category": "Laboratoire Diallo" },
+        "HLM ou Compte d’Addis -- public": { "label": "HLM ou Compte d’Addis -- public", "unitPrice": 4000, "category": "Laboratoire Diallo" },
+
+        "Ionogramme sanguin -- partenaire": { "label": "Ionogramme sanguin -- partenaire", "unitPrice": 5000, "category": "Laboratoire Diallo" },
+        "Ionogramme sanguin -- public": { "label": "Ionogramme sanguin -- public", "unitPrice": 6000, "category": "Laboratoire Diallo" },
+
+        "Ionogramme urinaire -- partenaire": { "label": "Ionogramme urinaire -- partenaire", "unitPrice": 7500, "category": "Laboratoire Diallo" },
+        "Ionogramme urinaire -- public": { "label": "Ionogramme urinaire -- public", "unitPrice": 12000, "category": "Laboratoire Diallo" },
+
+        "Widal & Felix -- partenaire": { "label": "Widal & Felix -- partenaire", "unitPrice": 6000, "category": "Laboratoire Diallo" },
+        "Widal & Felix -- public": { "label": "Widal & Felix -- public", "unitPrice": 7000, "category": "Laboratoire Diallo" },
+
+        "TPHA & RPR -- partenaire": { "label": "TPHA & RPR -- partenaire", "unitPrice": 5000, "category": "Laboratoire Diallo" },
+        "TPHA & RPR -- public": { "label": "TPHA & RPR -- public", "unitPrice": 6000, "category": "Laboratoire Diallo" },
+
+        "Culture urinaire -- partenaire": { "label": "Culture urinaire -- partenaire", "unitPrice": 5000, "category": "Laboratoire Diallo" },
+        "Culture urinaire -- public": { "label": "Culture urinaire -- public", "unitPrice": 6000, "category": "Laboratoire Diallo" },
+
+        "Waler Rose -- partenaire": { "label": "Waler Rose -- partenaire", "unitPrice": 3000, "category": "Laboratoire Diallo" },
+        "Waler Rose -- public": { "label": "Waler Rose -- public", "unitPrice": 4000, "category": "Laboratoire Diallo" },
+
+        "Facteurs rhumatoïdes -- partenaire": { "label": "Facteurs rhumatoïdes -- partenaire", "unitPrice": 4000, "category": "Laboratoire Diallo" },
+        "Facteurs rhumatoïdes -- public": { "label": "Facteurs rhumatoïdes -- public", "unitPrice": 6000, "category": "Laboratoire Diallo" },
+
+        "Electrophorese protéines (sérique) -- partenaire": { "label": "Electrophorese protéines (sérique) -- partenaire", "unitPrice": 10000, "category": "Laboratoire Diallo" },
+        "Electrophorese protéines (sérique) -- public": { "label": "Electrophorese protéines (sérique) -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+        "Electrophorese protéines urinaires -- partenaire": { "label": "Electrophorese protéines urinaires -- partenaire", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+        "Electrophorese protéines urinaires -- public": { "label": "Electrophorese protéines urinaires -- public", "unitPrice": 20000, "category": "Laboratoire Diallo" },
+
+        "ECBU + Antibiogramme -- partenaire": { "label": "ECBU + Antibiogramme -- partenaire", "unitPrice": 8000, "category": "Laboratoire Diallo" },
+        "ECBU + Antibiogramme -- public": { "label": "ECBU + Antibiogramme -- public", "unitPrice": 10000, "category": "Laboratoire Diallo" },
+
+        "Hemoculture -- partenaire": { "label": "Hemoculture -- partenaire", "unitPrice": 12000, "category": "Laboratoire Diallo" },
+        "Hemoculture -- public": { "label": "Hemoculture -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+        "PV -- partenaire": { "label": "PV -- partenaire", "unitPrice": 7000, "category": "Laboratoire Diallo" },
+        "PV -- public": { "label": "PV -- public", "unitPrice": 8000, "category": "Laboratoire Diallo" },
+
+        "PV + Chlamydia + Mycoplasma -- partenaire": { "label": "PV + Chlamydia + Mycoplasma -- partenaire", "unitPrice": 25000, "category": "Laboratoire Diallo" },
+        "PV + Chlamydia + Mycoplasma -- public": { "label": "PV + Chlamydia + Mycoplasma -- public", "unitPrice": 27000, "category": "Laboratoire Diallo" },
+        "SÉROLOGIE HÉPATITE E IgM -- partenaire": { "label": "SÉROLOGIE HÉPATITE E IgM -- partenaire", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE HÉPATITE E IgM -- public": { "label": "SÉROLOGIE HÉPATITE E IgM -- public", "unitPrice": 20000, "category": "Laboratoire Diallo" },
+
+  "CHARGE VIRALE HÉPATITE B -- partenaire": { "label": "CHARGE VIRALE HÉPATITE B -- partenaire", "unitPrice": 55000, "category": "Laboratoire Diallo" },
+  "CHARGE VIRALE HÉPATITE B -- public": { "label": "CHARGE VIRALE HÉPATITE B -- public", "unitPrice": 65000, "category": "Laboratoire Diallo" },
+
+  "ARN VIRALE VHC -- partenaire": { "label": "ARN VIRALE VHC -- partenaire", "unitPrice": 55000, "category": "Laboratoire Diallo" },
+  "ARN VIRALE VHC -- public": { "label": "ARN VIRALE VHC -- public", "unitPrice": 65000, "category": "Laboratoire Diallo" },
+
+  "GENOTYPAGE Hépatite C -- partenaire": { "label": "GENOTYPAGE Hépatite C -- partenaire", "unitPrice": 100000, "category": "Laboratoire Diallo" },
+  "GENOTYPAGE Hépatite C -- public": { "label": "GENOTYPAGE Hépatite C -- public", "unitPrice": 120000, "category": "Laboratoire Diallo" },
+
+  "SÉROLOGIE VIH (test rapide) -- partenaire": { "label": "SÉROLOGIE VIH (test rapide) -- partenaire", "unitPrice": 3000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE VIH (test rapide) -- public": { "label": "SÉROLOGIE VIH (test rapide) -- public", "unitPrice": 4000, "category": "Laboratoire Diallo" },
+
+  "CHARGE VIRALE VIH 1 -- partenaire": { "label": "CHARGE VIRALE VIH 1 -- partenaire", "unitPrice": 62500, "category": "Laboratoire Diallo" },
+  "CHARGE VIRALE VIH 1 -- public": { "label": "CHARGE VIRALE VIH 1 -- public", "unitPrice": 65000, "category": "Laboratoire Diallo" },
+
+  "CHARGE VIRALE HÉPATITE DELTA -- partenaire": { "label": "CHARGE VIRALE HÉPATITE DELTA -- partenaire", "unitPrice": 110000, "category": "Laboratoire Diallo" },
+  "CHARGE VIRALE HÉPATITE DELTA -- public": { "label": "CHARGE VIRALE HÉPATITE DELTA -- public", "unitPrice": 120000, "category": "Laboratoire Diallo" },
+
+  "Ag HBS dosage Quantitatif -- partenaire": { "label": "Ag HBS dosage Quantitatif -- partenaire", "unitPrice": 40000, "category": "Laboratoire Diallo" },
+  "Ag HBS dosage Quantitatif -- public": { "label": "Ag HBS dosage Quantitatif -- public", "unitPrice": 47500, "category": "Laboratoire Diallo" },
+
+  "AgHBS (dosage qualitatif) -- partenaire": { "label": "AgHBS (dosage qualitatif) -- partenaire", "unitPrice": 13000, "category": "Laboratoire Diallo" },
+  "AgHBS (dosage qualitatif) -- public": { "label": "AgHBS (dosage qualitatif) -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+  "SÉROLOGIE EBV -- partenaire": { "label": "SÉROLOGIE EBV -- partenaire", "unitPrice": 55000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE EBV -- public": { "label": "SÉROLOGIE EBV -- public", "unitPrice": 60000, "category": "Laboratoire Diallo" },
+
+  "TYPAGE HPV -- partenaire": { "label": "TYPAGE HPV -- partenaire", "unitPrice": 55000, "category": "Laboratoire Diallo" },
+  "TYPAGE HPV -- public": { "label": "TYPAGE HPV -- public", "unitPrice": 60000, "category": "Laboratoire Diallo" },
+
+  "SÉROLOGIE HSV 1&2 IgM -- partenaire": { "label": "SÉROLOGIE HSV 1&2 IgM -- partenaire", "unitPrice": 20000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE HSV 1&2 IgM -- public": { "label": "SÉROLOGIE HSV 1&2 IgM -- public", "unitPrice": 25000, "category": "Laboratoire Diallo" },
+
+  "SÉROLOGIE HSV 1&2 IgG -- partenaire": { "label": "SÉROLOGIE HSV 1&2 IgG -- partenaire", "unitPrice": 20000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE HSV 1&2 IgG -- public": { "label": "SÉROLOGIE HSV 1&2 IgG -- public", "unitPrice": 25000, "category": "Laboratoire Diallo" },
+
+  "SÉROLOGIE CMV -- partenaire": { "label": "SÉROLOGIE CMV -- partenaire", "unitPrice": 25000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE CMV -- public": { "label": "SÉROLOGIE CMV -- public", "unitPrice": 25000, "category": "Laboratoire Diallo" },
+
+  "SÉROLOGIE HTLV -- partenaire": { "label": "SÉROLOGIE HTLV -- partenaire", "unitPrice": 65000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE HTLV -- public": { "label": "SÉROLOGIE HTLV -- public", "unitPrice": 67500, "category": "Laboratoire Diallo" },
+
+  "SÉROLOGIE DENGUE IgG&IgM -- partenaire": { "label": "SÉROLOGIE DENGUE IgG&IgM -- partenaire", "unitPrice": 35000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE DENGUE IgG&IgM -- public": { "label": "SÉROLOGIE DENGUE IgG&IgM -- public", "unitPrice": 37500, "category": "Laboratoire Diallo" },
+
+  "SÉROLOGIE VARICELLE IgG -- partenaire": { "label": "SÉROLOGIE VARICELLE IgG -- partenaire", "unitPrice": 25000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE VARICELLE IgG -- public": { "label": "SÉROLOGIE VARICELLE IgG -- public", "unitPrice": 27500, "category": "Laboratoire Diallo" },
+
+  "SÉROLOGIE OREILLON -- partenaire": { "label": "SÉROLOGIE OREILLON -- partenaire", "unitPrice": 30000, "category": "Laboratoire Diallo" },
+  "SÉROLOGIE OREILLON -- public": { "label": "SÉROLOGIE OREILLON -- public", "unitPrice": 35000, "category": "Laboratoire Diallo" },
+
+  "Anti-HBs -- partenaire": { "label": "Anti-HBs -- partenaire", "unitPrice": 10000, "category": "Laboratoire Diallo" },
+  "Anti-HBs -- public": { "label": "Anti-HBs -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+  "Anti-HBc -- partenaire": { "label": "Anti-HBc -- partenaire", "unitPrice": 10000, "category": "Laboratoire Diallo" },
+  "Anti-HBc -- public": { "label": "Anti-HBc -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+  "HBCIgM -- partenaire": { "label": "HBCIgM -- partenaire", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+  "HBCIgM -- public": { "label": "HBCIgM -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+  "Anti-VHC -- partenaire": { "label": "Anti-VHC -- partenaire", "unitPrice": 10000, "category": "Laboratoire Diallo" },
+  "Anti-VHC -- public": { "label": "Anti-VHC -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+  "Ag Hbe -- partenaire": { "label": "Ag Hbe -- partenaire", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+  "Ag Hbe -- public": { "label": "Ag Hbe -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+  "Ac anti Hbe -- partenaire": { "label": "Ac anti Hbe -- partenaire", "unitPrice": 10000, "category": "Laboratoire Diallo" },
+  "Ac anti Hbe -- public": { "label": "Ac anti Hbe -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+  "VHA IgM -- partenaire": { "label": "VHA IgM -- partenaire", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+  "VHA IgM -- public": { "label": "VHA IgM -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+  "VHA Ig totaux -- partenaire": { "label": "VHA Ig totaux -- partenaire", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+  "VHA Ig totaux -- public": { "label": "VHA Ig totaux -- public", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+
+  "VHD (HÉPATITE DELTA) -- partenaire": { "label": "VHD (HÉPATITE DELTA) -- partenaire", "unitPrice": 15000, "category": "Laboratoire Diallo" },
+  "VHD (HÉPATITE DELTA) -- public": { "label": "VHD (HÉPATITE DELTA) -- public", "unitPrice": 20000, "category": "Laboratoire Diallo" }
     }

@@ -1,17 +1,2 @@
-2025-08-25
-Nouvelle evenement: 18:26:02 manager, login, L'utilisateur 'manager' s'est connecté avec succès
-Nouvelle evenement: 18:26:42 manager, Facture généré, Facture généré pour le patient cisse Fama
-Nouvelle evenement: 21:14:17 manager, Patient sélectionné, Patient avec ID 59 selectionné.
-Nouvelle evenement: 21:15:20 manager, Ajout d'un patient, Le patient 'test' a été ajouté
-Nouvelle evenement: 21:15:26 manager, Patient sélectionné, Patient avec ID 61 selectionné.
-Nouvelle evenement: 21:15:37 manager, Patient sélectionné, Patient avec ID 61 selectionné.
-Nouvelle evenement: 21:15:44 manager, modification patient, Patient avec ID 61 a été modifié
-Nouvelle evenement: 21:24:06 manager, logout, L'utilisateur 'manager' s'est déconnecté
-Nouvelle evenement: 21:24:21 manager, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 21:24:33 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 21:44:40 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 23:10:47 medecins, Suppression d'un patient, Le patient avec l'identifiant 61 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 61), ('name', 'test'), ('adresse', '123 ABB'), ('age', 32), ('date_of_birth', datetime.date(2001, 2, 18)), ('poids', 32.0), ('taille', None), ('tension_arterielle', None), ('temperature', None), ('hypothese_de_diagnostique', None), ('bilan', None), ('resultat_bilan', None), ('signature', 'manager'), ('renseignements_clinique', None), ('ordonnance', None), ('created_at', datetime.date(2025, 8, 26)), ('phone_number', '77 345 65 45'), ('meeting', 'non'), ('new_cases', 'non')])]
-Nouvelle evenement: 23:10:55 medecins, Ajout d'un patient, Le patient 'test' a été ajouté
-Nouvelle evenement: 23:11:10 medecins, Patient sélectionné, Patient avec ID 62 selectionné.
-Nouvelle evenement: 23:11:27 medecins, modification patient, Patient avec ID 62 a été modifié
-Nouvelle evenement: 23:31:30 medecins, Facture généré, Facture généré pour le patient test 
+2025-08-27
+Nouvelle evenement: 23:51:43 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
