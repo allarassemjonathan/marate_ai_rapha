@@ -281,7 +281,7 @@ class InvoicePDF(FPDF):
             "June": "Juin",
             "July": "Juillet",
             "August": "Août",
-            "Septembe": "Septembre",
+            "September": "Septembre",
             "October": "Octobre",
             "November": "Novembre",
             "December": "Décembre"}
