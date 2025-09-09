@@ -441,7 +441,7 @@ def index():
     init_db()  # Restore DB in drive, etc.
 
     user_type = session.get('user_type')
-
+    print(user_type)
     if user_type in ['receptionistes', 'infirmiers']:
         username = user_type[:-1]
     else:
@@ -729,11 +729,14 @@ def login():
         # Check credentials
         if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
             physicians = {
-                'Dr_Babacar', 'Dr_Mbengue', 'Inf_Fatoumata', 'Inf_Mariam', 'Inf_Sassou'
+                'Dr_Babacar', 'Dr_Mbengue'
             }
 
             # Always set both username & user_type
-            if username_input in physicians:
+            if username_input[:3] == 'Inf':
+                session['username'] = username_input
+                session['user_type'] = 'infirmiers'
+            elif username_input in physicians:
                 session['username'] = username_input
                 session['user_type'] = 'medecins'
             else:

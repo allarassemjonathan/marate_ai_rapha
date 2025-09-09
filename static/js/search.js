@@ -186,7 +186,7 @@ const serviceItems = {
   const columnVisibility = {
     'manager': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
     'medecins': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
-    'infirmiers': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
+    'infirmiers': ['created_at', 'phone_number', 'name','poids','taille','tension_arterielle','temperature'],
     'receptionistes': ['created_at', 'date_of_birth', 'name','adresse','phone_number','meeting', 'new_cases','age']
   };
 
@@ -394,7 +394,7 @@ function loadPatients(q = '') {
 
       let currentActionRow = null;
       let currentHighlightedRow = null;
-
+      console.log(userType);
       data.forEach(p => {
         const tr = document.createElement('tr');
         tr.className = "cursor-pointer hover:bg-blue-50 transition-colors duration-200";
