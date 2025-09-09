@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Define which columns each user type can see
   const columnVisibility = {
     'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
-    'infirmiers': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
+    'infirmiers': ['created_at', 'name','poids','taille','tension_arterielle','temperature'],
     'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
   };
 
@@ -209,13 +209,31 @@ window.openInvoiceFromButton = function(button) {
   openInvoiceModal(patient);
 };
 
+let pageSize = 20;
+
+const pageSizeInput = document.getElementById("pageSizeInput");
+if (pageSizeInput) {
+  pageSizeInput.addEventListener("input", e => {
+    let val = parseInt(e.target.value, 10);
+
+    // sécurité : si l'utilisateur vide le champ ou met 0/valeur négative
+    if (isNaN(val) || val <= 0) {
+      pageSize = 20; 
+    } else {
+      pageSize = val;
+    }
+
+    loadPatients(searchBox.value); // recharge la liste
+  });
+}
+
 function loadPatients(q = '') {
   fetch(`/search?q=${encodeURIComponent(q)}`)
     .then(res => res.json())
     .then(data => {
       resultsTable.innerHTML = '';
       data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      data = data.slice(0, 20);
+      data = data.slice(0, pageSize);
 
       let currentActionRow = null;
       let currentHighlightedRow = null;
