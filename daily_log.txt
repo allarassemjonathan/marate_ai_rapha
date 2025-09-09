@@ -1,2 +1,3 @@
-2025-08-24
-Nouvelle evenement: 16:29:23 medecins, Suppression d'un patient, Le patient avec l'identifiant 519 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 519), ('name', 'test'), ('adresse', 'test'), ('age', 0.6162100457), ('date_of_birth', None), ('poids', 123.0), ('taille', 1.7), ('tension_arterielle', '11/7'), ('temperature', 37.0), ('hypothese_de_diagnostique', 'not good1'), ('bilan', 'hmm'), ('resultat_bilan', 'hmm'), ('signature', 'Dr Toralta G .Josephine'), ('renseignements_clinique', 'not good1'), ('ordonnance', 'doliprane'), ('created_at', datetime.datetime(2025, 8, 24, 2, 34, 34, 461153)), ('meeting', 'oui'), ('new_cases', 'non'), ('phone_number', '228391927'), ('age_years', 0), ('age_months', 7), ('age_days', 12)])]
+2025-09-09
+Nouvelle evenement: 07:46:46 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 07:46:54 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
