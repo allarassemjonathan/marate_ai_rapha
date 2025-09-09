@@ -1,3 +1,4 @@
 2025-09-09
 Nouvelle evenement: 07:46:46 manager, logout, L'utilisateur 'manager' s'est déconnecté
 Nouvelle evenement: 07:46:54 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 08:03:08 medecins, Facture généré, Facture généré pour le patient kimto Denerebeye ariella
