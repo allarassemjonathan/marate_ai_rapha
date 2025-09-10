@@ -2,3 +2,9 @@
 Nouvelle evenement: 07:46:46 manager, logout, L'utilisateur 'manager' s'est déconnecté
 Nouvelle evenement: 07:46:54 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
 Nouvelle evenement: 08:03:08 medecins, Facture généré, Facture généré pour le patient kimto Denerebeye ariella
+Nouvelle evenement: 22:43:22 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 22:43:29 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 22:45:54 medecins, Patient sélectionné, Patient avec ID 809 selectionné.
+Nouvelle evenement: 22:49:23 medecins, Patient sélectionné, Patient avec ID 807 selectionné.
+Nouvelle evenement: 22:50:34 medecins, Patient sélectionné, Patient avec ID 809 selectionné.
+Nouvelle evenement: 22:51:11 medecins, Patient sélectionné, Patient avec ID 792 selectionné.
