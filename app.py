@@ -550,10 +550,9 @@ def add():
                 data['signature'] = session['username'].replace('_', ' ')
             else:
                 data['signature'] = 'medecins'
-        elif session['user_type'] == 'manager':
-            data['signature'] = session['user_type']
         else:
-            data['signature'] = 'Permission doit etre confirmer'
+            data['signature'] = session['user_type']
+            
         # Use parameterized query
         columns = list(data.keys())
         values = list(data.values())
@@ -636,18 +635,18 @@ def get_patient(patient_id):
     conn.close()
     print(session['username'])
 
-    if user_type=='infirmiers' or user_type == 'receptionistes':
-        return jsonify(row)
-    if row['signature'] is None:
-        return jsonify(row)
-    if session['username'] == 'Dr_Mbengue':
-        print('ot here?')
-        return jsonify(row)
-    if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
-        return jsonify(row)
-    else:
-        print('ieah')
-        return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
+    # if user_type=='infirmiers' or user_type == 'receptionistes':
+    return jsonify(row)
+    # if row['signature'] is None:
+    #     return jsonify(row)
+    # if session['username'] == 'Dr_Mbengue':
+    #     print('ot here?')
+    #     return jsonify(row)
+    # if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
+    #     return jsonify(row)
+    # else:
+    #     print('ieah')
+    #     return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
 
 # we will use later .. 
 

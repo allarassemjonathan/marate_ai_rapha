@@ -1,21 +1,4 @@
-2025-09-08
-Nouvelle evenement: 22:38:28 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:42:41 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 22:42:50 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:44:04 Inf_Fatoumata, login, L'utilisateur 'Inf_Fatoumata' s'est connecté avec succès
-Nouvelle evenement: 22:46:08 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:46:19 Inf_Fatoumata, login, L'utilisateur 'Inf_Fatoumata' s'est connecté avec succès
-Nouvelle evenement: 22:50:30 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:50:43 Inf_Fatoumata, login, L'utilisateur 'Inf_Fatoumata' s'est connecté avec succès
-Nouvelle evenement: 22:51:49 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:52:21 Inf_Fatoumata, login, L'utilisateur 'Inf_Fatoumata' s'est connecté avec succès
-Nouvelle evenement: 22:59:12 infirmiers, logout, L'utilisateur 'infirmiers' s'est déconnecté
-Nouvelle evenement: 22:59:20 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 23:01:46 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 23:01:56 Inf_Fatoumata, login, L'utilisateur 'Inf_Fatoumata' s'est connecté avec succès
-Nouvelle evenement: 23:03:13 infirmiers, logout, L'utilisateur 'infirmiers' s'est déconnecté
-Nouvelle evenement: 23:03:39 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
-Nouvelle evenement: 23:04:34 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 23:05:11 Inf_Fatoumata, login, L'utilisateur 'Inf_Fatoumata' s'est connecté avec succès
-Nouvelle evenement: 23:08:42 infirmiers, logout, L'utilisateur 'infirmiers' s'est déconnecté
-Nouvelle evenement: 23:08:53 manager, login, L'utilisateur 'manager' s'est connecté avec succès
+2025-09-10
+Nouvelle evenement: 23:43:14 Dr_Babacar, login, L'utilisateur 'Dr_Babacar' s'est connecté avec succès
+Nouvelle evenement: 23:43:23 medecins, Patient sélectionné, Patient avec ID 75 selectionné.
+Nouvelle evenement: 23:45:06 medecins, Patient sélectionné, Patient avec ID 75 selectionné.
