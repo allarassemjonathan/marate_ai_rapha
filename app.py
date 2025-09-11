@@ -2,6 +2,7 @@
 import matplotlib
 matplotlib.use('Agg')  # Must be set before importing pyplot
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import pandas as pd
 import io
 from collections import defaultdict
@@ -21,6 +22,8 @@ from functools import wraps
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
+import unicodedata
+
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -29,6 +32,20 @@ app = Flask(__name__)
 
 # If modifying these scopes, delete the token.json
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
+
+#unicodedata.normalize('NFD', text) sait gerer les caracteres unicodes comme les accents les symboles etc.
+#la methode unicodedata('NFD',text) decompose les lettres accentuées en deux parties la lettre de base et l'accent séparé
+#for c in ..... on parcourt chaque caractere du texte decomposé
+#unicodedata.category donne la categorie unicode du caractere
+#Mn = Mark,Nonspacing c'est-à-dire les qccents et diacritiques
+#Donc cette condition veut dire de garder seulement les caracteres qui ne sont pas des accents
+#''.join() enfin on rassemble tous les caracteres qu'on a gardes pour former une nouvelle chaine
+
+def remove_accents(text):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', text)
+        if unicodedata.category(c) != 'Mn'
+    )
 
 
 def clean_float(value):
@@ -946,3 +963,119 @@ def send_daily_report_email():
         
     except Exception as e:
         return f"Failed to send daily report email: {e}"
+    
+
+
+
+
+
+def load_df():
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM patients")
+    rows = cur.fetchall()
+    columns = [desc[0] for desc in cur.description]
+    cur.close()
+    conn.close()
+    df = pd.DataFrame(rows , columns=columns)
+    if 'created_at' in df.columns:
+        df['created_at'] = pd.to_datetime(df['created_at'])
+    if 'name' in df.columns:
+        df['name'] = (df['name'].astype(str).str.strip().apply(remove_accents))
+
+    return df
+
+
+#Convertir une figure en image web ici on sauvagarde le graphe en memoire pas sur disque et flask l'envoie au navigateur en tant qu'image PNG
+
+def fig_to_png_response():
+
+    #on crée un fichier en memoire (dans la RAM) grace à BytesIO
+    #C'est comme un fichier normal mais qui n'existe pas sur disaue on va l'utiliser pour stocker l'image PNG temporairement
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+    #place le curseur au debut du fichier en memoire(buf)
+    buf.seek(0)
+    #le navigateur affiche l'iamge générée directement sans jamais l'avoir enregistrée sur disque
+    return send_file(buf ,mimetype="image/png")
+
+
+@app.route("/revenu_journalier")
+def revenu_journalier():
+    df = load_df()
+
+    visites_par_jour = df.groupby(df['created_at'].dt.date).size()
+
+    toutes_les_dates = pd.date_range(df['created_at'].min().date() , df['created_at'].max().date())
+
+    visites_par_jour = visites_par_jour.reindex(toutes_les_dates , fill_value=0)
+
+    revenu_par_jour = visites_par_jour * 10000
+
+    plt.figure(figsize=(10,6))
+    revenu_par_jour.plot(kind='line' ,color='blue' ,marker='o')
+    plt.title("Courbe d'evolution du revenu journalier")
+    plt.ylabel("Revenu (FCFA)")
+    plt.xlabel("Date")
+    plt.tight_layout()
+    return fig_to_png_response()
+  
+
+@app.route("/revenu_mensuel")
+def revenu_mensuel():
+    df = load_df()
+    consultattion_par_mois = df.groupby(df['created_at'].dt.to_period('M')).size()
+
+    revenu_par_mois = consultattion_par_mois * 10000
+  
+    toutes_les_periodes = pd.period_range(df['created_at'].min() ,df['created_at'].max() , freq='M')
+
+    revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
+
+
+    plt.figure(figsize=(10,6))
+    revenu_par_mois.plot(kind='line'  , color='blue' , marker ='o')
+    plt.title("Courbe d'évolution du revenu du cabinet par mois")
+    plt.xlabel("Mois")
+    plt.ylabel("Revenu par mois (en FCFA)")
+    plt.tight_layout()
+    plt.gca().yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
+    return fig_to_png_response()            
+
+
+@app.route("/frequences_patients")
+def frequences_patients():
+    df = load_df()
+    patients_count = df['name'].str.lower().value_counts()[0:8]
+
+    patients_count.index = patients_count.index.str.title()
+
+    plt.figure(figsize=(10,6))
+    patients_count.plot(kind='bar' , color='blue')
+    plt.title("Frequences de visites des patients dans le cabinet")
+    plt.xlabel("Nom")
+    plt.ylabel("Frequences de visites")
+    plt.tight_layout()
+    return fig_to_png_response()
+
+@app.route("/Rapport")
+def rapport():
+    df = load_df()
+    frequences_patients()
+    revenu_journalier()
+    revenu_mensuel()
+
+    images = [ "frequences.png" , "mensuel.png" , "journalier.png"]
+
+    return render_template("rapport.html", images=images)
+    
+
+
+
+    
+    
+
+
+  
