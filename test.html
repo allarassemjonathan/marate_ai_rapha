@@ -1,0 +1,32 @@
+<h3 class="text-lg font-semibold mb-2">Conditions médicales</h3>
+<div class="conditions-block">
+  <label><input type="checkbox" name="conditions" value="Diabète"> NFS</label>
+  <label><input type="checkbox" name="conditions" value="Hypertension"> </label>
+  <label><input type="checkbox" name="conditions" value="Asthme"> Asthme</label>
+  <label><input type="checkbox" name="conditions" value="Allergies"> Allergies</label>
+  <label><input type="checkbox" name="conditions" value="Autre"> Autre</label>
+  <label><input type="checkbox" name="conditions" value="Diabète"> Diabète</label>
+  <label><input type="checkbox" name="conditions" value="Hypertension"> Hypertension</label>
+  <label><input type="checkbox" name="conditions" value="Asthme"> Asthme</label>
+  <label><input type="checkbox" name="conditions" value="Allergies"> Allergies</label>
+  <label><input type="checkbox" name="conditions" value="Autre"> Autre</label>
+
+</div>
+<style>.conditions-block {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.conditions-block label {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+</style>
