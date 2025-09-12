@@ -158,7 +158,7 @@ CREDENTIALS = {
     'Dr_Toralta_Emmanuelle_Mantar':os.environ.get('Dr_Toralta_Emmanuelle_Mantar'), 
     'Dr_Madjibeye_Mirielle':os.environ.get('Dr_Madjibeye_Mirielle'), 
     'Dr_Robnodji_Adoucie':os.environ.get('Dr_Robnodji_Adoucie'), 
-    'Dr_Ndoubane_Bonheur': os.environ.get('Dr_Ndoubane_Bonheur')
+    'Dr_Ndoubabe_Bonheur': os.environ.get('Dr_Ndoubabe_Bonheur')
 }
 
 # Decorator to require login
@@ -298,7 +298,7 @@ class InvoicePDF(FPDF):
             "June": "Juin",
             "July": "Juillet",
             "August": "Août",
-            "Septembe": "Septembre",
+            "September": "Septembre",
             "October": "Octobre",
             "November": "Novembre",
             "December": "Décembre"}
@@ -816,6 +816,8 @@ def age_histogram():
 @login_required
 def update_patient(patient_id):
     data = request.get_json() or {}
+    if session['user_type'] == 'medecins':
+        data['signature'] = session['username'].replace('_', ' ')
     if not data.get('name'):
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
 
@@ -878,7 +880,7 @@ def login():
                 'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A', 'Dr_Ndortolnan_Azer',
                 'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji',
                 'Dr_Toralta_Emmanuelle_Mantar', 'Dr_Madjibeye_Mirielle',
-                'Dr_Robnodji_Adoucie', 'Dr_Ndoubane_Bonheur'
+                'Dr_Robnodji_Adoucie', 'Dr_Ndoubabe_Bonheur'
             }
 
             # Always set both username & user_type
