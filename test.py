@@ -12,9 +12,12 @@ cur = conn.cursor()
 cur.execute("SELECT * FROM patients")
 
 rows = cur.fetchall()
+
 columns = [desc[0] for desc in cur.description]
 
 df = pd.DataFrame(rows , columns=columns)
+# Count occurrences of each 'adresse'
+adresse_counts = df['adresse'].value_counts()[0:10]
 
 #convertis la colonne des dates en date reelle et pas du simple texte
 df['created_at'] = pd.to_datetime(df['created_at'])
@@ -87,3 +90,4 @@ plt.ylabel("Frequences de visites")
 plt.tight_layout()
 plt.savefig("static/frequence_patients.png")
 plt.close()
+plt.show()
