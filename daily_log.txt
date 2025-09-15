@@ -1,4 +1,5 @@
-2025-08-11
-Nouvelle evenement: 06:32:08 medecins, login, L'utilisateur 'medecins' s'est connecté avec succés
-Nouvelle evenement: 06:38:06 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succés
-Nouvelle evenement: 06:38:36 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+2025-09-13
+Nouvelle evenement: 12:16:53 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 12:48:17 medecins, Column Visibility Changed, Column adresse shown
+Nouvelle evenement: 12:48:18 medecins, Column Visibility Changed, Column age shown
+Nouvelle evenement: 12:49:20 medecins, Column Removed, Removed column: bmi

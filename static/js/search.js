@@ -6,39 +6,67 @@ document.addEventListener('DOMContentLoaded', () => {
   const editForm = document.getElementById('editForm');
   
   let currentPatientId = null;
-// class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider"
+  let visibleColumns = []; // Will be loaded dynamically
+  let columnHeaders = {}; // Will be loaded dynamically
+
   const userType = window.USER_TYPE;
   console.log(userType);
   console.log("userType");
-  // Define which columns each user type can see
-  const columnVisibility = {
-    'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
-    'infirmiers': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
-    'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
-  };
 
-    const columnHeaders = {
-    'created_at': 'Date de création',
-    'name': 'Nom',
-    'adresse': 'Adresse',
-    'age': 'Age',
-    'poids': 'Poids',
-    'taille': 'Taille',
-    'tension_arterielle': 'Tension',
-    'temperature': 'Température',
-    'hypothese_de_diagnostique': 'Hypothèse de diagnostique',
-    'renseignements_clinique':'Renseignement clinique',
-    'bilan': 'Bilan',
-    'resultat_bilan': 'Conclusion du bilan',
-    'ordonnance': 'Ordonnance',
-    'signature':'Signature', 
-    'meeting':'Rendez-vous',
-    'new_cases':'Nouveaux cas',
-    'phone_number':'Numero de telephone'
-  };
+  // Load dynamic column configuration
+  async function loadColumnConfiguration() {
+    try {
+      const response = await fetch('/api/columns');
+      const data = await response.json();
+      
+      visibleColumns = data.visible_columns.map(col => col.column_name); // column names
+      columnHeaders = {};
+      
+      data.visible_columns.forEach(col => {
+        columnHeaders[col.column_name] = col.display_name; // column_name -> display_name
+      });
+      
+      console.log('Loaded visible columns:', visibleColumns);
+      console.log('Loaded column headers:', columnHeaders);
+      
+      return true;
+    } catch (error) {
+      console.error('Error loading column configuration:', error);
+      // Fallback to default configuration
+      const columnVisibility = {
+        'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
+        'infirmiers': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
+        'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
+      };
+
+      const defaultColumnHeaders = {
+        'created_at': 'Date de création',
+        'name': 'Nom',
+        'adresse': 'Adresse',
+        'age': 'Age',
+        'poids': 'Poids',
+        'taille': 'Taille',
+        'tension_arterielle': 'Tension',
+        'temperature': 'Température',
+        'hypothese_de_diagnostique': 'Hypothèse de diagnostique',
+        'renseignements_clinique':'Renseignement clinique',
+        'bilan': 'Bilan',
+        'resultat_bilan': 'Conclusion du bilan',
+        'ordonnance': 'Ordonnance',
+        'signature':'Signature', 
+        'meeting':'Rendez-vous',
+        'new_cases':'Nouveaux cas',
+        'phone_number':'Numero de telephone'
+      };
+      
+      visibleColumns = columnVisibility[userType] || [];
+      columnHeaders = defaultColumnHeaders;
+      return false;
+    }
+  }
 
   function createTableHeaders(){
-    const visibleColumns = columnVisibility[userType] || [];
+    const tableHeader = document.getElementById('tableHeader');
     tableHeader.innerHTML = '';
 
     visibleColumns.forEach(columnKey => {
@@ -46,7 +74,81 @@ document.addEventListener('DOMContentLoaded', () => {
       th.className = "p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider";
       th.textContent = columnHeaders[columnKey] || columnKey;
       tableHeader.appendChild(th);
-  });}
+    });
+  }
+
+  // Function to create dynamic form fields for adding patients
+  function createDynamicFormFields() {
+    const form = document.getElementById('addForm');
+    const submitButton = form.querySelector('button[type="submit"]').parentElement;
+    
+    // Remove existing dynamic fields but keep submit button
+    const existingFields = form.querySelectorAll('.dynamic-field');
+    existingFields.forEach(field => field.remove());
+    
+    visibleColumns.forEach(columnKey => {
+      // Skip system fields that shouldn't be in the add form
+      if (columnKey === 'id' || columnKey === 'created_at') return;
+      
+      const fieldContainer = document.createElement('div');
+      fieldContainer.className = 'relative dynamic-field';
+      
+      const displayName = columnHeaders[columnKey] || columnKey;
+      let inputElement;
+      
+      // Create appropriate input type based on column name and type
+      if (columnKey === 'date_of_birth') {
+        inputElement = document.createElement('input');
+        inputElement.type = 'date';
+      } else if (columnKey.includes('age') || columnKey.includes('poids') || columnKey.includes('taille') || columnKey.includes('temperature')) {
+        inputElement = document.createElement('input');
+        inputElement.type = 'number';
+        if (columnKey.includes('poids') || columnKey.includes('taille') || columnKey.includes('temperature')) {
+          inputElement.step = '0.1';
+        }
+      } else if (columnKey.includes('tension_arterielle')) {
+        inputElement = document.createElement('input');
+        inputElement.type = 'text';
+      } else if (columnKey.includes('diagnostique') || columnKey.includes('ordonnance') || columnKey.includes('bilan') || columnKey.includes('signature') || columnKey.includes('renseignements')) {
+        inputElement = document.createElement('textarea');
+        inputElement.className = 'input-field w-full p-4 rounded-xl h-20';
+      } else {
+        inputElement = document.createElement('input');
+        inputElement.type = 'text';
+      }
+      
+      if (inputElement.tagName !== 'TEXTAREA') {
+        inputElement.className = 'input-field w-full p-4 rounded-xl';
+      }
+      
+      inputElement.name = columnKey;
+      inputElement.placeholder = displayName;
+      
+      // Make name field required
+      if (columnKey === 'name') {
+        inputElement.required = true;
+      }
+      
+      fieldContainer.appendChild(inputElement);
+      
+      // Add the underline animation
+      const underline = document.createElement('div');
+      underline.className = 'absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline';
+      fieldContainer.appendChild(underline);
+      
+      // Insert before submit button
+      form.insertBefore(fieldContainer, submitButton);
+      
+      // Add focus/blur event listeners for underline animation
+      inputElement.addEventListener('focus', function() {
+        underline.style.width = '100%';
+      });
+      
+      inputElement.addEventListener('blur', function() {
+        underline.style.width = '0';
+      });
+    });
+  }
 
   // Make these functions globally accessible
   window.openInvoiceModal = function(patient) {
@@ -224,8 +326,6 @@ function loadPatients(q = '') {
         const tr = document.createElement('tr');
         tr.className = "cursor-pointer hover:bg-blue-50 transition-colors duration-200";
 
-        const visibleColumns = columnVisibility[userType] || [];
-
         visibleColumns.forEach(k => {
           const td = document.createElement('td');
           td.className = "p-2 border text-black";
@@ -341,8 +441,7 @@ window.editPatient = function(id) {
       document.getElementById('edit_date_of_birth').value = data.date_of_birth;
       console.log(data.date_of_birth);
       // Populate all fields based on visible columns
-      const fields = columnVisibility[userType];
-      fields.forEach(field => {
+      visibleColumns.forEach(field => {
         const input = document.getElementById(`edit_${field}`);
         if (input) {
           console.log(input);
@@ -448,7 +547,10 @@ function showFlash(message) {
 };
 
 
-  // Initial load
-  createTableHeaders();
-  loadPatients();
+  // Initial load - load columns first, then setup table and load patients
+  loadColumnConfiguration().then(() => {
+    createTableHeaders();
+    createDynamicFormFields();
+    loadPatients();
+  });
 });

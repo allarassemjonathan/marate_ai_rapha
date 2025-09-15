@@ -31,7 +31,8 @@ def clean_float(value):
 def get_db_connection():
     return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
 def init_db():
-    with get_db_connection() as conn:
+    conn = get_db_connection()
+    if conn:
         with conn.cursor() as cur:
             cur.execute('''
                 CREATE TABLE IF NOT EXISTS patients (
@@ -70,7 +71,148 @@ def init_db():
                     details TEXT
                 )
             ''')
+            # Create the column metadata table
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS patient_columns_meta (
+                    id SERIAL PRIMARY KEY,
+                    column_name TEXT UNIQUE NOT NULL,
+                    display_name TEXT NOT NULL,
+                    data_type TEXT NOT NULL,
+                    is_visible BOOLEAN DEFAULT TRUE,
+                    is_required BOOLEAN DEFAULT FALSE,
+                    display_order INTEGER DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT NOW()
+                )
+            ''')
+            
+            # Check if metadata exists, if not populate with existing columns
+            cur.execute("SELECT COUNT(*) FROM patient_columns_meta")
+            result = cur.fetchone()
+            
+            if result is None:
+                count = 0
+            else:
+                # Handle both tuple and RealDictRow formats
+                if hasattr(result, 'get'):
+                    count = result.get('count', 0)
+                else:
+                    count = result[0]
+            
+            if count == 0:
+                # Insert default column metadata
+                default_columns = [
+                    ('id', 'ID', 'SERIAL', True, True, 1),
+                    ('name', 'Nom', 'TEXT', True, True, 2),
+                    ('adresse', 'Adresse', 'TEXT', True, False, 3),
+                    ('age', 'Âge', 'INTEGER', True, False, 4),
+                    ('date_of_birth', 'Date de naissance', 'DATE', True, False, 5),
+                    ('poids', 'Poids', 'REAL', True, False, 6),
+                    ('taille', 'Taille', 'REAL', True, False, 7),
+                    ('tension_arterielle', 'Tension artérielle', 'REAL', True, False, 8),
+                    ('temperature', 'Température', 'REAL', True, False, 9),
+                    ('hypothese_de_diagnostique', 'Hypothèse de diagnostic', 'TEXT', True, False, 10),
+                    ('bilan', 'Bilan', 'TEXT', True, False, 11),
+                    ('resultat_bilan', 'Résultat bilan', 'TEXT', True, False, 12),
+                    ('signature', 'Signature', 'TEXT', True, False, 13),
+                    ('renseignements_clinique', 'Renseignements cliniques', 'TEXT', True, False, 14),
+                    ('ordonnance', 'Ordonnance', 'TEXT', True, False, 15),
+                    ('created_at', 'Date de création', 'DATE', True, False, 16)
+                ]
+                
+                for col_name, display_name, data_type, is_visible, is_required, order in default_columns:
+                    cur.execute('''
+                        INSERT INTO patient_columns_meta 
+                        (column_name, display_name, data_type, is_visible, is_required, display_order)
+                        VALUES (%s, %s, %s, %s, %s, %s)
+                    ''', (col_name, display_name, data_type, is_visible, is_required, order))
+            
             conn.commit()
+
+# Column management utility functions
+def get_visible_columns():
+    """Get list of visible columns in display order"""
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT column_name, display_name, data_type 
+        FROM patient_columns_meta 
+        WHERE is_visible = TRUE 
+        ORDER BY display_order
+    ''')
+    columns = cur.fetchall()
+    conn.close()
+    return columns
+
+def get_all_columns():
+    """Get all columns with their metadata"""
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT column_name, display_name, data_type, is_visible, is_required, display_order
+        FROM patient_columns_meta 
+        ORDER BY display_order
+    ''')
+    columns = cur.fetchall()
+    conn.close()
+    return columns
+
+def add_column_to_patients(column_name, data_type):
+    """Add a new column to the patients table"""
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    # Map data types to PostgreSQL types
+    type_mapping = {
+        'TEXT': 'TEXT',
+        'INTEGER': 'INTEGER',
+        'REAL': 'REAL',
+        'DATE': 'DATE',
+        'BOOLEAN': 'BOOLEAN'
+    }
+    
+    postgres_type = type_mapping.get(data_type, 'TEXT')
+    
+    try:
+        cur.execute(f'ALTER TABLE patients ADD COLUMN {column_name} {postgres_type}')
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error adding column: {e}")
+        conn.close()
+        return False
+
+def remove_column_from_patients(column_name):
+    """Remove a column from the patients table"""
+    # Don't allow removal of essential columns
+    essential_columns = ['id', 'name', 'created_at']
+    if column_name in essential_columns:
+        return False
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    try:
+        cur.execute(f'ALTER TABLE patients DROP COLUMN {column_name}')
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error removing column: {e}")
+        conn.close()
+        return False
+
+def update_column_visibility(column_name, is_visible):
+    """Update column visibility"""
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        UPDATE patient_columns_meta 
+        SET is_visible = %s 
+        WHERE column_name = %s
+    ''', (is_visible, column_name))
+    conn.commit()
+    conn.close()
 
 def log_file(user_type, action, details=None):
     FILENAME = 'daily_log.txt'
@@ -468,7 +610,13 @@ def index():
     else:
         username = session['username'].replace('_', ' ')
 
-    return render_template('index.html', user_type=user_type, username=username)
+    # Get visible columns for dynamic display
+    visible_columns = get_visible_columns()
+
+    return render_template('index.html', 
+                         user_type=user_type, 
+                         username=username,
+                         visible_columns=visible_columns)
 
 
 @app.route('/search')
@@ -477,13 +625,29 @@ def search():
     q = request.args.get('q', '')
     conn = get_db_connection()
     cur = conn.cursor()
+    
+    # Get visible columns for dynamic query
+    visible_columns = get_visible_columns()
+    column_names = [col['column_name'] for col in visible_columns]
+    
+    if not column_names:
+        return jsonify([])
+    
+    # Build dynamic SELECT query
+    select_columns = ', '.join(column_names)
     cur.execute(
-        "SELECT * FROM patients WHERE name ILIKE %s OR adresse ILIKE %s",
+        f"SELECT {select_columns} FROM patients WHERE name ILIKE %s OR adresse ILIKE %s",
         tuple(f'%{q}%' for _ in range(2))
     )
     results = cur.fetchall()
     conn.close()
-    return jsonify(results)
+    
+    # Convert RealDictRow to regular dict for JSON serialization
+    formatted_results = []
+    for row in results:
+        formatted_results.append(dict(row))
+    
+    return jsonify(formatted_results)
 
 @app.route('/distribution')
 def show_distribution():
@@ -827,3 +991,122 @@ def send_daily_report_email():
         
     except Exception as e:
         return f"Failed to send daily report email: {e}"
+
+# New routes for dynamic column management
+@app.route('/manage_columns')
+@login_required
+def manage_columns():
+    """Show column management interface"""
+    columns = get_all_columns()
+    return render_template('manage_columns.html', columns=columns)
+
+@app.route('/api/columns', methods=['GET'])
+@login_required
+def api_get_columns():
+    """API endpoint to get column configuration"""
+    visible_columns = get_visible_columns()
+    all_columns = get_all_columns()
+    
+    # Convert RealDictRow to regular dictionaries for JSON serialization
+    visible_columns_list = [dict(row) for row in visible_columns]
+    all_columns_list = [dict(row) for row in all_columns]
+    
+    return jsonify({
+        'visible_columns': visible_columns_list,
+        'all_columns': all_columns_list
+    })
+
+@app.route('/api/add_column', methods=['POST'])
+@login_required
+def api_add_column():
+    """API endpoint to add a new column"""
+    data = request.get_json()
+    
+    if not data or not data.get('column_name') or not data.get('display_name'):
+        return jsonify({'status': 'error', 'message': 'Column name and display name are required'}), 400
+    
+    column_name = data['column_name'].strip().lower().replace(' ', '_')
+    display_name = data['display_name'].strip()
+    data_type = data.get('data_type', 'TEXT')
+    
+    # Validate column name (alphanumeric and underscore only)
+    import re
+    if not re.match('^[a-zA-Z_][a-zA-Z0-9_]*$', column_name):
+        return jsonify({'status': 'error', 'message': 'Invalid column name. Use only letters, numbers, and underscores.'}), 400
+    
+    # Check if column already exists
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT COUNT(*) FROM patient_columns_meta WHERE column_name = %s', (column_name,))
+    result = cur.fetchone()
+    count = result.get('count', 0) if hasattr(result, 'get') else result[0]
+    if count > 0:
+        conn.close()
+        return jsonify({'status': 'error', 'message': 'Column already exists'}), 400
+    
+    # Add to database table
+    if not add_column_to_patients(column_name, data_type):
+        return jsonify({'status': 'error', 'message': 'Failed to add column to database'}), 500
+    
+    # Add to metadata
+    cur.execute('SELECT MAX(display_order) as max_order FROM patient_columns_meta')
+    result = cur.fetchone()
+    max_order = result.get('max_order', 0) if hasattr(result, 'get') else (result[0] or 0)
+    if max_order is None:
+        max_order = 0
+    
+    cur.execute('''
+        INSERT INTO patient_columns_meta 
+        (column_name, display_name, data_type, is_visible, is_required, display_order)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    ''', (column_name, display_name, data_type, True, False, max_order + 1))
+    
+    conn.commit()
+    conn.close()
+    
+    log_file(session.get('user_type'), 'Column Added', f"Added column: {display_name} ({column_name})")
+    
+    return jsonify({'status': 'success', 'message': 'Column added successfully'})
+
+@app.route('/api/toggle_column/<column_name>', methods=['POST'])
+@login_required
+def api_toggle_column(column_name):
+    """API endpoint to toggle column visibility"""
+    data = request.get_json()
+    is_visible = data.get('is_visible', True)
+    
+    # Don't allow hiding essential columns
+    essential_columns = ['id', 'name']
+    if column_name in essential_columns and not is_visible:
+        return jsonify({'status': 'error', 'message': 'Cannot hide essential columns'}), 400
+    
+    update_column_visibility(column_name, is_visible)
+    
+    action = 'shown' if is_visible else 'hidden'
+    log_file(session.get('user_type'), 'Column Visibility Changed', f"Column {column_name} {action}")
+    
+    return jsonify({'status': 'success', 'message': f'Column visibility updated'})
+
+@app.route('/api/remove_column/<column_name>', methods=['DELETE'])
+@login_required
+def api_remove_column(column_name):
+    """API endpoint to remove a column"""
+    # Don't allow removal of essential columns
+    essential_columns = ['id', 'name', 'created_at']
+    if column_name in essential_columns:
+        return jsonify({'status': 'error', 'message': 'Cannot remove essential columns'}), 400
+    
+    # Remove from database table
+    if not remove_column_from_patients(column_name):
+        return jsonify({'status': 'error', 'message': 'Failed to remove column from database'}), 500
+    
+    # Remove from metadata
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM patient_columns_meta WHERE column_name = %s', (column_name,))
+    conn.commit()
+    conn.close()
+    
+    log_file(session.get('user_type'), 'Column Removed', f"Removed column: {column_name}")
+    
+    return jsonify({'status': 'success', 'message': 'Column removed successfully'})
