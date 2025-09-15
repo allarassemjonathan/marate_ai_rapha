@@ -221,6 +221,51 @@
   opacity: 1;
   transform: translateX(0);
 }
+
+/* Column Management Modal Styles */
+#columnManagementModal .scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 255, 255, 0.5) transparent;
+}
+
+#columnManagementModal .scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#columnManagementModal .scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#columnManagementModal .scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 255, 255, 0.5);
+  border-radius: 3px;
+}
+
+#columnManagementModal table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#columnManagementModal .form-checkbox,
+#columnManagementModal input[type="checkbox"] {
+  border-radius: 4px;
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+  color: #00FFFF;
+}
+
+#columnManagementModal .form-checkbox:checked,
+#columnManagementModal input[type="checkbox"]:checked {
+  background-color: #00FFFF;
+  border-color: #00FFFF;
+  color: #000000;
+}
+
+#columnManagementModal .form-checkbox:focus,
+#columnManagementModal input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+  border-color: #00FFFF;
+}
   </style>
   
 </head>
@@ -262,6 +307,22 @@
         </div>
       </div>
 
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
+        Base de données des patients
+      </h3>
+      {%if username == "Dr Toralta G .Josephine" %}
+      <button onclick="openColumnManagementModal()" 
+              class="flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-black font-medium px-4 py-2 rounded-lg hover:from-cyan-600 hover:to-purple-700 transition duration-200 shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span>Gérer les Colonnes</span>
+      </button>
+      {%endif%}
+    </div>
+
     <div class="overflow-x-auto scrollbar rounded-xl mb-10 w-full">
       <table class="min-w-full w-full table-auto border-collapse">
           <thead class="table-header">
@@ -278,90 +339,8 @@
       <div class="border-t border-gray-700 mt-10 pt-8">
         <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-6">Ajouter un patient</h2>
         <form id="addForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div class="relative">
-            <input name="name" placeholder="Nom" required class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
+          <!-- Dynamic form fields will be generated here -->
           
-          <div class="relative">
-            <input name="adresse" placeholder="Adresse" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="relative">
-            <input name="phone_number" placeholder="Numero" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="relative">
-            <input name="meeting" placeholder="Rendez-vous" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="relative">
-            <input name="new_cases" placeholder="Nouveaux cas" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            <input name="date_of_birth" type="date" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            <input name="age" type="number" placeholder="Âge" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            <input name="poids" type="number" step="0.1" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            <input name="taille" type="number" step="0.01" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            <input name="tension_arterielle" placeholder="Tension" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            <input name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="relative">
-            <input name="renseignements_clinique" placeholder="Renseignement clinique" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            <input name="hypothese_de_diagnostique" placeholder="Hypothèse de diagnostique" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            <input name="bilan" placeholder="Bilan" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="relative">
-            <input name="resultat_bilan" placeholder="Conclusion du bilan" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            <textarea name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="relative">
-            <input name="date_creation" id="dateCreation" type="datetime-local" placeholder="Date de création" class="input-field w-full p-4 rounded-xl" disabled>
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-        </div>
           <div class="md:col-span-2 mt-4">
             <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Ajouter Patient</button>
           </div>
@@ -512,6 +491,95 @@
           <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Enregistrer les modifications</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Column Management Modal -->
+  <div id="columnManagementModal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="card rounded-2xl p-8 max-w-4xl w-full max-h-screen overflow-y-auto scrollbar" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Gestion des Colonnes</h2>
+        <button onclick="closeColumnManagementModal()" class="text-gray-400 hover:text-cyan-400 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Add New Column Section -->
+      <div class="card rounded-xl p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Ajouter une Nouvelle Colonne</h3>
+        
+        <form id="addColumnFormModal" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Nom de la colonne</label>
+            <input type="text" id="columnNameModal" 
+                   class="input-field w-full p-3 rounded-xl"
+                   placeholder="ex: nouveau_champ"
+                   pattern="[a-zA-Z_][a-zA-Z0-9_]*">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Nom d'affichage</label>
+            <input type="text" id="displayNameModal" 
+                   class="input-field w-full p-3 rounded-xl"
+                   placeholder="ex: Nouveau Champ">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Type de données</label>
+            <select id="dataTypeModal" 
+                    class="input-field w-full p-3 rounded-xl">
+              <option value="TEXT">Texte</option>
+              <option value="INTEGER">Nombre entier</option>
+              <option value="REAL">Nombre décimal</option>
+              <option value="DATE">Date</option>
+              <option value="BOOLEAN">Vrai/Faux</option>
+            </select>
+          </div>
+          
+          <div class="flex items-end">
+            <button type="submit" 
+                    class="glow-button w-full py-3 px-4 rounded-xl font-medium">
+              Ajouter
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Existing Columns Section -->
+      <div class="card rounded-xl border border-gray-600">
+        <h3 class="text-lg font-semibold p-6 border-b border-gray-600 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Colonnes Existantes</h3>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="table-header">
+              <tr>
+                <th class="px-4 py-3 text-left text-sm font-medium">Nom Technique</th>
+                <th class="px-4 py-3 text-left text-sm font-medium">Nom d'Affichage</th>
+                <th class="px-4 py-3 text-left text-sm font-medium">Type</th>
+                <th class="px-4 py-3 text-center text-sm font-medium">Visible</th>
+                <th class="px-4 py-3 text-center text-sm font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="columnsModalTableBody" class="divide-y divide-gray-600">
+              <!-- Dynamic content will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex justify-end mt-6 pt-4 border-t border-gray-600">
+        <button onclick="closeColumnManagementModal()" 
+                class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition mr-3">
+          Fermer
+        </button>
+        <button onclick="refreshMainPageColumns()" 
+                class="glow-button px-6 py-3 rounded-xl font-medium">
+          Actualiser la Page
+        </button>
+      </div>
     </div>
   </div>
 
@@ -914,6 +982,195 @@
     alert('Erreur: ' + error.message);
   });
 }
+
+// Column Management Modal Functions
+function openColumnManagementModal() {
+  document.getElementById('columnManagementModal').classList.remove('hidden');
+  loadColumnsInModal();
+}
+
+function closeColumnManagementModal() {
+  document.getElementById('columnManagementModal').classList.add('hidden');
+}
+
+function loadColumnsInModal() {
+  fetch('/api/columns')
+    .then(response => response.json())
+    .then(data => {
+      const tbody = document.getElementById('columnsModalTableBody');
+      tbody.innerHTML = '';
+      
+      data.all_columns.forEach(column => {
+        const row = document.createElement('tr');
+        row.className = 'table-row hover:bg-opacity-10';
+        
+        const isEssential = ['id', 'name', 'created_at'].includes(column.column_name);
+        
+        row.innerHTML = `
+          <td class="px-4 py-3 font-mono text-sm">${column.column_name}</td>
+          <td class="px-4 py-3">${column.display_name}</td>
+          <td class="px-4 py-3">
+            <span class="px-2 py-1 bg-gradient-to-r from-cyan-500 to-purple-600 text-black rounded text-sm font-medium">
+              ${column.data_type}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-center">
+            <label class="inline-flex items-center">
+              <input type="checkbox" 
+                     class="h-4 w-4 text-cyan-400 rounded border-gray-600 bg-gray-100 focus:ring-cyan-400 focus:ring-2 focus:border-cyan-400"
+                     data-column="${column.column_name}"
+                     ${column.is_visible ? 'checked' : ''}
+                     ${isEssential ? 'disabled' : ''}
+                     onchange="toggleColumnVisibility('${column.column_name}', this.checked)">
+              <span class="ml-2 text-sm ${column.is_visible ? 'text-cyan-400' : 'text-gray-500'}">
+                ${column.is_visible ? '✓ Visible' : 'Masquée'}
+              </span>
+            </label>
+          </td>
+          <td class="px-4 py-3 text-center">
+            ${!isEssential ? 
+              `<button onclick="removeColumnModal('${column.column_name}', '${column.display_name}')" 
+                       class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors text-sm">
+                 Supprimer
+               </button>` : 
+              '<span class="text-gray-500 text-sm">Essentielle</span>'
+            }
+          </td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    })
+    .catch(error => {
+      console.error('Error loading columns:', error);
+      showToastMessage('Erreur lors du chargement des colonnes', 'error');
+    });
+}
+
+// Add column form handler
+document.addEventListener('DOMContentLoaded', function() {
+  const addColumnForm = document.getElementById('addColumnFormModal');
+  if (addColumnForm) {
+    addColumnForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const columnName = document.getElementById('columnNameModal').value.trim();
+      const displayName = document.getElementById('displayNameModal').value.trim();
+      const dataType = document.getElementById('dataTypeModal').value;
+      
+      if (!columnName || !displayName) {
+        showToastMessage('Veuillez remplir tous les champs', 'error');
+        return;
+      }
+      
+      fetch('/api/add_column', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          column_name: columnName,
+          display_name: displayName,
+          data_type: dataType
+        })
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.status === 'success') {
+          showToastMessage('Colonne ajoutée avec succès!', 'success');
+          // Clear form
+          document.getElementById('columnNameModal').value = '';
+          document.getElementById('displayNameModal').value = '';
+          document.getElementById('dataTypeModal').value = 'TEXT';
+          // Reload columns in modal
+          loadColumnsInModal();
+        } else {
+          showToastMessage(result.message || 'Erreur lors de l\'ajout', 'error');
+        }
+      })
+      .catch(error => {
+        showToastMessage('Erreur de connexion', 'error');
+        console.error('Error:', error);
+      });
+    });
+  }
+});
+
+function toggleColumnVisibility(columnName, isVisible) {
+  fetch(`/api/toggle_column/${columnName}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ is_visible: isVisible })
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.status === 'success') {
+      showToastMessage(`Colonne ${isVisible ? 'affichée' : 'masquée'}`, 'success');
+      // Update the visual feedback in the row
+      const row = document.querySelector(`input[data-column="${columnName}"]`).closest('tr');
+      const statusSpan = row.querySelector('td:nth-child(4) span span');
+      if (statusSpan) {
+        statusSpan.textContent = isVisible ? '✓ Visible' : 'Masquée';
+        statusSpan.className = isVisible ? 'ml-2 text-sm text-cyan-400' : 'ml-2 text-sm text-gray-500';
+      }
+    } else {
+      // Revert checkbox state
+      const checkbox = document.querySelector(`input[data-column="${columnName}"]`);
+      checkbox.checked = !isVisible;
+      showToastMessage(result.message || 'Erreur lors de la modification', 'error');
+    }
+  })
+  .catch(error => {
+    // Revert checkbox state
+    const checkbox = document.querySelector(`input[data-column="${columnName}"]`);
+    checkbox.checked = !isVisible;
+    showToastMessage('Erreur de connexion', 'error');
+    console.error('Error:', error);
+  });
+}
+
+function removeColumnModal(columnName, displayName) {
+  if (confirm(`Êtes-vous sûr de vouloir supprimer définitivement la colonne "${displayName}"?\nCette action ne peut pas être annulée!`)) {
+    fetch(`/api/remove_column/${columnName}`, {
+      method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.status === 'success') {
+        showToastMessage('Colonne supprimée avec succès!', 'success');
+        loadColumnsInModal(); // Reload the table
+      } else {
+        showToastMessage(result.message || 'Erreur lors de la suppression', 'error');
+      }
+    })
+    .catch(error => {
+      showToastMessage('Erreur de connexion', 'error');
+      console.error('Error:', error);
+    });
+  }
+}
+
+function refreshMainPageColumns() {
+  // Close modal and refresh page to show updated columns
+  closeColumnManagementModal();
+  window.location.reload();
+}
+
+function showToastMessage(message, type = 'success') {
+  // Create toast notification
+  const toast = document.createElement('div');
+  toast.className = `fixed top-5 right-5 z-50 px-4 py-3 rounded-lg text-white font-medium transition-all duration-300 ${
+    type === 'success' ? 'bg-green-500' : 'bg-red-500'
+  }`;
+  toast.textContent = message;
+  
+  document.body.appendChild(toast);
+  
+  // Auto remove after 3 seconds
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
 window.USER_TYPE = "{{user_type}}"
 
   </script>
