@@ -1,4 +1,6 @@
-2025-09-12
-Nouvelle evenement: 07:27:15 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 07:27:26 Dr_Ndoubabé_Bonheur, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 07:29:19 Dr_Ndoubabe_Bonheur, login, L'utilisateur 'Dr_Ndoubabe_Bonheur' s'est connecté avec succès
+2025-09-16
+Nouvelle evenement: 07:56:28 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 18:42:24 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 18:43:04 Dr_Ngetigal_Hyacinte, login, L'utilisateur 'Dr_Ngetigal_Hyacinte' s'est connecté avec succès
+Nouvelle evenement: 19:04:47 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 19:19:40 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
