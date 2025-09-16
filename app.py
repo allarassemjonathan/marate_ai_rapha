@@ -131,7 +131,7 @@ CREDENTIALS = {
     'Astou':os.environ.get('Astou'),
     'Inf_Fatoumata':os.environ.get('Inf_Fatoumata'),
     'Inf_Mariam': os.environ.get('Inf_Mariam'),
-    'Inf_Sassou':os.environ.get('Inf_Sassou')
+    'Inf_Diarra':os.environ.get('Inf_Diarra')
 }
 
 # Decorator to require login
