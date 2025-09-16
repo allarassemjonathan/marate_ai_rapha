@@ -1019,6 +1019,7 @@ def frequences_patients():
 
 
 @app.route("/stat")
+@login_required
 def rapport():
     df = load_df()
     
