@@ -1,6 +1,6 @@
 .env
 credentials.json
-__pycache__
+__pycache__/
 .venv
 token.json
 daily_log.txt

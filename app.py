@@ -3,6 +3,9 @@ import matplotlib
 import base64
 matplotlib.use('Agg')  # Must be set before importing pyplot
 import matplotlib.pyplot as plt
+plt.rcParams['axes.formatter.useoffset'] = False
+plt.rcParams['axes.formatter.use_mathtext'] = False
+
 import matplotlib.ticker as mticker
 import pandas as pd
 import io
@@ -953,6 +956,8 @@ def build_revenu_journalier_chart(buf):
     toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
     visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
     revenu_par_jour = visites_par_jour * 10000
+    plt.rcParams['axes.formatter.useoffset'] = False
+    plt.rcParams['axes.formatter.use_mathtext'] = False
 
     plt.figure(figsize=(10,6))
     revenu_par_jour.plot(kind='line', color='blue', marker='o')
@@ -969,6 +974,8 @@ def build_revenu_mensuel_chart(buf):
     revenu_par_mois = consultations_par_mois * 10000
     toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
     revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
+    plt.rcParams['axes.formatter.useoffset'] = False
+    plt.rcParams['axes.formatter.use_mathtext'] = False
 
     plt.figure(figsize=(10,6))
     revenu_par_mois.plot(kind='line', color='blue', marker='o')
@@ -983,6 +990,8 @@ def build_frequences_patients_chart(buf):
     df = load_df_cached()
     patients_count = df['name'].str.lower().value_counts()[0:8]
     patients_count.index = patients_count.index.str.title()
+    plt.rcParams['axes.formatter.useoffset'] = False
+    plt.rcParams['axes.formatter.use_mathtext'] = False
 
     plt.figure(figsize=(10,6))
     patients_count.plot(kind='bar', color='blue')
@@ -1047,6 +1056,7 @@ def rapport():
     ax2.set_title("Evolution des revenus mensuels")
     ax2.set_ylabel("Revenu (FCFA)")
     ax2.set_xlabel("Mois")
+    ax2.yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
     img2 = fig_to_base64(fig2)
     plt.close(fig2)
 
@@ -1074,4 +1084,3 @@ def rapport():
     
 
 
-  
