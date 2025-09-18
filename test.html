@@ -1,0 +1,38 @@
+<h3 class="text-lg font-semibold mb-2">Bilan</h3>
+<div class="conditions-block">
+  Biochimie
+  <label><input type="checkbox" name="conditions" value="Glycémie"> Glycémie</label>
+  <label><input type="checkbox" name="conditions" value="Créatinine">Créatinine</label>
+  <label><input type="checkbox" name="conditions" value="Urée">Urée</label>
+  <label><input type="checkbox" name="conditions" value="ALAT"> ALAT</label>
+  <label><input type="checkbox" name="conditions" value="ASAT"> ASAT</label>
+  <label><input type="checkbox" name="conditions" value="CRP"> CRP</label>
+  <label><input type="checkbox" name="conditions" value="ASLO"> ASLO</label>
+  <label><input type="checkbox" name="conditions" value="HDL"> HDL</label>
+  <label><input type="checkbox" name="conditions" value="LDL"> LDL</label>
+  <label><input type="checkbox" name="conditions" value="Cholestérol T">Cholestérol T</label>
+  <label><input type="checkbox" name="conditions" value="Triglycérides">Triglycérides</label>
+  <label><input type="checkbox" name="conditions" value="Protéines de 24H">Protéines de 24H</label>
+  <label><input type="checkbox" name="conditions" value="Billirubine T">Billirubine T</label>
+  <label><input type="checkbox" name="conditions" value="Billirubine C"> Billirubine C</label>
+  <label><input type="checkbox" name="conditions" value="Ionogramme S">Ionogramme S</label>
+  <label><input type="checkbox" name="conditions" value="Calcium">Calciul</label>
+</div>
+<style>.conditions-block {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.conditions-block label {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+</style>

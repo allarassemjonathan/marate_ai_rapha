@@ -1,7 +1,9 @@
 # we will use later .. 
 import matplotlib
+import base64
 matplotlib.use('Agg')  # Must be set before importing pyplot
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import pandas as pd
 import io
 from collections import defaultdict
@@ -21,6 +23,10 @@ from functools import wraps
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
+import unicodedata
+from flask import g
+import time
+
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -29,6 +35,20 @@ app = Flask(__name__)
 
 # If modifying these scopes, delete the token.json
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
+
+#unicodedata.normalize('NFD', text) sait gerer les caracteres unicodes comme les accents les symboles etc.
+#la methode unicodedata('NFD',text) decompose les lettres accentuées en deux parties la lettre de base et l'accent séparé
+#for c in ..... on parcourt chaque caractere du texte decomposé
+#unicodedata.category donne la categorie unicode du caractere
+#Mn = Mark,Nonspacing c'est-à-dire les qccents et diacritiques
+#Donc cette condition veut dire de garder seulement les caracteres qui ne sont pas des accents
+#''.join() enfin on rassemble tous les caracteres qu'on a gardes pour former une nouvelle chaine
+
+def remove_accents(text):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', text)
+        if unicodedata.category(c) != 'Mn'
+    )
 
 
 def clean_float(value):
@@ -281,7 +301,7 @@ class InvoicePDF(FPDF):
             "June": "Juin",
             "July": "Juillet",
             "August": "Août",
-            "Septembe": "Septembre",
+            "September": "Septembre",
             "October": "Octobre",
             "November": "Novembre",
             "December": "Décembre"}
@@ -708,92 +728,6 @@ def get_patient(patient_id):
         return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
 
 
-
-@app.route('/stat')
-@login_required
-def stat():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('select COUNT(*) from patients')
-    count = dict(cur.fetchall()[0])['count']
-    cur.execute('select AVG(age) from patients')
-    avg_age = dict(cur.fetchall()[0])['avg']
-    cur.execute('select AVG(taille) from patients')
-    avg_height = dict(cur.fetchall()[0])['avg']
-    cur.execute('select AVG(poids) from patients')
-    avg_weight = dict(cur.fetchall()[0])['avg']
-    return render_template("stat.html", 
-                           count=count, 
-                           avg_age=round(avg_age),
-                           avg_height=round(avg_height),
-                           avg_weight=round(avg_weight))
-
-
-@app.route('/stat/chart')
-@login_required
-def stat_chart():
-    # Connect and fetch top 10 addresses
-    conn = get_db_connection()
-    query = """
-        SELECT adresse, COUNT(*) AS count
-        FROM patients
-        GROUP BY adresse
-        ORDER BY count DESC
-        LIMIT 10;
-    """
-    df = pd.read_sql(query, conn)
-    conn.close()
-
-    # Plot horizontal bar chart
-    plt.figure(figsize=(10,6))
-    plt.barh(df['adresse'], df['count'], color='skyblue')
-    plt.xlabel("Nombre de patients")
-    plt.ylabel("Addresses")
-    plt.title("Top 10 quartiers les plus représentées")
-    plt.gca().invert_yaxis()
-    plt.tight_layout()
-
-    # Save plot to BytesIO
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    plt.close()
-    buf.seek(0)
-
-    return send_file(buf, mimetype='image/png')
-
-@app.route('/age_histogram')
-@login_required
-def age_histogram():
-    conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
-    # Get all ages
-    cur.execute("SELECT age FROM patients WHERE age IS NOT NULL")
-    rows = cur.fetchall()
-    conn.close()
-
-    if not rows:
-        return "No age data available"
-
-    # Extract ages from dicts
-    ages = [row['age'] for row in rows]
-
-    # Generate histogram
-    plt.figure(figsize=(10, 6))
-    plt.hist(ages, bins=range(0, int(max(ages)) + 2), color='#3498db', edgecolor='black')
-    plt.title("Histogramme des âges des patients")
-    plt.xlabel("Âge (années)")
-    plt.ylabel("Nombre de patients")
-    plt.grid(axis='y', alpha=0.75)
-
-    # Save to in-memory buffer
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    plt.close()
-
-    return send_file(buffer, mimetype='image/png')
-
 @app.route('/update/<int:patient_id>', methods=['PUT'])
 @login_required
 def update_patient(patient_id):
@@ -885,7 +819,6 @@ def login():
 
 from io import StringIO
 from datetime import date, timedelta
-
 def generate_daily_report(date_of_report=None):
     if date_of_report is None:
         date_of_report = date.today()
@@ -915,6 +848,7 @@ def generate_daily_report(date_of_report=None):
     return output
 
 @app.route('/report')
+@login_required
 def send_daily_report_email():
     today = date.today()
     # report = generate_daily_report(today)
@@ -947,3 +881,197 @@ def send_daily_report_email():
         
     except Exception as e:
         return f"Failed to send daily report email: {e}"
+    
+_cache = {"df":None, "last_load":0}
+
+def load_df_cached(ttl=60):
+
+    # get the current time
+    now = time.time()
+
+    # if the table has not been loaded yet or it has been loaded a while ago reload
+    if _cache["df"] is None or (now - _cache["last_load"]) > ttl:
+        _cache["df"] = load_df()
+        _cache["last_load"] = now
+    # else just return what you have
+    return _cache["df"]
+
+def load_df():
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM patients")
+    rows = cur.fetchall()
+    columns = [desc[0] for desc in cur.description]
+    cur.close()
+    conn.close()
+    df = pd.DataFrame(rows , columns=columns)
+    if 'created_at' in df.columns:
+        df['created_at'] = pd.to_datetime(df['created_at'])
+    if 'name' in df.columns:
+        df['name'] = (df['name'].astype(str).str.strip().apply(remove_accents))
+
+    return df
+
+
+#Convertir une figure en image web ici on sauvagarde le graphe en memoire pas sur disque et flask l'envoie au navigateur en tant qu'image PNG
+
+def fig_to_png_response():
+
+    #on crée un fichier en memoire (dans la RAM) grace à BytesIO
+    #C'est comme un fichier normal mais qui n'existe pas sur disaue on va l'utiliser pour stocker l'image PNG temporairement
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+    #place le curseur au debut du fichier en memoire(buf)
+    buf.seek(0)
+    #le navigateur affiche l'iamge générée directement sans jamais l'avoir enregistrée sur disque
+    return send_file(buf ,mimetype="image/png")
+
+
+def fig_to_base64(fig):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    buf.seek(0)
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
+
+_chart_cache = {}
+
+def get_chart(key, generator_func, ttl=60):
+    """Return a cached chart image or regenerate it"""
+    now = time.time()
+    if key not in _chart_cache or (now - _chart_cache[key]["time"]) > ttl:
+        buf = io.BytesIO()
+        generator_func(buf)
+        _chart_cache[key] = {"img": buf.getvalue(), "time": now}
+    return io.BytesIO(_chart_cache[key]["img"])
+
+
+def build_revenu_journalier_chart(buf):
+    df = load_df_cached()
+    visites_par_jour = df.groupby(df['created_at'].dt.date).size()
+    toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
+    visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
+    revenu_par_jour = visites_par_jour * 10000
+
+    plt.figure(figsize=(10,6))
+    revenu_par_jour.plot(kind='line', color='blue', marker='o')
+    plt.ylabel("Revenu (FCFA)")
+    plt.xlabel("Date")
+    plt.tight_layout()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+
+def build_revenu_mensuel_chart(buf):
+    df = load_df_cached()
+    consultations_par_mois = df.groupby(df['created_at'].dt.to_period('M')).size()
+    revenu_par_mois = consultations_par_mois * 10000
+    toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
+    revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
+
+    plt.figure(figsize=(10,6))
+    revenu_par_mois.plot(kind='line', color='blue', marker='o')
+    plt.xlabel("Mois")
+    plt.ylabel("Revenu par mois (en FCFA)")
+    plt.tight_layout()
+    plt.gca().yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+def build_frequences_patients_chart(buf):
+    df = load_df_cached()
+    patients_count = df['name'].str.lower().value_counts()[0:8]
+    patients_count.index = patients_count.index.str.title()
+
+    plt.figure(figsize=(10,6))
+    patients_count.plot(kind='bar', color='blue')
+    plt.xlabel("Nom")
+    plt.ylabel("Fréquences de visites")
+    plt.tight_layout()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+@app.route("/revenu_journalier")
+@login_required
+def revenu_journalier():
+    return send_file(
+        get_chart("revenu_journalier", build_revenu_journalier_chart),
+        mimetype="image/png"
+    )
+
+@app.route("/revenu_mensuel")
+@login_required
+def revenu_mensuel():
+    return send_file(
+        get_chart("revenu_mensuel", build_revenu_mensuel_chart),
+        mimetype="image/png"
+    )
+
+@app.route("/frequences_patients")
+@login_required
+def frequences_patients():
+    return send_file(
+        get_chart("frequences_patients", build_frequences_patients_chart),
+        mimetype="image/png"
+    )
+
+
+@app.route("/stat")
+@login_required
+def rapport():
+    df = load_df()
+    
+    # --- 1. Revenu journalier ---
+    visites_par_jour = df.groupby(df['created_at'].dt.date).size()
+    toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
+    visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
+    revenu_par_jour = visites_par_jour * 10000
+
+    fig1, ax1 = plt.subplots(figsize=(8, 4))
+    revenu_par_jour.plot(kind="line", marker="o", color="blue", ax=ax1)
+    ax1.set_title("Evolution des revenus journaliers")
+    ax1.set_ylabel("Revenu (FCFA)")
+    ax1.set_xlabel("Date")
+    img1 = fig_to_base64(fig1)
+    plt.close(fig1)
+
+    # --- 2. Revenu mensuel ---
+    consultations_par_mois = df.groupby(df['created_at'].dt.to_period('M')).size()
+    revenu_par_mois = consultations_par_mois * 10000
+    toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
+    revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
+
+    fig2, ax2 = plt.subplots(figsize=(8, 4))
+    revenu_par_mois.plot(kind="line", marker="o", color="blue", ax=ax2)
+    ax2.set_title("Evolution des revenus mensuels")
+    ax2.set_ylabel("Revenu (FCFA)")
+    ax2.set_xlabel("Mois")
+    img2 = fig_to_base64(fig2)
+    plt.close(fig2)
+
+    # --- 3. Fréquences patients ---
+    patients_count = df['name'].str.lower().value_counts()[0:8]
+    patients_count.index = patients_count.index.str.title()
+
+    fig3, ax3 = plt.subplots(figsize=(8, 4))
+    patients_count.plot(kind="bar", color="blue", ax=ax3)
+    ax3.set_title("Fréquences des patients")
+    ax3.set_xlabel("Nom")
+    ax3.set_ylabel("Fréquences de visites")
+    img3 = fig_to_base64(fig3)
+    plt.close(fig3)
+
+    # --- render all charts in one page ---
+    return render_template("stats.html",
+                           img1=img1,
+                           img2=img2,
+                           img3=img3)
+
+
+
+
+    
+
+
+  
