@@ -375,10 +375,9 @@ class InvoicePDF(FPDF):
         col_widths = [40, 25, 35, 35, 40]
 
         for i, header in enumerate(headers):
-            print("Rendering table headers for section:", section.get('titre', 'Section'))
+            print("Rendering table headers for section:", header.get('titre', 'Section'))
             self.cell(col_widths[i], 10, header, 1, 0, 'C', 1, True)
         self.ln()
-
         self.set_font('Arial', '', 10)
         self.set_text_color(0)
 
