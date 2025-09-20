@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Modifier la visibilité</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .role-box { border: 1px solid #ccc; padding: 15px; border-radius: 5px; width: 400px; }
+    h2 { margin-bottom: 10px; }
+    .columns { margin: 10px 0; }
+    button { padding: 8px 16px; margin-top: 10px; }
+    #message { margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <h2>Configurer la visibilité des colonnes</h2>
+
+  <div class="role-box">
+    <label for="role">Choisir un rôle :</label>
+    <select id="role">
+      <option value="medecins">Médecins</option>
+      <option value="infirmiers">Infirmiers</option>
+      <option value="receptionistes">Réceptionistes</option>
+    </select>
+
+    <div class="columns" id="columns-list"></div>
+
+    <button onclick="saveVisibility()">Enregistrer</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    // ✅ List of all possible columns
+    const allColumns = [
+      'created_at','name','adresse','age','poids','taille',
+      'tension_arterielle','temperature','hypothese_de_diagnostique',
+      'renseignements_clinique','bilan','resultat_bilan',
+      'ordonnance','signature','meeting','new_cases','phone_number'
+    ];
+
+    // Generate checkboxes for all columns
+    const columnsDiv = document.getElementById("columns-list");
+    allColumns.forEach(col => {
+      const label = document.createElement("label");
+      label.innerHTML = `<input type="checkbox" value="${col}"> ${col}`;
+      columnsDiv.appendChild(label);
+      columnsDiv.appendChild(document.createElement("br"));
+    });
+
+    async function saveVisibility() {
+      const role = document.getElementById("role").value;
+      const checked = [...document.querySelectorAll("#columns-list input:checked")].map(cb => cb.value);
+
+      const response = await fetch("/update_visibility", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: role, columns: checked })
+      });
+
+      const data = await response.json();
+      const msg = document.getElementById("message");
+      if (data.status === "success") {
+        msg.style.color = "green";
+        msg.textContent = `Visibilité mise à jour pour ${role}`;
+      } else {
+        msg.style.color = "red";
+        msg.textContent = "Erreur: " + (data.message || "Impossible de mettre à jour");
+      }
+    }
+  </script>
+</body>
+</html>

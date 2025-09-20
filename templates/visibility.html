@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Modifier la visibilité</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #111111;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      text-decoration: none;
+      color: #8000FF;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: #00FFFF;
+    }
+
+    .role-box {
+      background: #ffffff;
+      border: 1px solid rgba(200, 200, 200, 0.5);
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin: 1.5rem auto;
+      max-width: 600px;
+    }
+
+    .role-box h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 1rem;
+      color: #111111;
+      border-bottom: 2px solid #00FFFF;
+      padding-bottom: 0.5rem;
+    }
+
+    .columns-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.5rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .columns-list label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .columns-list input[type="checkbox"] {
+      accent-color: #00FFFF;
+      transform: scale(1.2);
+    }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .glow-button {
+      background: linear-gradient(90deg, #00FFFF, #8000FF);
+      color: #050505;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .glow-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #00FFFF, #8000FF, #00FFFF);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
+      background-size: 200% auto;
+    }
+
+    .glow-button:hover::before {
+      opacity: 1;
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+  </style>
+</head>
+<body>
+  <h2 class="cyan-glow">Configurer la visibilité des colonnes</h2>
+  <a href="/" class="back-link" style="height: 50px;
+            width: auto;">← Retour menu</a>
+
+  <script>
+    const allColumns = [
+      'created_at','name','adresse','age','poids','taille','tension_arterielle',
+      'temperature','hypothese_de_diagnostique','renseignements_clinique','bilan',
+      'resultat_bilan','ordonnance','signature','meeting','new_cases','phone_number'
+    ];
+  </script>
+    
+  {% for role in roles %}
+    <div class="role-box">
+      <h3>{{ role.role|capitalize }}</h3>
+      <form onsubmit="return saveVisibility('{{ role.role }}', this)">
+        <div class="columns-list">
+          {% for col in allColumns %}
+            <label>
+              <input type="checkbox" name="columns" value="{{ col }}"
+                {% if col in role.columns %}checked{% endif %}>
+              {{ col }}
+            </label>
+          {% endfor %}
+        </div>
+        <button type="submit" class="glow-button">Enregistrer</button>
+      </form>
+    </div>
+  {% endfor %}
+
+  <script>
+    function saveVisibility(role, form) {
+      const formData = new FormData(form);
+      const selected = formData.getAll("columns");
+
+      fetch("/update_visibility", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: role, columns: selected })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          alert("✔ Bon travail, les permissions pour les " + role + " ont été mises à jour !");
+        } else {
+          alert("Erreur: " + data.message);
+        }
+      });
+      return false;
+    }
+  </script>
+</body>
+</html>
