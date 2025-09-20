@@ -10,11 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const userType = window.USER_TYPE;
   console.log(userType);
   console.log("userType");
+
   // Define which columns each user type can see
   const columnVisibility = {
     'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
     'infirmiers': ['created_at', 'name','poids','taille','tension_arterielle','temperature'],
-    'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
+    'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting']
   };
 
     const columnHeaders = {
@@ -36,6 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
     'new_cases':'Nouveaux cas',
     'phone_number':'Numero de telephone'
   };
+
+  async function fetchVisibility() {
+    const res = await fetch(`/get_visibility/${userType}`);
+    console.log("ici");
+    columnVisibility[userType] = await res.json();
+    createTableHeaders();
+    loadPatients();
+  }
+
+  // Initial load when user logs in
+  fetchVisibility();
 
   function createTableHeaders(){
     const visibleColumns = columnVisibility[userType] || [];

@@ -5,7 +5,7 @@ matplotlib.use('Agg')  # Must be set before importing pyplot
 import matplotlib.pyplot as plt
 plt.rcParams['axes.formatter.useoffset'] = False
 plt.rcParams['axes.formatter.use_mathtext'] = False
-
+import json
 import matplotlib.ticker as mticker
 import pandas as pd
 import io
@@ -59,9 +59,16 @@ def clean_float(value):
 
 def get_db_connection():
     return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
+
 def init_db():
+    defaults = {
+        'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
+        'infirmiers': ['created_at', 'name','poids','taille','tension_arterielle','temperature'],
+        'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting']
+    }
     with get_db_connection() as conn:
         with conn.cursor() as cur:
+            # setting up the regular tables
             cur.execute('''
                 CREATE TABLE IF NOT EXISTS patients (
                     id SERIAL PRIMARY KEY,
@@ -99,6 +106,13 @@ def init_db():
                     details TEXT
                 )
             ''')
+
+            # setup the column visibility parameters
+            for role, cols in defaults.items():
+                cur.execute("SELECT 1 FROM column_visibility WHERE role=%s;", (role,))
+                if not cur.fetchone():
+                    cur.execute("INSERT INTO column_visibility (role, columns) VALUES (%s, %s);", 
+                        (role, json.dumps(cols)))
             conn.commit()
 
 def log_file(user_type, action, details=None):
@@ -1080,7 +1094,52 @@ def rapport():
 
 
 
+@app.route("/visibility")
+@login_required
+def visibility_page():
+    """Admin UI to configure visibility rules."""
+    allColumns = [
+        "created_at","name","adresse","age","poids","taille","tension_arterielle",
+        "temperature","hypothese_de_diagnostique","renseignements_clinique","bilan",
+        "resultat_bilan","ordonnance","signature","meeting","new_cases","phone_number"
+    ]
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT role, columns FROM column_visibility;")
+    rows = cur.fetchall()
+    return render_template("visibility.html", roles=rows, allColumns=allColumns) 
 
-    
+@app.route("/get_visibility/<role>")
+@login_required
+def get_visibility(role):
+    """API endpoint for frontend JS to fetch visible columns for a role."""
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT columns FROM column_visibility WHERE role=%s;", (role,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    print(row['columns'])
+    return jsonify(row["columns"] if row else [])
+
+
+@app.route("/update_visibility", methods=["POST"])
+@login_required
+def update_visibility():
+    """API endpoint for admin UI to update rules."""
+    data = request.json
+    role = data.get("role")
+    new_columns = data.get("columns", [])
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE column_visibility SET columns=%s WHERE role=%s;",
+        (json.dumps(new_columns), role)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"status": "success", "columns": new_columns})
 
 

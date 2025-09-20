@@ -251,6 +251,9 @@ td, th {
   <a href="/stat" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
     Statistiques
   </a>
+    <a href="/visibility" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
+    Permissions
+  </a>
   {%endif%}
   <a>Bienvenue {{username}}</a>
 </nav>
@@ -352,7 +355,7 @@ td, th {
               <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
             </div>
           </div>
-          
+          {%if user_type == 'infirmiers' or user_type == 'medecins'%}
           <div class="relative">
             Poids
             <input name="poids" type="number" step="0.1" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
@@ -376,7 +379,8 @@ td, th {
             <input name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
-
+          {%endif%}
+          {%if user_type == 'medecins'%}
           <div class="relative">
             Renseignement clinique
             <input name="renseignements_clinique" placeholder="Renseignement clinique" class="input-field w-full p-4 rounded-xl">
@@ -412,6 +416,7 @@ td, th {
             <input name="date_creation" id="dateCreation" type="datetime-local" placeholder="Date de création" class="input-field w-full p-4 rounded-xl" disabled>
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
+        {%endif%}
           <div class="md:col-span-2 mt-4">
             <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Ajouter Patient</button>
           </div>
