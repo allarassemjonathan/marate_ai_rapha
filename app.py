@@ -90,6 +90,9 @@ def init_db():
                 )
             ''')
             cur.execute('''
+            CREATE TABLE IF NOT EXISTS column_visibility ( id SERIAL PRIMARY KEY, role VARCHAR(50) UNIQUE NOT NULL, columns JSONB NOT NULL);
+            ''')
+            cur.execute('''
                 CREATE TABLE IF NOT EXISTS visits (
                     id SERIAL PRIMARY KEY,
                     patient_id INTEGER REFERENCES patients(id),
