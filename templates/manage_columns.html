@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Colonnes - Marate AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 350px;
+            border-radius: 8px;
+            padding: 16px;
+            color: white;
+            font-weight: 500;
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        .toast-success { background-color: #10b981; }
+        .toast-error { background-color: #ef4444; }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">Gestion des Colonnes</h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:bg-blue-700 px-3 py-2 rounded transition-colors">
+                    ← Retour au Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Add New Column Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Ajouter une Nouvelle Colonne</h2>
+            
+            <form id="addColumnForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Nom de la colonne (technique)
+                    </label>
+                    <input type="text" id="columnName" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="ex: nouveau_champ"
+                           pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+                           title="Lettres, chiffres et underscore uniquement. Doit commencer par une lettre.">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Nom d'affichage
+                    </label>
+                    <input type="text" id="displayName" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="ex: Nouveau Champ">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Type de données
+                    </label>
+                    <select id="dataType" 
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="TEXT">Texte</option>
+                        <option value="INTEGER">Nombre entier</option>
+                        <option value="REAL">Nombre décimal</option>
+                        <option value="DATE">Date</option>
+                        <option value="BOOLEAN">Vrai/Faux</option>
+                    </select>
+                </div>
+                
+                <div class="flex items-end">
+                    <button type="submit" 
+                            class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                        Ajouter Colonne
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Existing Columns Section -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Colonnes Existantes</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border p-3 text-left font-medium text-gray-700">Nom Technique</th>
+                            <th class="border p-3 text-left font-medium text-gray-700">Nom d'Affichage</th>
+                            <th class="border p-3 text-left font-medium text-gray-700">Type</th>
+                            <th class="border p-3 text-center font-medium text-gray-700">Visible</th>
+                            <th class="border p-3 text-center font-medium text-gray-700">Requis</th>
+                            <th class="border p-3 text-center font-medium text-gray-700">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="columnsTableBody">
+                        {% for column in columns %}
+                        <tr class="hover:bg-gray-50" data-column-name="{{ column.column_name }}">
+                            <td class="border p-3 font-mono text-sm">{{ column.column_name }}</td>
+                            <td class="border p-3">{{ column.display_name }}</td>
+                            <td class="border p-3">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
+                                    {{ column.data_type }}
+                                </span>
+                            </td>
+                            <td class="border p-3 text-center">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" 
+                                           class="visibility-toggle form-checkbox h-5 w-5 text-blue-600"
+                                           data-column="{{ column.column_name }}"
+                                           {% if column.is_visible %}checked{% endif %}
+                                           {% if column.column_name in ['id', 'name'] %}disabled{% endif %}>
+                                    <span class="ml-2 text-sm">
+                                        {% if column.is_visible %}
+                                            <span class="text-green-600">✓ Visible</span>
+                                        {% else %}
+                                            <span class="text-gray-500">Masquée</span>
+                                        {% endif %}
+                                    </span>
+                                </label>
+                            </td>
+                            <td class="border p-3 text-center">
+                                {% if column.is_required %}
+                                    <span class="text-red-600 font-medium">Requis</span>
+                                {% else %}
+                                    <span class="text-gray-500">Optionnel</span>
+                                {% endif %}
+                            </td>
+                            <td class="border p-3 text-center">
+                                {% if column.column_name not in ['id', 'name', 'created_at'] %}
+                                    <button class="remove-column bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors text-sm"
+                                            data-column="{{ column.column_name }}"
+                                            data-display-name="{{ column.display_name }}">
+                                        Supprimer
+                                    </button>
+                                {% else %}
+                                    <span class="text-gray-400 text-sm">Essentielle</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add column functionality
+        document.getElementById('addColumnForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const columnName = document.getElementById('columnName').value.trim();
+            const displayName = document.getElementById('displayName').value.trim();
+            const dataType = document.getElementById('dataType').value;
+            
+            if (!columnName || !displayName) {
+                showToast('Veuillez remplir tous les champs', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/add_column', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        column_name: columnName,
+                        display_name: displayName,
+                        data_type: dataType
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showToast('Colonne ajoutée avec succès!', 'success');
+                    // Reload page to show new column
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast(result.message || 'Erreur lors de l\'ajout', 'error');
+                }
+            } catch (error) {
+                showToast('Erreur de connexion', 'error');
+                console.error('Error:', error);
+            }
+        });
+        
+        // Toggle column visibility
+        document.querySelectorAll('.visibility-toggle').forEach(checkbox => {
+            checkbox.addEventListener('change', async function() {
+                const columnName = this.dataset.column;
+                const isVisible = this.checked;
+                
+                try {
+                    const response = await fetch(`/api/toggle_column/${columnName}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            is_visible: isVisible
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        showToast(`Colonne ${isVisible ? 'affichée' : 'masquée'}`, 'success');
+                        // Update visual feedback
+                        const row = this.closest('tr');
+                        const statusSpan = row.querySelector('td:nth-child(4) span span');
+                        if (isVisible) {
+                            statusSpan.textContent = '✓ Visible';
+                            statusSpan.className = 'text-green-600';
+                        } else {
+                            statusSpan.textContent = 'Masquée';
+                            statusSpan.className = 'text-gray-500';
+                        }
+                    } else {
+                        // Revert checkbox state
+                        this.checked = !isVisible;
+                        showToast(result.message || 'Erreur lors de la modification', 'error');
+                    }
+                } catch (error) {
+                    // Revert checkbox state
+                    this.checked = !isVisible;
+                    showToast('Erreur de connexion', 'error');
+                    console.error('Error:', error);
+                }
+            });
+        });
+        
+        // Remove column functionality
+        document.querySelectorAll('.remove-column').forEach(button => {
+            button.addEventListener('click', async function() {
+                const columnName = this.dataset.column;
+                const displayName = this.dataset.displayName;
+                
+                const result = await Swal.fire({
+                    title: 'Êtes-vous sûr?',
+                    text: `Supprimer définitivement la colonne "${displayName}"?\nCette action ne peut pas être annulée!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Oui, supprimer',
+                    cancelButtonText: 'Annuler'
+                });
+                
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(`/api/remove_column/${columnName}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        const apiResult = await response.json();
+                        
+                        if (apiResult.status === 'success') {
+                            showToast('Colonne supprimée avec succès!', 'success');
+                            // Remove row from table
+                            this.closest('tr').remove();
+                        } else {
+                            showToast(apiResult.message || 'Erreur lors de la suppression', 'error');
+                        }
+                    } catch (error) {
+                        showToast('Erreur de connexion', 'error');
+                        console.error('Error:', error);
+                    }
+                }
+            });
+        });
+        
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            // Remove existing toasts
+            document.querySelectorAll('.toast').forEach(toast => toast.remove());
+            
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
