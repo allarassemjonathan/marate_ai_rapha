@@ -1144,27 +1144,34 @@ def fig_to_png_response():
     #le navigateur affiche l'iamge générée directement sans jamais l'avoir enregistrée sur disque
     return send_file(buf ,mimetype="image/png")
 
-
+#transforme un graphique matplotlib en une chaine de texte base64 pour l'afficher dans une page HTML
 def fig_to_base64(fig):
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight")
-    buf.seek(0)
-    return base64.b64encode(buf.getvalue()).decode("utf-8")
+    buf = io.BytesIO() #cree un fichier temporaire en memoire(dans la RAM)
+    fig.savefig(buf, format="png", bbox_inches="tight") #sauvegarde la figure dans "ce format"
+    buf.seek(0) #remet le curseur au debut du fichier(sinon la lecture commence a la fin)
+    return base64.b64encode(buf.getvalue()).decode("utf-8") #transforme l'image en texte encode
 
-_chart_cache = {}
+#un dictionnaire vide au depart qui va permettre de stocker les images générées pour eviter de les recréer a chaque appel
+_chart_cache = {} 
 
+
+#verifie si le graphique existe deja dans _chart_cache
+#Si non ou si le cache est trop vieux il regenere le graphique avec generator_func
+#Ensuite il retourne l'image en memoire pour que Flask puisse l'envoyer
 def get_chart(key, generator_func, ttl=60):
     """Return a cached chart image or regenerate it"""
     now = time.time()
     if key not in _chart_cache or (now - _chart_cache[key]["time"]) > ttl:
         buf = io.BytesIO()
-        generator_func(buf)
-        _chart_cache[key] = {"img": buf.getvalue(), "time": now}
-    return io.BytesIO(_chart_cache[key]["img"])
+        generator_func(buf) #appelle la fonction qui construit le graphe
+        _chart_cache[key] = {"img": buf.getvalue(), "time": now} #stocke l'image + l'heure
+    return io.BytesIO(_chart_cache[key]["img"]) #renvoie l'image en memoire
 
+
+#Ces fonctions utilisent matplotlib + pandas pour creer des graphiques et les sauvegarder dans un buf(memoire)
 
 def build_revenu_journalier_chart(buf):
-    df = load_df_cached()
+    df = load_df_cached() #recupere la dataframe(mes donnees)
     visites_par_jour = df.groupby(df['created_at'].dt.date).size()
     toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
     visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
@@ -1199,6 +1206,7 @@ def build_revenu_mensuel_chart(buf):
     plt.savefig(buf, format="png", bbox_inches="tight")
     plt.close()
 
+
 def build_frequences_patients_chart(buf):
     df = load_df_cached()
     patients_count = df['name'].str.lower().value_counts()[0:8]
@@ -1214,6 +1222,87 @@ def build_frequences_patients_chart(buf):
     plt.savefig(buf, format="png", bbox_inches="tight")
     plt.close()
 
+
+def build_repartition_quartier_chart(buf):
+    df = load_df_cached()
+    df['adresse'] = df['adresse'].str.split('/').str[0] 
+    df['adresse'] = df['adresse'].str.replace('\d+', '', regex=True)  
+    df['adresse'] = df['adresse'].str.strip()  
+    df['adresse'] = df['adresse'].str.title()  
+
+    adresse_counts = df['adresse'].value_counts()[0:10]
+
+    plt.figure(figsize=(10,6))
+    colors=plt.cm.Set3(range(len(adresse_counts)))
+
+    wedges, texts, autotexts = plt.pie(adresse_counts.values, 
+                                    labels=adresse_counts.index, 
+                                    autopct='%1.1f%%',
+                                    colors=colors,
+                                    startangle=90)
+
+    plt.title("Nombre de patients par adresse")
+    plt.ylabel('')
+    plt.xticks(rotation=45 ,ha="right")
+    for autotext in autotexts:
+        autotext.set_color('black')  # Changement de la couleur du texte
+        autotext.set_fontweight('bold')  # Mise en gras du texte
+
+    plt.tight_layout()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+
+
+def build_nouveaux_patients_chart(buf):
+    df = load_df_cached()
+    df['created_at'] = pd.to_datetime(df['created_at'])
+
+    nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+
+    nouveaux_patients = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+
+    plt.figure(figsize=(10,6))
+    nouveaux_patients.plot(kind='bar', color='darkblue', width=0.2) # width contrôle l'épaisseur des barres
+    plt.title("Nombre de nouveaux patients par mois")
+    plt.xlabel("Mois")
+    plt.xticks(rotation=45)
+    plt.ylabel("Nombre de nouveaux patients")
+
+    for i, value in enumerate(nouveaux_patients):
+        plt.text(i, value + 0.1, str(value), ha='center', va='bottom', fontweight='bold')
+
+    plt.tight_layout()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+
+def build_medecins_chart(buf):
+    df = load_df_cached()
+
+    df['signature'] = df['signature'].str.strip().str.title()
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    medecins = df.groupby([df['created_at'].dt.to_period('M'), 'signature']).size().reset_index(name="patients")
+
+    medecins['mois'] = medecins['created_at'].str.astype(str)
+    liste_mois = sorted(medecins['mois'].unique())
+    mois = request.args.get("mois", default=liste_mois[0])
+
+    df_medecins = medecins[medecins['mois'] == mois].set_index("signature")['patients']
+    plt.figure(figsize=(10,6))
+    df_medecins.plot(kind='bar', color='blue')
+    plt.title("Nombre de patients par malades")
+    plt.xlabel("Mois")
+    plt.ylabel("Nombre de patients")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+
+
+#routes flask pour afficher les graphiques seules
+#quand tu vas dans l'une des fonctions flask renvoie l'image PNG du graphique(avec cache)
 @app.route("/revenu_journalier")
 @login_required
 def revenu_journalier():
@@ -1222,6 +1311,8 @@ def revenu_journalier():
         mimetype="image/png"
     )
 
+
+
 @app.route("/revenu_mensuel")
 @login_required
 def revenu_mensuel():
@@ -1229,6 +1320,8 @@ def revenu_mensuel():
         get_chart("revenu_mensuel", build_revenu_mensuel_chart),
         mimetype="image/png"
     )
+
+
 
 @app.route("/frequences_patients")
 @login_required
@@ -1239,11 +1332,39 @@ def frequences_patients():
     )
 
 
-@app.route("/stat")
+@app.route("/repartition_quartier")
+@login_required
+def repartition_quartier():
+    return send_file(
+        get_chart("repartition_quartier",build_repartition_quartier_chart),
+        mimetype="image/png"
+    )
+
+
+@app.route("/nouveaux_patients")
+@login_required
+def nouveaux_patients():
+    return send_file(
+        get_chart("nouveaux_patients",build_nouveaux_patients_chart),
+        mimetype="img/png"
+    )
+
+@app.route("/medecins")
+@login_required
+def medecins():
+    return send_file(
+        get_chart("medecins",build_medecins_chart),
+        mimetype="img/png"
+    )
+
+
+#Affiche les 3 graphiques dans une seule page
+@app.route("/stat",methods=['GET'])
 @login_required
 def rapport():
-    df = load_df()
+    df = load_df() #charge les donnees
     
+
     # --- 1. Revenu journalier ---
     visites_par_jour = df.groupby(df['created_at'].dt.date).size()
     toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
@@ -1255,8 +1376,9 @@ def rapport():
     ax1.set_title("Evolution des revenus journaliers")
     ax1.set_ylabel("Revenu (FCFA)")
     ax1.set_xlabel("Date")
-    img1 = fig_to_base64(fig1)
+    img1 = fig_to_base64(fig1) #convertie le graphique en texte base64
     plt.close(fig1)
+
 
     # --- 2. Revenu mensuel ---
     consultations_par_mois = df.groupby(df['created_at'].dt.to_period('M')).size()
@@ -1273,6 +1395,8 @@ def rapport():
     img2 = fig_to_base64(fig2)
     plt.close(fig2)
 
+
+
     # --- 3. Fréquences patients ---
     patients_count = df['name'].str.lower().value_counts()[0:8]
     patients_count.index = patients_count.index.str.title()
@@ -1285,11 +1409,102 @@ def rapport():
     img3 = fig_to_base64(fig3)
     plt.close(fig3)
 
+
+    # --- 4. Distribution des patients par quartier ---
+    df['adresse'] = df['adresse'].str.split('/').str[0] 
+    df['adresse'] = df['adresse'].str.replace('\d+', '', regex=True)  
+    df['adresse'] = df['adresse'].str.strip()  
+    df['adresse'] = df['adresse'].str.title()  
+
+    adresse_counts = df['adresse'].value_counts()[0:10]
+
+    fig4, ax4 = plt.subplots(figsize=(8,4))
+    colors=plt.cm.Set3(range(len(adresse_counts)))
+
+    wedges, texts, autotexts = ax4.pie(adresse_counts.values, 
+                                    labels=adresse_counts.index, 
+                                    autopct='%1.1f%%',
+                                    colors=colors,
+                                    startangle=90,
+                                    labeldistance=1.15,
+                                    pctdistance=0.87)
+
+    ax4.set_title("Nombre de patients par adresse")
+    ax4.set_ylabel('')
+    plt.xticks(rotation=45 ,ha="right")
+    for autotext in autotexts:
+        autotext.set_color('black') 
+        autotext.set_fontsize(7)
+
+    for text in texts:
+        text.set_fontsize(6.5) 
+
+    img4 = fig_to_base64(fig4)
+    plt.close(fig4)
+
+
+    # --- 5. Evolution du nombre de nouveaux patients par mois ---
+    df['created_at'] = pd.to_datetime(df['created_at'])
+
+    nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+    nouveaux_patients = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+
+    fig5, ax5 = plt.subplots(figsize=(8,4))
+    nouveaux_patients.plot(kind='bar', color='darkblue', width=0.2, ax=ax5)
+    ax5.set_title("Nombre de nouveaux patients par mois")
+    ax5.set_xlabel("Mois")
+    ax5.set_ylabel("Nombre de nouveaux patients")
+    ax5.set_xticks(ax5.get_xticks(), ax5.get_xticklabels(), rotation=45, ha="right")
+    
+    for i, value in enumerate(nouveaux_patients):
+        plt.text(i, value + 0.1, str(value), ha='center', va='bottom', fontweight='bold')
+
+    img5 = fig_to_base64(fig5)
+    plt.close(fig5)
+
+
+
+    # --- 5. Nombre de patients par medecins ---
+    df['signature'] = df['signature'].str.lower().str.title()
+
+    #Supprimer les valeurs vides / None
+    df = df.dropna(subset=['signature'])
+    df = df[df['signature'].str.strip() != ""]
+
+    df['created_at'] = pd.to_datetime(df['created_at'])
+
+    #patient c'est le resultat du group by c'est le nombre de patients par medecins le resultat
+    medecins = df.groupby([df['created_at'].dt.to_period('M'), 'signature']).size().reset_index(name ="patients")
+
+    #on transforme la date en chaine de caractere
+    medecins['mois'] = medecins['created_at'].astype(str)
+    list_mois = sorted(medecins['mois'].unique())
+    mois = request.args.get("mois", default=list_mois[0])
+
+    df_medecins = medecins[medecins['mois'] == mois].set_index("signature")['patients']
+
+    df_medecins = df_medecins.sort_values(ascending=True)
+
+    fig6, ax6 = plt.subplots(figsize=(8,4))
+    df_medecins.plot(kind='bar', color='blue', ax=ax6)
+    ax6.set_title(f"Nombre de patients par medecins pour {mois}")
+    ax6.set_xlabel("Mois")
+    ax6.set_ylabel("Nmombre de patients")
+    ax6.set_xticks(ax6.get_xticks(), ax6.get_xticklabels(), rotation=45, ha="right")
+    img6 = fig_to_base64(fig6)
+    plt.close(fig6)
+
+
     # --- render all charts in one page ---
     return render_template("stats.html",
                            img1=img1,
                            img2=img2,
-                           img3=img3)
+                           img3=img3,
+                           img4=img4,
+                           img5=img5,
+                           img6=img6,
+                           mois=mois,
+                           list_mois=list_mois)
 
 
 
