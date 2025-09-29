@@ -814,7 +814,7 @@ def add():
         # float_fields = {'age', 'poids', 'taille', 'temperature', 'age_years', 'age_months', 'age_days'}
 
         float_fields = lst_cols_int | lst_cols_real | lst_cols_bools
-        
+
         for field in float_fields:
             print(field)
             if field in data:
@@ -1356,156 +1356,124 @@ def medecins():
         get_chart("medecins",build_medecins_chart),
         mimetype="img/png"
     )
-
-
 #Affiche les 3 graphiques dans une seule page
-@app.route("/stat",methods=['GET'])
+@app.route("/stat", methods=['GET'])
 @login_required
 def rapport():
-    df = load_df() #charge les donnees
-    
+    df = load_df()  # charge les donnees
+    df['created_at'] = pd.to_datetime(df['created_at'])
+
+    img1 = img2 = img3 = img4 = img5 = img6 = None
+    list_mois = []
+    mois = None
 
     # --- 1. Revenu journalier ---
-    visites_par_jour = df.groupby(df['created_at'].dt.date).size()
-    toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
-    visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
-    revenu_par_jour = visites_par_jour * 10000
+    if 'created_at' in df.columns:
+        visites_par_jour = df.groupby(df['created_at'].dt.date).size()
+        toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
+        visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
+        revenu_par_jour = visites_par_jour * 10000
 
-    fig1, ax1 = plt.subplots(figsize=(8, 4))
-    revenu_par_jour.plot(kind="line", marker="o", color="blue", ax=ax1)
-    ax1.set_title("Evolution des revenus journaliers")
-    ax1.set_ylabel("Revenu (FCFA)")
-    ax1.set_xlabel("Date")
-    img1 = fig_to_base64(fig1) #convertie le graphique en texte base64
-    plt.close(fig1)
-
+        fig1, ax1 = plt.subplots(figsize=(8, 4))
+        revenu_par_jour.plot(kind="line", marker="o", color="blue", ax=ax1)
+        ax1.set_title("Evolution des revenus journaliers")
+        ax1.set_ylabel("Revenu (FCFA)")
+        ax1.set_xlabel("Date")
+        img1 = fig_to_base64(fig1)
+        plt.close(fig1)
 
     # --- 2. Revenu mensuel ---
-    consultations_par_mois = df.groupby(df['created_at'].dt.to_period('M')).size()
-    revenu_par_mois = consultations_par_mois * 10000
-    toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
-    revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
+    if 'created_at' in df.columns:
+        consultations_par_mois = df.groupby(df['created_at'].dt.to_period('M')).size()
+        revenu_par_mois = consultations_par_mois * 10000
+        toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
+        revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
 
-    fig2, ax2 = plt.subplots(figsize=(8, 4))
-    revenu_par_mois.plot(kind="line", marker="o", color="blue", ax=ax2)
-    ax2.set_title("Evolution des revenus mensuels")
-    ax2.set_ylabel("Revenu (FCFA)")
-    ax2.set_xlabel("Mois")
-    ax2.yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
-    img2 = fig_to_base64(fig2)
-    plt.close(fig2)
-
-
+        fig2, ax2 = plt.subplots(figsize=(8, 4))
+        revenu_par_mois.plot(kind="line", marker="o", color="blue", ax=ax2)
+        ax2.set_title("Evolution des revenus mensuels")
+        ax2.set_ylabel("Revenu (FCFA)")
+        ax2.set_xlabel("Mois")
+        ax2.yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
+        img2 = fig_to_base64(fig2)
+        plt.close(fig2)
 
     # --- 3. Fréquences patients ---
-    patients_count = df['name'].str.lower().value_counts()[0:8]
-    patients_count.index = patients_count.index.str.title()
+    if 'name' in df.columns:
+        patients_count = df['name'].str.lower().value_counts()[0:8]
+        patients_count.index = patients_count.index.str.title()
 
-    fig3, ax3 = plt.subplots(figsize=(8, 4))
-    patients_count.plot(kind="bar", color="blue", ax=ax3)
-    ax3.set_title("Fréquences des patients")
-    ax3.set_xlabel("Nom")
-    ax3.set_ylabel("Fréquences de visites")
-    img3 = fig_to_base64(fig3)
-    plt.close(fig3)
+        fig3, ax3 = plt.subplots(figsize=(8, 4))
+        patients_count.plot(kind="bar", color="blue", ax=ax3)
+        ax3.set_title("Fréquences des patients")
+        ax3.set_xlabel("Nom")
+        ax3.set_ylabel("Fréquences de visites")
+        img3 = fig_to_base64(fig3)
+        plt.close(fig3)
 
+    # --- 4. Distribution par quartier ---
+    if 'adresse' in df.columns:
+        df['adresse'] = df['adresse'].str.split('/').str[0] 
+        df['adresse'] = df['adresse'].str.replace('\d+', '', regex=True)  
+        df['adresse'] = df['adresse'].str.strip()  
+        df['adresse'] = df['adresse'].str.title()  
+        adresse_counts = df['adresse'].value_counts()[0:10]
 
-    # --- 4. Distribution des patients par quartier ---
-    df['adresse'] = df['adresse'].str.split('/').str[0] 
-    df['adresse'] = df['adresse'].str.replace('\d+', '', regex=True)  
-    df['adresse'] = df['adresse'].str.strip()  
-    df['adresse'] = df['adresse'].str.title()  
+        if not adresse_counts.empty:
+            fig4, ax4 = plt.subplots(figsize=(8, 4))
+            colors = plt.cm.Set3(range(len(adresse_counts)))
+            ax4.pie(adresse_counts.values,
+                    labels=adresse_counts.index,
+                    autopct='%1.1f%%',
+                    colors=colors,
+                    startangle=90,
+                    labeldistance=1.15,
+                    pctdistance=0.87)
+            ax4.set_title("Nombre de patients par adresse")
+            img4 = fig_to_base64(fig4)
+            plt.close(fig4)
 
-    adresse_counts = df['adresse'].value_counts()[0:10]
+    # --- 5. Nouveaux patients ---
+    if 'new_cases' in df.columns:
+        nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+        nouveaux_patients = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+        if not nouveaux_patients.empty:
+            fig5, ax5 = plt.subplots(figsize=(8, 4))
+            nouveaux_patients.plot(kind='bar', color='darkblue', width=0.2, ax=ax5)
+            ax5.set_title("Nombre de nouveaux patients par mois")
+            ax5.set_xlabel("Mois")
+            ax5.set_ylabel("Nombre de nouveaux patients")
+            ax5.set_xticks(ax5.get_xticks(), ax5.get_xticklabels(), rotation=45, ha="right")
+            for i, value in enumerate(nouveaux_patients):
+                ax5.text(i, value + 0.1, str(value), ha='center', va='bottom', fontweight='bold')
+            img5 = fig_to_base64(fig5)
+            plt.close(fig5)
 
-    fig4, ax4 = plt.subplots(figsize=(8,4))
-    colors=plt.cm.Set3(range(len(adresse_counts)))
+    # --- 6. Patients par médecins ---
+    if 'signature' in df.columns:
+        df['signature'] = df['signature'].str.lower().str.title()
+        df = df.dropna(subset=['signature'])
+        df = df[df['signature'].str.strip() != ""]
+        medecins = df.groupby([df['created_at'].dt.to_period('M'), 'signature']).size().reset_index(name="patients")
+        if not medecins.empty:
+            medecins['mois'] = medecins['created_at'].astype(str)
+            list_mois = sorted(medecins['mois'].unique())
+            mois = request.args.get("mois", default=list_mois[0])
+            df_medecins = medecins[medecins['mois'] == mois].set_index("signature")['patients']
+            df_medecins = df_medecins.sort_values(ascending=True)
 
-    wedges, texts, autotexts = ax4.pie(adresse_counts.values, 
-                                    labels=adresse_counts.index, 
-                                    autopct='%1.1f%%',
-                                    colors=colors,
-                                    startangle=90,
-                                    labeldistance=1.15,
-                                    pctdistance=0.87)
+            fig6, ax6 = plt.subplots(figsize=(8, 4))
+            df_medecins.plot(kind='bar', color='blue', ax=ax6)
+            ax6.set_title(f"Nombre de patients par medecins pour {mois}")
+            ax6.set_xlabel("Médecins")
+            ax6.set_ylabel("Nombre de patients")
+            img6 = fig_to_base64(fig6)
+            plt.close(fig6)
 
-    ax4.set_title("Nombre de patients par adresse")
-    ax4.set_ylabel('')
-    plt.xticks(rotation=45 ,ha="right")
-    for autotext in autotexts:
-        autotext.set_color('black') 
-        autotext.set_fontsize(7)
-
-    for text in texts:
-        text.set_fontsize(6.5) 
-
-    img4 = fig_to_base64(fig4)
-    plt.close(fig4)
-
-
-    # --- 5. Evolution du nombre de nouveaux patients par mois ---
-    df['created_at'] = pd.to_datetime(df['created_at'])
-
-    nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
-    nouveaux_patients = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
-
-    fig5, ax5 = plt.subplots(figsize=(8,4))
-    nouveaux_patients.plot(kind='bar', color='darkblue', width=0.2, ax=ax5)
-    ax5.set_title("Nombre de nouveaux patients par mois")
-    ax5.set_xlabel("Mois")
-    ax5.set_ylabel("Nombre de nouveaux patients")
-    ax5.set_xticks(ax5.get_xticks(), ax5.get_xticklabels(), rotation=45, ha="right")
-    
-    for i, value in enumerate(nouveaux_patients):
-        plt.text(i, value + 0.1, str(value), ha='center', va='bottom', fontweight='bold')
-
-    img5 = fig_to_base64(fig5)
-    plt.close(fig5)
-
-
-
-    # --- 5. Nombre de patients par medecins ---
-    df['signature'] = df['signature'].str.lower().str.title()
-
-    #Supprimer les valeurs vides / None
-    df = df.dropna(subset=['signature'])
-    df = df[df['signature'].str.strip() != ""]
-
-    df['created_at'] = pd.to_datetime(df['created_at'])
-
-    #patient c'est le resultat du group by c'est le nombre de patients par medecins le resultat
-    medecins = df.groupby([df['created_at'].dt.to_period('M'), 'signature']).size().reset_index(name ="patients")
-
-    #on transforme la date en chaine de caractere
-    medecins['mois'] = medecins['created_at'].astype(str)
-    list_mois = sorted(medecins['mois'].unique())
-    mois = request.args.get("mois", default=list_mois[0])
-
-    df_medecins = medecins[medecins['mois'] == mois].set_index("signature")['patients']
-
-    df_medecins = df_medecins.sort_values(ascending=True)
-
-    fig6, ax6 = plt.subplots(figsize=(8,4))
-    df_medecins.plot(kind='bar', color='blue', ax=ax6)
-    ax6.set_title(f"Nombre de patients par medecins pour {mois}")
-    ax6.set_xlabel("Mois")
-    ax6.set_ylabel("Nmombre de patients")
-    ax6.set_xticks(ax6.get_xticks(), ax6.get_xticklabels(), rotation=45, ha="right")
-    img6 = fig_to_base64(fig6)
-    plt.close(fig6)
-
-
-    # --- render all charts in one page ---
     return render_template("stats.html",
-                           img1=img1,
-                           img2=img2,
-                           img3=img3,
-                           img4=img4,
-                           img5=img5,
-                           img6=img6,
-                           mois=mois,
-                           list_mois=list_mois)
-
+                           img1=img1, img2=img2, img3=img3,
+                           img4=img4, img5=img5, img6=img6,
+                           mois=mois, list_mois=list_mois)
 
 
 @app.route("/visibility")
