@@ -15,109 +15,139 @@
         }
 
         body {
-            padding: 20px;
-            text-align: center; /* ensures inline content like images center */
+            padding: 15px;
+            text-align: center;
+            background-color: #fafafa;
+        }
+
+        h1 {
+            font-size: 1.6rem;
         }
 
         h2 {
             margin-top: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
         }
 
         h3 {
-            margin-bottom: 10px;
+            margin: 10px 0;
+            font-size: 1.1rem;
         }
 
         .header {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center; /* centers logo + text */
-            gap: 15px;
-            margin-bottom: 30px;
-            font-size: 16px;
-            text-align: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
         }
 
-        .header img {
-            height: 50px;
-            width: auto;
+        .header a {
+            font-size: 0.95rem;
         }
 
         .chart {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            padding: 10px;
         }
 
         .chart img {
             display: block;
-            margin: 0 auto; /* centers the image */
-            max-width: 80%; /* makes sure it’s not too wide */
+            margin: 0 auto;
+            max-width: 100%;
             height: auto;
             border: 1px solid #ccc;
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
-        
-    .back-link {
-      display: inline-block;
-      
-      text-decoration: none;
-      color: #8000FF;
-      font-weight: 600;
-      transition: color 0.2s ease;
-    }
 
-    .back-link:hover {
-      color: #00FFFF;
-    }
+        .back-link {
+            display: inline-block;
+            color: #8000FF;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
 
-    #id1{
-        margin-top: 20px;
-    }
+        .back-link:hover {
+            color: #00CED1;
+        }
 
+        select {
+            padding: 8px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.6rem; }
+            h3 { font-size: 1.2rem; }
+
+            .header {
+                flex-direction: row;
+                gap: 20px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="header"> 
-        <a href="/" class="back-link">← Retour menu </a>
-        
+        <a href="/" class="back-link">← Retour menu</a>
         <h1>Statistiques sur les Patients</h1>
     </div>
 
     <div class="chart">
+        {% if img1 %}
         <h3>Estimations des revenus journaliers</h3>
         <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier">
+        {% endif %}
     </div>
 
     <div class="chart">
+        {% if img2 %}
         <h3>Estimations des revenus mensuels</h3>
         <img src="data:image/png;base64,{{ img2 }}" alt="Revenu mensuel">
+        {% endif %}
     </div>
 
     <div class="chart">
+        {% if img3 %}
         <h3>Patients récurrents</h3>
         <img src="data:image/png;base64,{{ img3 }}" alt="Fréquences patients">
+        {% endif %}
     </div>
+
     <div class="chart">
+        {% if img4 %}
         <h3>Distribution des personnes par quartier</h3>
-        <img src="data:image/png;base64,{{ img4 }}" alt="Repartition des quartiers" width="630px">
+        <img src="data:image/png;base64,{{ img4 }}" alt="Répartition des quartiers">
+        {% endif %}
     </div>
+
     <div class="chart">
+        {% if img5 %}
         <h3>Nombre de nouveaux patients par mois</h3>
         <img src="data:image/png;base64,{{ img5 }}" alt="Nouveaux patients par mois">
+        {% endif %}
     </div>
+
     <div class="chart">
-        <h2>Nombre de patients par medecins</h3>
-        <h3>Selection du mois</h2>
-            <!--Formulaire qui envoie une requete get vers la route-->
-            <form action="/stat" method="get"> 
-                <select name="mois" id="" onchange="this.form.submit()">  <!--onchange="this.form.submit()" → dès que tu changes le mois, le formulaire se soumet automatiquement (pas besoin de bouton).-->
-                    {% for m in list_mois%}
-                    <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{m}}</option>
-                    {% endfor %}
-                </select>
-            </form>
-        <h3 id="id1">Nombre de patients par medecins</h3>
-        <img src="data:image/png;base64,{{ img6 }}" alt="Nombre de patients par malades">
+        {% if img6 %}
+        <h2>Nombre de patients par médecins</h2>
+        <h3>Sélection du mois</h3>
+        <form action="/stat" method="get">
+            <select name="mois" onchange="this.form.submit()">
+                {% for m in list_mois %}
+                <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <h3>Nombre de patients par médecins</h3>
+        <img src="data:image/png;base64,{{ img6 }}" alt="Nombre de patients par médecins">
+        {% endif %}
     </div>
 </body>
 </html>

@@ -1,9 +1,9 @@
 <!-- templates/login.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Connection - Medical System</title>
+  <title>Connexion - Medical System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- TailwindCSS and Fonts -->
@@ -14,8 +14,8 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #ffffff; /* Changed from black */
-      color: #111111; /* Changed from light gray */
+      background-color: #ffffff;
+      color: #111111;
     }
 
     h1 {
@@ -72,14 +72,35 @@
       box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
       background-color: #ffffff;
     }
+
+    /* Mobile tweaks */
+    @media (max-width: 640px) {
+      .form-container {
+        padding: 1.5rem; /* tighter padding */
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      .input-field {
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+      }
+
+      .glow-button {
+        font-size: 1rem;
+        padding: 0.75rem;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
 
-  <div class="bg-white border border-gray-300 rounded-2xl shadow-xl p-10 w-full max-w-md">
-    <div class="flex flex-col items-center mb-8">
-      <img src="https://allarassemjonathan.github.io/marate_white.png" class="h-24 mb-4" alt="Logo">
-      <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Connexion</h1>
+  <div class="form-container bg-white border border-gray-300 rounded-2xl shadow-xl p-8 sm:p-10 w-full max-w-md">
+    <div class="flex flex-col items-center mb-6 sm:mb-8">
+      <img src="https://allarassemjonathan.github.io/marate_white.png" class="h-20 sm:h-24 mb-4" alt="Logo">
+      <h1 class="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Connexion</h1>
     </div>
 
     {% with messages = get_flashed_messages() %}
@@ -92,12 +113,12 @@
       {% endif %}
     {% endwith %}
 
-    <form method="POST" class="space-y-6">
+    <form method="POST" class="space-y-5 sm:space-y-6">
       <div>
-        <label class="block text-sm font-medium text-cyan-300 mb-1">Rôle</label>
-        <select name="username" required class="input-field w-full p-4 rounded-xl">
+        <label class="block text-sm font-medium text-cyan-500 mb-1">Rôle</label>
+        <select name="username" required class="input-field w-full p-3 sm:p-4 rounded-xl text-sm sm:text-base">
           <option value="">Choisissez votre rôle</option>
-          <option value="medecins">medecins</option>
+          <option value="medecins">Médecins</option>
           <option value="Dr Toralta G .Josephine">Dr Toralta G .Josephine</option>
           <option value="Dr Djaury Dadji -A">Dr Djaury Dadji -A</option>
           <option value="Dr Ndortolnan Azer">Dr Ndortolnan Azer</option>
@@ -113,27 +134,23 @@
         </select>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-cyan-300 mb-1">Mot de passe</label>
-        <input type="password" name="password" required placeholder="••••••••" class="input-field w-full p-4 rounded-xl">
-            <span 
-        class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 hover:text-gray-700 select-none" 
-        onclick="togglePassword()"
-      >
-        👁
-      </span>
+      <div class="relative">
+        <label class="block text-sm font-medium text-cyan-500 mb-1">Mot de passe</label>
+        <input id="password" type="password" name="password" required placeholder="••••••••" class="input-field w-full p-3 sm:p-4 rounded-xl text-sm sm:text-base">
+        <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 hover:text-gray-700 select-none" onclick="togglePassword()">👁</span>
       </div>
 
       <div>
-        <button type="submit" class="glow-button w-full py-3 rounded-xl text-lg">Se connecter</button>
+        <button type="submit" class="glow-button w-full py-2.5 sm:py-3 rounded-xl text-base sm:text-lg">Se connecter</button>
       </div>
     </form>
+
     <script>
-  function togglePassword() {
-    const passwordInput = document.getElementById("password");
-    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
-  }
-</script>
+      function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+      }
+    </script>
   </div>
 </body>
 </html>

@@ -1,2 +1,9 @@
-2025-09-21
-Nouvelle evenement: 22:03:24 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+2025-09-28
+Nouvelle evenement: 07:00:57 medecins, Patient sélectionné, Patient avec ID 1148 selectionné.
+Nouvelle evenement: 07:02:59 medecins, Patient sélectionné, Patient avec ID 1148 selectionné.
+Nouvelle evenement: 07:35:50 medecins, Column Removed, Removed column: random_test
+Nouvelle evenement: 07:36:03 medecins, Column Removed, Removed column: renseignements_clinique
+Nouvelle evenement: 07:43:21 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 20:30:27 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 20:49:53 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 20:50:50 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
