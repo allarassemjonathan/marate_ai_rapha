@@ -685,9 +685,10 @@ def search():
     # Build dynamic SELECT query
     select_columns = ', '.join(column_names)
     cur.execute(
-        f"SELECT {select_columns} FROM patients WHERE name ILIKE %s OR adresse ILIKE %s",
-        tuple(f'%{q}%' for _ in range(2))
+    f"SELECT {select_columns} FROM patients WHERE name ILIKE %s;",
+    (f'%{q}%',)  # one-element tuple
     )
+    
     results = cur.fetchall()
     conn.close()
     
@@ -1356,7 +1357,7 @@ def medecins():
         get_chart("medecins",build_medecins_chart),
         mimetype="img/png"
     )
-#Affiche les 3 graphiques dans une seule page
+
 @app.route("/stat", methods=['GET'])
 @login_required
 def rapport():
