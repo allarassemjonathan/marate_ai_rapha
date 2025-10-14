@@ -25,7 +25,6 @@ import tempfile
 from functools import wraps
 import psycopg2
 from psycopg2.extras import RealDictCursor
-import os
 import unicodedata
 from flask import g
 import time
@@ -688,7 +687,7 @@ def search():
     f"SELECT {select_columns} FROM patients WHERE name ILIKE %s;",
     (f'%{q}%',)  # one-element tuple
     )
-    
+
     results = cur.fetchall()
     conn.close()
     
@@ -981,8 +980,47 @@ def update_patient(patient_id):
         f"Patient avec ID {patient_id} a été modifié"
     )
 
-    if data.get('temperature') != '':
-        email_reception(data['name'], '', 'Cher medecin, vous avez un nouveau malade. Certaines informations ont été modifié et il semble que votre malade est prêt.', None, acteur_med)
+    # get comments from the AI
+    conn_ai = get_db_connection()
+    cur_ai= conn_ai.cursor()
+    cur_ai.execute(f'select * from patients where id = {patient_id}')
+    rows = cur_ai.fetchall()[-1]
+
+    prompt = rows
+    api_key = os.getenv('api_key')
+    headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        }
+    payload = {
+            "model": "gpt-4o-mini",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": 'This patient is coming to the clinic. This is his/her data ' + str(prompt) + " what do you think it the problem. Answer in french. You are talking to a doctor so be precise and very organized in your analysis. Make sentences. This is a small report.This will go into an email so make it sound like one. The physician you are talking to is about to receive this patient. Make an educated guess regarding what he/she could be suffering from if the patient has not been diangosed yet. Use inline tags in order to format well your message. It will be send straight to the person without any formatting "
+                        }
+                    ]
+                }
+            ],
+            "max_tokens": 500
+        }
+        
+    try:
+        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+            
+        if response.status_code == 200:
+                result = response.json()
+                print(result['choices'][0]['message']['content'][7:])
+                email_content = result['choices'][0]['message']['content'][7:]
+                    
+    except Exception as e:
+        print(e)
+
+    email_reception(data['name'], '',email_content, None, acteur_med)
+    email_reception(data['name'], '',email_content, None, 'jonathanjerabe@gmail.com')
 
     return jsonify({'status': 'success'})
 

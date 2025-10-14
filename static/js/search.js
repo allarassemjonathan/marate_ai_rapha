@@ -575,32 +575,43 @@ function showFlash(message) {
   setTimeout(() => flash.remove(), 5000); // Auto-remove after 5 seconds
 }
 
-  // Submit event for the edit form
-  editForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const patientId = document.getElementById('editId').value;
-    const formData = new FormData(editForm);
-    const data = Object.fromEntries(formData.entries());
-    
-    // Remove the ID field from the data to be sent
-    delete data.id;
-    
-    fetch(`/update/${patientId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(result => {
-      if (result.status === 'success') {
-        closeEditModal();
-        loadPatients(searchBox.value);
-        showToast('Patient modifié avec succès', 2500);
-      } else {
-        alert(result.message || 'Error updating patient');
-      }
-    });
+// Submit event for the edit form
+// Submit event for the edit form
+editForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const patientId = document.getElementById('editId').value;
+  const formData = new FormData(editForm);
+  const data = Object.fromEntries(formData.entries());
+  delete data.id;
+
+  // Show loader
+  document.getElementById('loader').classList.remove('hidden');
+
+  fetch(`/update/${patientId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (result.status === 'success') {
+      closeEditModal();
+      loadPatients(searchBox.value);
+      showToast('Patient modifié avec succès', 2500);
+    } else {
+      alert(result.message || 'Error updating patient');
+    }
+  })
+  .catch(err => {
+    console.error('Erreur de mise à jour:', err);
+    alert('Erreur de connexion au serveur');
+  })
+  .finally(() => {
+    // Hide loader regardless of outcome
+    document.getElementById('loader').classList.add('hidden');
   });
+});
+
 
   // Add new patient form submission
   form.addEventListener('submit', e => {
