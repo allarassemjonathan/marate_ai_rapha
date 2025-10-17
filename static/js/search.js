@@ -661,7 +661,7 @@ editForm.addEventListener('submit', (e) => {
   // Initial load - load columns first, then setup table and load patients
   loadColumnConfiguration().then(() => {
     createTableHeaders();
-    createDynamicFormFields();
+    //createDynamicFormFields();
     loadPatients();
   });
 });
