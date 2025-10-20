@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     visibleColumns.forEach(columnKey => {
       const th = document.createElement('th');
-      th.className = "p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider";
+      th.className = "p-4 text-left text-black-400 font-semibold uppercase text-xs tracking-wider";
       th.textContent = columnHeaders[columnKey] || columnKey;
       tableHeader.appendChild(th);
     });
