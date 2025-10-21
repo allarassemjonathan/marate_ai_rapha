@@ -724,6 +724,83 @@ def show_distribution():
 
     return render_template("distribution.html", distributions=all_values)
 
+from io import BytesIO
+@app.route('/ipm', methods=['POST'])
+@login_required
+def ipm_page():
+    selected_month = request.form.get('month')  # e.g. "2025-09"
+    if not selected_month:
+        return "Veuillez sélectionner un mois.", 400
+
+    # Extract year and month
+    try:
+        year, month = map(int, selected_month.split('-'))
+    except ValueError:
+        return "Format de mois invalide.", 400
+
+    # Build date range for the selected month
+    start_date = datetime(year, month, 1)
+    if month == 12:
+        end_date = datetime(year + 1, 1, 1)
+    else:
+        end_date = datetime(year, month + 1, 1)
+
+    # Fetch patients data
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT name, age, date_enregistrement
+        FROM patients
+        WHERE ipm = 'oui'
+        AND date_enregistrement >= %s
+        AND date_enregistrement < %s
+        ORDER BY date_enregistrement;
+    """, (start_date, end_date))
+    patients = cur.fetchall()
+    cur.close()
+    conn.close()
+    conn.close()
+
+    # --- Create PDF ---
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", 'B', 16)
+    title = f"Patients avec IPM = 'oui' — {start_date.strftime('%B %Y')}"
+    pdf.cell(0, 10, title, ln=True, align="C")
+
+    pdf.ln(10)
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(10, 10, "N°", 1, 0, "C")
+    pdf.cell(60, 10, "Nom", 1, 0, "C")
+    pdf.cell(25, 10, "Âge", 1, 0, "C")
+    pdf.cell(45, 10, "Date d'enregistrement", 1, 1, "C")
+
+    pdf.set_font("Arial", '', 12)
+    for i, (name, age, date_enregistrement) in enumerate(patients, start=1):
+        date_str = date_enregistrement.strftime('%d/%m/%Y')
+        pdf.cell(10, 10, str(i), 1, 0, "C")
+        pdf.cell(60, 10, name, 1, 0, "L")
+        pdf.cell(25, 10, str(age), 1, 0, "C")
+        pdf.cell(45, 10, date_str, 1, 1, "C")
+
+    if not patients:
+        pdf.ln(10)
+        pdf.cell(0, 10, "Aucun patient trouvé pour ce mois.", ln=True, align="C")
+
+    # --- Save to memory ---
+    buffer = BytesIO()
+    pdf.output(buffer)
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f"patients_ipm_oui_{selected_month}.pdf",
+        mimetype="application/pdf"
+    )
+
+
+    return 
 from datetime import datetime, timezone, timedelta # chad timezone attempt
 from datetime import date
 @app.route('/add', methods=['POST'])

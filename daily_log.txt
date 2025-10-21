@@ -1,29 +1,50 @@
-2025-10-20
-Nouvelle evenement: 07:39:26 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
-Nouvelle evenement: 23:03:17 Dr_Mommar_Gueye, login, L'utilisateur 'Dr_Mommar_Gueye' s'est connecté avec succès
-Nouvelle evenement: 23:08:19 Dr_Mommar_Gueye, login, L'utilisateur 'Dr_Mommar_Gueye' s'est connecté avec succès
-Nouvelle evenement: 23:13:28 medecins, Ajout d'un patient, Le patient 'testing' a été ajouté
-Nouvelle evenement: 23:15:43 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 23:15:57 Dr_Mommar_Gueye, login, L'utilisateur 'Dr_Mommar_Gueye' s'est connecté avec succès
-Nouvelle evenement: 23:17:50 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 23:18:10 Dr_Mommar_Gueye, login, L'utilisateur 'Dr_Mommar_Gueye' s'est connecté avec succès
-Nouvelle evenement: 23:22:33 medecins, Column Added, Added column: IPM (ipm)
-Nouvelle evenement: 23:22:42 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 23:24:47 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 23:25:06 medecins, Column Removed, Removed column: ipm
-Nouvelle evenement: 23:25:17 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 23:26:20 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 23:26:43 medecins, Column Added, Added column: IPM (ipm)
-Nouvelle evenement: 23:26:54 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 23:27:37 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 23:28:41 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 23:30:04 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 23:30:08 medecins, modification patient, Patient avec ID 1 a été modifié
-Nouvelle evenement: 23:30:58 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
-Nouvelle evenement: 23:31:03 medecins, modification patient, Patient avec ID 1 a été modifié
-Nouvelle evenement: 23:37:16 medecins, Ajout d'un patient, Le patient 'more testing' a été ajouté
-Nouvelle evenement: 23:38:05 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 1), ('name', 'testing'), ('adresse', None), ('age', 0), ('date_of_birth', None), ('poids', None), ('taille', None), ('tension_arterielle', None), ('temperature', None), ('hypothese_de_diagnostique', None), ('bilan', None), ('resultat_bilan', None), ('signature', 'Dr Mommar Gueye'), ('renseignements_clinique', None), ('ordonnance', None), ('created_at', datetime.date(2025, 10, 21)), ('age_years', 0), ('age_months', 0), ('age_days', 0), ('ipm', 'oui')])]
-Nouvelle evenement: 23:38:09 medecins, Détails des patients, Les détails du patient avec l'identifiant 2 ont été consulté.
-Nouvelle evenement: 23:46:24 medecins, Facture généré, Facture généré pour le patient testing more
-Nouvelle evenement: 23:50:47 medecins, Facture généré, Facture généré pour le patient testing more
-Nouvelle evenement: 23:52:12 medecins, Facture généré, Facture généré pour le patient testing more
+2025-10-21
+Nouvelle evenement: 00:04:03 Dr_Mommar_Gueye, login, L'utilisateur 'Dr_Mommar_Gueye' s'est connecté avec succès
+Nouvelle evenement: 00:04:38 medecins, Facture généré, Facture généré pour le patient testing more
+Nouvelle evenement: 00:05:18 medecins, Facture généré, Facture généré pour le patient testing more
+Nouvelle evenement: 19:18:33 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:18:40 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:18:40 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:20:59 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:21:08 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:21:08 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:22:45 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:22:50 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:22:50 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:25:58 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:26:01 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:26:01 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:26:15 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:26:18 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:26:18 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:26:49 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:26:54 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:26:54 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:28:36 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:28:38 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:28:38 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:29:55 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:29:59 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:29:59 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:30:36 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:30:44 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:30:44 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:31:12 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:31:18 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:31:18 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:36:00 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:36:05 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:36:05 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:36:52 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:36:57 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:36:57 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:38:33 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:38:41 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:38:41 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:40:04 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:40:12 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:40:12 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:41:21 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:41:27 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 19:42:24 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
+Nouvelle evenement: 19:42:36 medecins, modification patient, Patient avec ID 3 a été modifié

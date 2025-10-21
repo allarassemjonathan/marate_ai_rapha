@@ -471,6 +471,14 @@ td, th {
                  class="p-2 rounded border border-gray-300 text-gray-800 w-20 bg-white" 
                  value="20" min="1" />
         </div>
+        <!-- IPM  patients-->
+           <form action="/ipm" method="POST">
+            <label for="month">Sélectionnez le mois :</label><br><br>
+            <input type="month" id="month" name="month" required>
+            <br><br>
+            <button class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm" type="submit">Télécharger la liste des patients IPM</button>
+          </form>
+        </button>
       </div>
     </div>
     
@@ -1308,7 +1316,7 @@ function loadColumnsInModal() {
     })
     .catch(error => {
       console.error('Error loading columns:', error);
-      showToastMessage('Erreur lors du chargement des colonnes', 'error');
+      showToast('Erreur lors du chargement des colonnes');
     });
 }
 
@@ -1324,7 +1332,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const dataType = document.getElementById('dataTypeModal').value;
       
       if (!columnName || !displayName) {
-        showToastMessage('Veuillez remplir tous les champs', 'error');
+        showToast('Veuillez remplir tous les champs');
         return;
       }
       
@@ -1340,7 +1348,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(response => response.json())
       .then(result => {
         if (result.status === 'success') {
-          showToastMessage('Colonne ajoutée avec succès!', 'success');
+          showToast('Colonne ajoutée avec succès!');
           // Clear form
           document.getElementById('columnNameModal').value = '';
           document.getElementById('displayNameModal').value = '';
@@ -1348,11 +1356,11 @@ document.addEventListener('DOMContentLoaded', function() {
           // Reload columns in modal
           loadColumnsInModal();
         } else {
-          showToastMessage(result.message || 'Erreur lors de l\'ajout', 'error');
+          showToast(result.message || 'Erreur lors de l\'ajout');
         }
       })
       .catch(error => {
-        showToastMessage('Erreur de connexion', 'error');
+        showToast('Erreur de connexion');
         console.error('Error:', error);
       });
     });
@@ -1368,7 +1376,7 @@ function toggleColumnVisibility(columnName, isVisible) {
   .then(response => response.json())
   .then(result => {
     if (result.status === 'success') {
-      showToastMessage(`Colonne ${isVisible ? 'affichée' : 'masquée'}`, 'success');
+      showToast(`Colonne ${isVisible ? 'affichée' : 'masquée'}`);
       // Update the visual feedback in the row
       const row = document.querySelector(`input[data-column="${columnName}"]`).closest('tr');
       const statusSpan = row.querySelector('td:nth-child(4) span span');
@@ -1380,14 +1388,14 @@ function toggleColumnVisibility(columnName, isVisible) {
       // Revert checkbox state
       const checkbox = document.querySelector(`input[data-column="${columnName}"]`);
       checkbox.checked = !isVisible;
-      showToastMessage(result.message || 'Erreur lors de la modification', 'error');
+      showToast(result.message || 'Erreur lors de la modification');
     }
   })
   .catch(error => {
     // Revert checkbox state
     const checkbox = document.querySelector(`input[data-column="${columnName}"]`);
     checkbox.checked = !isVisible;
-    showToastMessage('Erreur de connexion', 'error');
+    showToast('Erreur de connexion');
     console.error('Error:', error);
   });
 }
@@ -1400,14 +1408,14 @@ function removeColumnModal(columnName, displayName) {
     .then(response => response.json())
     .then(result => {
       if (result.status === 'success') {
-        showToastMessage('Colonne supprimée avec succès!', 'success');
+        showToast('Colonne supprimée avec succès!');
         loadColumnsInModal(); // Reload the table
       } else {
-        showToastMessage(result.message || 'Erreur lors de la suppression', 'error');
+        showToast(result.message || 'Erreur lors de la suppression');
       }
     })
     .catch(error => {
-      showToastMessage('Erreur de connexion', 'error');
+      showToast('Erreur de connexion');
       console.error('Error:', error);
     });
   }
@@ -1419,58 +1427,58 @@ function refreshMainPageColumns() {
   window.location.reload();
 }
 // Submit event for the edit form
-editForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const patientId = document.getElementById('editId').value;
-  const formData = new FormData(editForm);
-  const data = Object.fromEntries(formData.entries());
-  delete data.id;
+// editForm.addEventListener('submit', (e) => {
+//   e.preventDefault();
+//   const patientId = document.getElementById('editId').value;
+//   const formData = new FormData(editForm);
+//   const data = Object.fromEntries(formData.entries());
+//   delete data.id;
 
-  // Show loader
- 
+//   // Show loader
 
-  fetch(`/update/${patientId}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(result => {
-    if (result.status === 'success') {
-      closeEditModal();
-      loadPatients(searchBox.value);
-      showToast('Patient modifié avec succès', 2500);
-    } else {
-      alert(result.message || 'Error updating patient');
-    }
-  })
-  .catch(err => {
-    console.error('Erreur de mise à jour:', err);
-    alert('Erreur de connexion au serveur');
-  })
-  .finally(() => {
-    // Hide loader regardless of outcome
-    document.getElementById('loader').classList.add('hidden');
-  });
-});
+//   fetch(`/update/${patientId}`, {
+//     method: 'PUT',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(data)
+//   })
+//   .then(res => res.json())
+//   .then(result => {
+//     if (result.status === 'success') {
+//       closeEditModal();
+//       //loadPatients(searchBox.value);
+//       showToast('Patient modifié avec succès', 2500);
+//     } else {
+//       alert(result.message || 'Error updating patient');
+//     }
+//   })
+//   .catch(err => {
+//     console.error('Erreur de mise à jour:', err);
+//     alert('Erreur de connexion au serveur');
+//   })
+
+// });
 
 
-function showToastMessage(message, type = 'success') {
-  // Create toast notification
+function showToast(message, duration = 3000) {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+
   const toast = document.createElement('div');
-  toast.className = `fixed top-5 right-5 z-50 px-4 py-3 rounded-lg text-white font-medium transition-all duration-300 ${
-    type === 'success' ? 'bg-green-500' : 'bg-red-500'
-  }`;
   toast.textContent = message;
-  
-  document.body.appendChild(toast);
-  
-  // Auto remove after 3 seconds
+
+  container.appendChild(toast);
+
+  // Trigger show animation
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
+
+  // Auto-remove after duration
   setTimeout(() => {
-    toast.style.opacity = '0';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
+    toast.classList.remove('show');
+    toast.addEventListener('transitionend', () => toast.remove());
+  }, duration);
+};
 
 window.USER_TYPE = "{{user_type}}"
 
