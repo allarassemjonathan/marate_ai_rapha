@@ -346,7 +346,7 @@ td, th {
     <!-- Desktop links -->
     <div class="hidden lgx:flex space-x-4 items-center">
       <a href="{{ url_for('logout') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Déconnexion</a>
-      {% if username == "Dr Toralta G .Josephine" %}
+      {% if username == "Dr Mommar Gueye" %}
         <a href="{{ url_for('send_daily_report_email') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Rapport</a>
         <a href="/stat" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Stats</a>
         <a href="/visibility" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Permissions</a>
@@ -370,7 +370,7 @@ td, th {
     </div>
 
     <a href="{{ url_for('logout') }}" class="text-black text-lg hover:text-cyan-600">Déconnexion</a>
-    {% if username == "Dr Toralta G .Josephine" %}
+    {% if username == "Dr Mommar Gueye" %}
       <a href="{{ url_for('send_daily_report_email') }}" class="text-black text-lg hover:text-cyan-600">Rapport</a>
       <a href="/stat" class="text-black text-lg hover:text-cyan-600">Stats</a>
       <a href="/visibility" class="text-black text-lg hover:text-cyan-600">Permissions</a>
@@ -457,7 +457,7 @@ td, th {
     <div id="settingsMenu" 
          class="hidden absolute right-0 top-14 bg-white border border-gray-200 rounded-lg shadow-lg w-64 z-50">
       <div class="p-4 space-y-4">
-      {% if username == "Dr Toralta G .Josephine" %}
+      {% if username == "Dr Mommar Gueye" %}
         <!-- Gérer les Colonnes -->
         <button onclick="openColumnManagementModal(); toggleSettingsMenu();" 
                 class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm">
@@ -502,164 +502,49 @@ window.addEventListener('click', function(e) {
       
       <div class="border-t border-gray-700 mt-10 pt-8">
         <h2 class="text-2xl font-bold text-black bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-6">Ajouter un patient</h2>
-        <form id="addForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">  <!-- <div class="relative">
-            Nom
-            <input name="name" placeholder="Nom" required class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            Addresse
-            <input name="adresse" placeholder="Adresse" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
+          <form id="addForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">          {% for el in visible_columns %}
+          {% if el['column_name'] == 'age' %}
+            <div class="flex gap-2">
+              {{ el['display_name'] }}
+              
+              <div class="relative w-1/3">
+                <input id="age_years" name="age_years" type="number" placeholder="Années" class="input-field w-full p-4 rounded-xl">
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              </div>
 
-          <div class="relative">
-            Numéro
-            <input name="phone_number" placeholder="Numero" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
+              <div class="relative w-1/3">
+                <input id="age_months" name="age_months" type="number" placeholder="Mois" class="input-field w-full p-4 rounded-xl">
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              </div>
 
-          <div class="relative">
-            Rendez-vous
-            <input name="meeting" placeholder="Rendez-vous" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="relative">
-            Nouveaux cas
-            <input name="new_cases" placeholder="Nouveaux cas" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            Date de naissance
-            <input name="date_of_birth" type="date" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="flex gap-2">
-            Age
-            <div class="relative w-1/3">
-              <input name="age_years" type="number" placeholder="Années" class="input-field w-full p-4 rounded-xl">
+              <div class="relative w-1/3">
+                <input id="age_days" name="age_days" type="number" placeholder="Jours" class="input-field w-full p-4 rounded-xl">
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              </div>
+            </div>
+          {% elif el['column_name'] == 'date_of_birth' or  el['column_name'] == 'created_at' %}
+            <div class="relative">
+              {{el['display_name']}}
+              <input id="{{ el['column_name'] }}" name="{{el['column_name'] }}" type="date" class="input-field w-full p-4 rounded-xl">
               <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
             </div>
-
-            <div class="relative w-1/3">
-              <input name="age_months" type="number" placeholder="Mois" class="input-field w-full p-4 rounded-xl">
+          {% elif el['column_name'] != 'id'and el['column_name'] != 'signature'  and el['column_name'] in role_col %}
+            <div class="relative">
+              {{ el['display_name'] }}
+              <input 
+                id="{{ el['column_name'] }}" 
+                name="{{ el['column_name'] }}" 
+                placeholder="{{ el['display_name'] }}"  
+                class="input-field w-full p-4 rounded-xl">
+              
               <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
             </div>
-
-            <div class="relative w-1/3">
-              <input name="age_days" type="number" placeholder="Jours" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          {% endif %}
+        {% endfor %}
+            <div class="md:col-span-2 mt-4">
+              <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Ajouter Patient</button>
             </div>
-          </div>
-          {%if user_type == 'infirmiers' or user_type == 'medecins'%}
-          <div class="relative">
-            Poids
-            <input name="poids" type="number" step="0.1" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            Taille
-            <input name="taille" type="number" step="0.01" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            Tension arterielle
-            <input name="tension_arterielle" placeholder="Tension" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            Température
-            <input name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          {%endif%}
-          {%if user_type == 'medecins'%}
-          <div class="relative">
-            Renseignement clinique
-            <input name="renseignements_clinique" placeholder="Renseignement clinique" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            Hypothese de diagnostique
-            <input name="hypothese_de_diagnostique" placeholder="Hypothèse de diagnostique" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            Bilan
-            <input name="bilan" placeholder="Bilan" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="relative">
-            Résultat
-            <input name="resultat_bilan" placeholder="Conclusion du bilan" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
-          <div class="relative">
-            Ordonnance
-            <textarea name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-
-          <div class="relative">
-            Date de visite
-            <input name="date_creation" id="dateCreation" type="datetime-local" placeholder="Date de création" class="input-field w-full p-4 rounded-xl" disabled>
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-        {%endif%} -->
-        {% for el in visible_columns %}
-        {% if el['column_name'] == 'age' %}
-          <div class="flex gap-2">
-            {{ el['display_name'] }}
-            
-            <div class="relative w-1/3">
-              <input id="age_years" name="age_years" type="number" placeholder="Années" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-            </div>
-
-            <div class="relative w-1/3">
-              <input id="age_months" name="age_months" type="number" placeholder="Mois" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-            </div>
-
-            <div class="relative w-1/3">
-              <input id="age_days" name="age_days" type="number" placeholder="Jours" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-            </div>
-          </div>
-        {% elif el['column_name'] == 'date_of_birth' or  el['column_name'] == 'created_at' %}
-          <div class="relative">
-            {{el['display_name']}}
-            <input id="{{ el['column_name'] }}" name="{{el['column_name'] }}" type="date" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-        {% elif el['column_name'] != 'id'and el['column_name'] != 'signature'  and el['column_name'] in role_col %}
-          <div class="relative">
-            {{ el['display_name'] }}
-            <input 
-              id="{{ el['column_name'] }}" 
-              name="{{ el['column_name'] }}" 
-              placeholder="{{ el['display_name'] }}"  
-              class="input-field w-full p-4 rounded-xl">
-            
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-        {% endif %}
-      {% endfor %}
-          <div class="md:col-span-2 mt-4">
-            <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Ajouter Patient</button>
-          </div>
-        </form>
+          </form>
       </div>
     </div>
   </div>
@@ -728,7 +613,6 @@ window.addEventListener('click', function(e) {
   <div id="editModalOverlay" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
     <div class="card rounded-2xl p-8 max-w-4xl w-full max-h-screen overflow-y-auto scrollbar" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Modifier le patient</h3>
         <button onclick="closeEditModal()" class="text-gray-400 hover:text-cyan-400 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -1287,7 +1171,7 @@ window.addEventListener('click', function(e) {
         const newInputs = itemDiv.querySelectorAll('.input-field');
         newInputs.forEach(input => {
             input.addEventListener('focus', function() {
-                const underline = this.nextElementSibling;
+                const underline =this.nextElementSibling;
                 if (underline && underline.classList.contains('input-underline')) {
                     underline.style.width = '100%';
                 }
@@ -1543,7 +1427,7 @@ editForm.addEventListener('submit', (e) => {
   delete data.id;
 
   // Show loader
-  document.getElementById('loader').classList.remove('hidden');
+ 
 
   fetch(`/update/${patientId}`, {
     method: 'PUT',

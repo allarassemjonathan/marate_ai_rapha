@@ -73,7 +73,9 @@ def init_db():
                     id SERIAL PRIMARY KEY,
                     name TEXT NOT NULL,
                     adresse TEXT,
-                    age INTEGER,
+                    age_years INTEGER,
+                    age_months INTEGER,
+                    age_days INTEGER,
                     date_of_birth DATE, 
                     poids REAL,
                     taille REAL,
@@ -169,8 +171,11 @@ def init_db():
                 cur.execute("SELECT 1 FROM column_visibility WHERE role=%s;", (role,))
                 if not cur.fetchone():
                     print("made it here")
-                    cur.execute("INSERT INTO IF NOT EXISTS column_visibility (role, columns) VALUES (%s, %s);", 
-                        (role, json.dumps(cols)))
+                    cur.execute("""
+                        INSERT INTO column_visibility (role, columns)
+                        VALUES (%s, %s)
+                        ON CONFLICT (role) DO NOTHING;
+                    """, (role, json.dumps(cols)))
             conn.commit()
 
 # Column management utility functions
@@ -312,18 +317,19 @@ Special_user = ''
 # Simple credential storage (in production, use a database)
 CREDENTIALS = {
     'medecins': os.environ.get('medecins'),
-    'infirmiers': os.environ.get('infirmiers'), 
+    'Dr_Mommar_Gueye': os.environ.get('Dr_Mommar_Gueye'), 
     'receptionistes': os.environ.get('receptionistes'),
-    'Dr_Toralta_G_.Josephine':os.environ.get('Dr_Toralta_G_.Josephine'),
-    'Dr_Djaury_Dadji_-A':os.environ.get('Dr_Djaury_Dadji_-A'),
-    'Dr_Ndortolnan_Azer':os.environ.get('Dr_Ndortolnan_Azer'), 
-    'Dr_Doumgo_Monna_Doni_Nelson':os.environ.get('Dr_Doumgo_Monna_Doni_Nelson'), 
-    'Dr_Ngetigal_Hyacinte':os.environ.get('Dr_Ngetigal_Hyacinte'), 
-    'Dr_Ousmane_Hamane_Gadji':os.environ.get('Dr_Ousmane_Hamane_Gadji'), 
-    'Dr_Toralta_Emmanuelle_Mantar':os.environ.get('Dr_Toralta_Emmanuelle_Mantar'), 
-    'Dr_Madjibeye_Mirielle':os.environ.get('Dr_Madjibeye_Mirielle'), 
-    'Dr_Robnodji_Adoucie':os.environ.get('Dr_Robnodji_Adoucie'), 
-    'Dr_Ndoubabe_Bonheur': os.environ.get('Dr_Ndoubabe_Bonheur')
+    'Dr_Pape_Amadou_Ndiaye':os.environ.get('Dr_Pape_Amadou_Ndiaye'),
+    'Dr_Fatou_Sarr':os.environ.get('Dr_Fatou_Sarr'), 
+    'Dr_Hassir_Sylla':os.environ.get('Dr_Hassir_Sylla'), 
+    'Sf_Binetou_Coumdal':os.environ.get('Sf_Binetou_Coumdal'), 
+    'Sf_Seynabou_Diop':os.environ.get('Sf_Seynabou_Diop'), 
+    'inf_Sokhna_Safieta_Goumbo':os.environ.get('inf_Sokhna_Safieta_Goumbo'), 
+    'inf_Sidy_Thiam':os.environ.get('inf_Sidy_Thiam'), 
+    'rec_Ndeye_Ware_Samb_Ndioum':os.environ.get('rec_Ndeye_Ware_Samb_Ndioum'), 
+    'rec_Maimouna_Ndiaye': os.environ.get('rec_Maimouna_Ndiaye'),
+    'rec_Arane_Wade':os.environ.get('rec_Arane_Wade'),
+    'bio_Modou_Diome':os.environ.get('bio_Modou_Diome')
 }
 
 # Decorator to require login
@@ -407,7 +413,7 @@ class InvoicePDF(FPDF):
     def header(self):
         # Add logo if possible
         try:
-            logo_rapha = "https://allarassemjonathan.github.io/rapha_logo.png"
+            logo_solidarite = "https://allarassemjonathan.github.io/solidarite_logo.png"
             logo_url = "https://allarassemjonathan.github.io/marate_white.png"
             response = requests.get(logo_url, timeout=10)
             if response.status_code == 200:
@@ -416,7 +422,7 @@ class InvoicePDF(FPDF):
                     tmp_file.flush()
                     self.image(tmp_file.name, 10, 8, 40)
             
-            other_res= requests.get(logo_rapha, timeout=10)
+            other_res= requests.get(logo_solidarite, timeout=10)
             if other_res.status_code == 200:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
                     tmp_file.write(other_res.content)
@@ -428,7 +434,7 @@ class InvoicePDF(FPDF):
 
         self.set_font('Arial', 'B', 16)
         self.set_text_color(6, 182, 212)
-        self.cell(0, 10, 'Devis Cabinet RAPHA', border=False, ln=1, align='C')
+        self.cell(0, 10, 'Devis Cabinet Solidarité', border=False, ln=1, align='C')
         self.ln(10)
 
     def footer(self):
@@ -481,7 +487,7 @@ class InvoicePDF(FPDF):
         self.cell(0, 10, f"Facture du mois de {mois_annee}", ln=1, align='C')
         if envoye_a:
             self.cell(0, 10, f"{envoye_a}", ln=1, align='C')
-        self.cell(0, 10, "doit au cabinet Rapha", ln=1, align='C')
+        self.cell(0, 10, "doit au cabinet Solidarité", ln=1, align='C')
         self.ln(5)
 
         # Then the usual patient metadata below
@@ -932,7 +938,7 @@ def get_patient(patient_id):
         return jsonify(row)
     if row['signature'] is None:
         return jsonify(row)
-    if session['username'] == 'Dr_Toralta_G_.Josephine':
+    if session['username'] == 'Dr_Mommar_Gueye':
         print('ot here?')
         return jsonify(row)
     if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
@@ -1008,17 +1014,18 @@ def update_patient(patient_id):
             "max_tokens": 500
         }
         
-    try:
-        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    # try:
+    #     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
             
-        if response.status_code == 200:
-                result = response.json()
-                print(result['choices'][0]['message']['content'][7:])
-                email_content = result['choices'][0]['message']['content'][7:]
-                    
-    except Exception as e:
-        print(e)
-
+    #     if response.status_code == 200:
+    #             result = response.json()
+    #             print(result['choices'][0]['message']['content'][7:])
+    #             email_content = result['choices'][0]['message']['content'][7:]
+                 
+    # except Exception as e:
+    #     print(e)
+    
+    email_content = 'test' 
     email_reception(data['name'], '',email_content, None, acteur_med)
     email_reception(data['name'], '',email_content, None, 'jonathanjerabe@gmail.com')
 
@@ -1046,10 +1053,7 @@ def login():
         # Check credentials
         if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
             physicians = {
-                'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A', 'Dr_Ndortolnan_Azer',
-                'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji',
-                'Dr_Toralta_Emmanuelle_Mantar', 'Dr_Madjibeye_Mirielle',
-                'Dr_Robnodji_Adoucie', 'Dr_Ndoubabe_Bonheur'
+                'Dr_Mommar_Gueye', 'Dr_Pape_Amadou_Ndiaye', 'Dr_Fatou_Sarr', 'Dr_Hassir_Sylla'
             }
 
             # Always set both username & user_type
@@ -1113,7 +1117,7 @@ def send_daily_report_email():
     subject = f"Daily Action Report for {today.strftime('%Y-%m-%d')}"
     msg = MIMEMultipart()
     msg['From'] = your_email
-    msg['To'] =  "Josephinetoralta@gmail.com"
+    msg['To'] =  "jonathanjerabe@gmail.com"
     msg['Subject'] = subject
 
     print('sending')
@@ -1129,7 +1133,7 @@ def send_daily_report_email():
         server.send_message(msg)
         server.quit()
         return """
-        Le rapport journalier des connections au logiciel a été envoyée a l'email Josephinetoralta@gmail.com!
+        Le rapport journalier des connections au logiciel a été envoyée a l'email jonathanjerabe@gmail.com!
         <br>
         <a href="/">Retour menu <a/>
         """

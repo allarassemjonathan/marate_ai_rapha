@@ -585,7 +585,7 @@ editForm.addEventListener('submit', (e) => {
   delete data.id;
 
   // Show loader
-  document.getElementById('loader').classList.remove('hidden');
+  
 
   fetch(`/update/${patientId}`, {
     method: 'PUT',
@@ -608,7 +608,7 @@ editForm.addEventListener('submit', (e) => {
   })
   .finally(() => {
     // Hide loader regardless of outcome
-    document.getElementById('loader').classList.add('hidden');
+    
   });
 });
 
