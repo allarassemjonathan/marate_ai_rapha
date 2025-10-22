@@ -40,6 +40,9 @@ except:
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+cabinet = os.getenv("cabinet")
+manager = os.getenv("manager")
+
 app = Flask(__name__)
 
 
@@ -681,7 +684,9 @@ def index():
                          user_type=user_type, 
                          username=username,
                          role_col = role_col,
-                         visible_columns=visible_columns)
+                         visible_columns=visible_columns, 
+                         cabinet=cabinet, 
+                         manager = manager)
 
 
 @app.route('/search')

@@ -346,7 +346,7 @@ td, th {
     <!-- Desktop links -->
     <div class="hidden lgx:flex space-x-4 items-center">
       <a href="{{ url_for('logout') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Déconnexion</a>
-      {% if username == "Dr Mommar Gueye" %}
+      {% if username == manager %}
         <a href="{{ url_for('send_daily_report_email') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Rapport</a>
         <a href="/stat" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Stats</a>
         <a href="/visibility" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Permissions</a>
@@ -370,7 +370,7 @@ td, th {
     </div>
 
     <a href="{{ url_for('logout') }}" class="text-black text-lg hover:text-cyan-600">Déconnexion</a>
-    {% if username == "Dr Mommar Gueye" %}
+    {% if username == manager %}
       <a href="{{ url_for('send_daily_report_email') }}" class="text-black text-lg hover:text-cyan-600">Rapport</a>
       <a href="/stat" class="text-black text-lg hover:text-cyan-600">Stats</a>
       <a href="/visibility" class="text-black text-lg hover:text-cyan-600">Permissions</a>
@@ -464,23 +464,24 @@ td, th {
                  class="p-2 rounded border border-gray-300 text-gray-800 w-20 bg-white" 
                  value="20" min="1" />
         </div>
+        {% if username == manager %}
         <br><br>
-        {% if username == "Dr Mommar Gueye" %}
         <!-- Gérer les Colonnes -->
         <button onclick="openColumnManagementModal(); toggleSettingsMenu();" 
                 class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm">
           Gérer les Colonnes
         </button>
-        <br><br>
         {%endif%}
+        {% if cabinet == 'solidarite'%}
         <!-- IPM  patients-->
+          <br><br>
            <form action="/ipm" method="POST">
             <label for="month">Sélectionnez le mois :</label><br><br>
             <input type="month" id="month" name="month" required>
             <br><br>
             <button class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm" type="submit">Télécharger la liste des patients IPM</button>
           </form>
-        </button>
+        {%endif%}
       </div>
     </div>
     
