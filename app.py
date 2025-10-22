@@ -1104,6 +1104,53 @@ def build_medecins_chart(buf):
     plt.close()
 
 
+def build_evolution_patients_chart(buf):
+    df = load_df_cached()
+
+    df['created_at'] = pd.to_datetime(df['created_at'])
+
+    nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+    patients_frequents = df[df['new_cases'].str.lower() != 'oui']
+
+    nouveaux_patients_mensuel = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+    patients_frequents_mensuel = patients_frequents.groupby(patients_frequents['created_at'].dt.to_period('M')).size()
+
+    evolutions_patients = pd.DataFrame({
+        'Nouveaux patients' : nouveaux_patients_mensuel,
+        'Patients frequents' : patients_frequents_mensuel
+    }).fillna(0)
+    
+    plt.figure(figsize=(8,4))
+    plt.plot(
+        evolutions_patients.index.astype(str),
+        evolutions_patients['Nouveaux_patients'],
+        marker='o',color='blue',label='Nouveaux patients'
+    )
+    plt.plot(
+        evolutions_patients.index.astype(str),
+        evolutions_patients['Patients_frequents'],
+        marker='o',color='orange',label='Patients frequents'
+    )
+
+    # ➕ Ajout des valeurs au-dessus des points
+    for i, (np_val, pf_val) in enumerate(
+        zip(evolution_patients['Nouveaux patients'], evolution_patients['Patients fréquents'])
+    ):
+        plt.text(i, np_val + 0.2, str(int(np_val)), ha='center', va='bottom',
+                 color='blue', fontweight='bold', fontsize=9)
+        plt.text(i, pf_val + 0.2, str(int(pf_val)), ha='center', va='bottom',
+                 color='orange', fontweight='bold', fontsize=9)
+
+
+    plt.title("Evolution mensuelle des patients")
+    plt.xlabel("Mois")
+    plt.ylabel("Nombre de patients")
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.xticks(rotation=45,ha='right')
+    plt.tight_layout()
+    plt.show()
+
 
 #routes flask pour afficher les graphiques seules
 #quand tu vas dans l'une des fonctions flask renvoie l'image PNG du graphique(avec cache)
@@ -1158,6 +1205,14 @@ def nouveaux_patients():
 def medecins():
     return send_file(
         get_chart("medecins",build_medecins_chart),
+        mimetype="img/png"
+    )
+
+@app.route("/evolution_patients")
+@login_required
+def evolution_patients():
+    return send_file(
+        get_chart("evolution_patients",build_evolution_patients_chart),
         mimetype="img/png"
     )
 
@@ -1268,7 +1323,7 @@ def rapport():
 
 
 
-    # --- 5. Nombre de patients par medecins ---
+    # --- 6. Nombre de patients par medecins ---
     df['signature'] = df['signature'].str.lower().str.title()
 
     #Supprimer les valeurs vides / None
@@ -1299,6 +1354,51 @@ def rapport():
     plt.close(fig6)
 
 
+    # --- 7. Evolution mensuelles des patients ---
+    df['created_at'] = pd.to_datetime(df['created_at'])
+
+    nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+    patients_frequents = df[df['new_cases'].str.lower() != 'oui']
+
+    nouveaux_patients_mensuel = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+    patients_frequents_mensuel = patients_frequents.groupby(patients_frequents['created_at'].dt.to_period('M')).size()
+
+    evolutions_patients = pd.DataFrame({
+        'Nouveaux patients' : nouveaux_patients_mensuel,
+        'Patients frequents' : patients_frequents_mensuel
+    }).fillna(0)
+    
+    fig7, ax7 = plt.subplots(figsize=(8,4))
+    ax7.plot(
+        evolutions_patients.index.astype(str),
+        evolutions_patients['Nouveaux patients'],
+        marker='o',color='blue',label='Nouveaux patients'
+    )
+    ax7.plot(
+        evolutions_patients.index.astype(str),
+        evolutions_patients['Patients frequents'],
+        marker='o',color='orange',label='Patients frequents'
+    )
+
+    for i, (np_val, pf_val) in enumerate(zip(evolutions_patients['Nouveaux patients'],
+                                             evolutions_patients['Patients frequents'])):
+        ax7.text(i, np_val + 0.2, str(int(np_val)), ha='center', va='bottom',
+                color='blue', fontweight='bold', fontsize=9)
+        ax7.text(i, pf_val + 0.2, str(int(pf_val)), ha='center', va='bottom',
+                color='orange', fontweight='bold', fontsize=9)
+                
+    ax7.set_title("Evolution mensuelle des patients")
+    ax7.set_xlabel("Mois")
+    ax7.set_ylabel("Nombre de patients")
+    ax7.legend()
+    ax7.grid(True, linestyle='--', alpha=0.6)
+    plt.xticks(rotation=45,ha='right')
+    plt.tight_layout()
+
+    img7 = fig_to_base64(fig7)
+    plt.close(fig7)
+
+
     # --- render all charts in one page ---
     return render_template("stats.html",
                            img1=img1,
@@ -1307,6 +1407,7 @@ def rapport():
                            img4=img4,
                            img5=img5,
                            img6=img6,
+                           img7=img7,
                            mois=mois,
                            list_mois=list_mois)
 

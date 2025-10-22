@@ -22,66 +22,46 @@ columns = [desc[0] for desc in cur.description]
 
 df = pd.DataFrame(rows , columns=columns)
 
+# --- 5. Évolution du nombre de nouveaux patients et patients fréquents par mois ---
+
+# Conversion de la colonne de date
+df['created_at'] = pd.to_datetime(df['created_at'])
+
+# Séparation des deux types de patients
+nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+patients_frequents = df[df['new_cases'].str.lower() != 'oui']
 
 
-html = """
-<html>
-<head><title>Stats Patients</title></head>
-<body>
-    <h2>Sélection du mois</h2>
-    <form method="get" action="/">
-        <select name="mois" onchange="this.form.submit()">
-            {% for m in mois_list %}
-                <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{ m }}</option>
-            {% endfor %}
-        </select>
-    </form>
+# Comptage mensuel
+nouveaux_patients_mensuel = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+patients_frequents_mensuel = patients_frequents.groupby(patients_frequents['created_at'].dt.to_period('M')).size()
 
-    <h3>Histogramme</h3>
-    <img src="data:image/png;base64,{{ img1 }}" alt="Histogramme"/>
-</body>
-</html>
-"""
+# On combine les deux séries dans un DataFrame pour aligner les mois
+evolutions_patients = pd.DataFrame({
+    'Nouveaux_patients' : nouveaux_patients_mensuel,
+    'Patients_frequents' : patients_frequents_mensuel
+}).fillna(0)
 
+# Tracé des courbes
+fig5,ax5 = plt.subplots(figsize=(8,4))
+ax5.plot(
+    evolutions_patients.index.astype(str),
+    evolutions_patients['Nouveaux_patients'],
+    marker='o',color='blue',label='Nouveaux patients'
+)
+ax5.plot(
+    evolutions_patients.index.astype(str),
+    evolutions_patients['Patients_frequents'],
+    marker='o',color='orange',label='Patients frequents'
+)
 
-def fig_to_base64(fig):
-    buf = io.BytesIO() 
-    fig.savefig(buf, format="png", bbox_inches="tight") 
-    buf.seek(0) 
-    return base64.b64encode(buf.getvalue()).decode("utf-8") 
+plt.title("Evolution mensuelle des patients")
+plt.xlabel("Mois")
+plt.ylabel("Nombre de patients")
+plt.legend()
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.xticks(rotation=45,ha='right')
+plt.tight_layout()
+# Ajout des valeurs sur les points
 
-app = Flask(__name__)
-
-@app.route("/",methods=['GET'])
-def stat():
-
-    df['signature'] = df['signature'].str.lower().str.title()
-    df['created_at'] = pd.to_datetime(df['created_at'])
-
-    #patient c'est le resultat du group by c'est le nombre de patients par medecins le resultat
-    medecins = df.groupby([df['created_at'].dt.to_period('M'), 'signature']).size().reset_index(name ="patients")
-
-    #on transforme la date en chaine de caractere
-    medecins['mois'] = medecins['created_at'].astype(str)
-
-
-    mois_list = sorted(medecins['mois'].unique())
-    mois = request.args.get("mois", default=mois_list[0])
-
-    df_medecins = medecins[medecins['mois'] == mois].set_index("signature")['patients']
-    fig1, ax1 = plt.subplots(figsize=(8,4))
-    df_medecins.plot(kind='bar', color='blue', ax=ax1)
-    ax1.set_title(f"Nombre de patients par medecins pour {mois}")
-    ax1.set_xlabel("Mois")
-    ax1.set_ylabel("Nmombre de patients")
-    ax1.set_xticks(ax1.get_xticks(), ax1.get_xticklabels(), rotation=45, ha="right")
-    img1 = fig_to_base64(fig1)
-    plt.close()
-
-    return render_template_string(html, img1=img1, mois=mois, mois_list=mois_list)
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
-
+plt.show()
