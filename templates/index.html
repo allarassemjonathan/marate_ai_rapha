@@ -456,14 +456,7 @@ td, th {
     <!-- Dropdown Menu -->
     <div id="settingsMenu" 
          class="hidden absolute right-0 top-14 bg-white border border-gray-200 rounded-lg shadow-lg w-64 z-50">
-      <div class="p-4 space-y-4">
-      {% if username == "Dr Mommar Gueye" %}
-        <!-- Gérer les Colonnes -->
-        <button onclick="openColumnManagementModal(); toggleSettingsMenu();" 
-                class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm">
-          Gérer les Colonnes
-        </button>
-        {%endif%}
+         <div class="p-4 space-y-4">
         <!-- Nombre de patients -->
         <div class="flex items-center space-x-2">
           <label for="pageSizeInput" class="text-gray-700 text-sm whitespace-nowrap">Nombre de patients :</label>
@@ -471,6 +464,15 @@ td, th {
                  class="p-2 rounded border border-gray-300 text-gray-800 w-20 bg-white" 
                  value="20" min="1" />
         </div>
+        <br><br>
+        {% if username == "Dr Mommar Gueye" %}
+        <!-- Gérer les Colonnes -->
+        <button onclick="openColumnManagementModal(); toggleSettingsMenu();" 
+                class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm">
+          Gérer les Colonnes
+        </button>
+        <br><br>
+        {%endif%}
         <!-- IPM  patients-->
            <form action="/ipm" method="POST">
             <label for="month">Sélectionnez le mois :</label><br><br>

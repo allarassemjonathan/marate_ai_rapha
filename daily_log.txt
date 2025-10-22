@@ -48,3 +48,4 @@ Nouvelle evenement: 19:41:21 medecins, Patient sélectionné, Patient avec ID 3 se
 Nouvelle evenement: 19:41:27 medecins, modification patient, Patient avec ID 3 a été modifié
 Nouvelle evenement: 19:42:24 medecins, Patient sélectionné, Patient avec ID 3 selectionné.
 Nouvelle evenement: 19:42:36 medecins, modification patient, Patient avec ID 3 a été modifié
+Nouvelle evenement: 20:14:18 medecins, Patient sélectionné, Patient avec ID 2 selectionné.

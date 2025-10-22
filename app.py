@@ -29,6 +29,14 @@ import unicodedata
 from flask import g
 import time
 
+import locale
+# Optional: to display French month names (if your OS supports it)
+try:
+    locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
+except:
+    pass  # safely ignore if not available on Windows
+
+
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -45,6 +53,9 @@ SCOPES = ['https://www.googleapis.com/auth/drive.file']
 #Mn = Mark,Nonspacing c'est-à-dire les qccents et diacritiques
 #Donc cette condition veut dire de garder seulement les caracteres qui ne sont pas des accents
 #''.join() enfin on rassemble tous les caracteres qu'on a gardes pour former une nouvelle chaine
+
+def safe_text(text):
+    return text.encode('latin-1', 'replace').decode('latin-1')
 
 def remove_accents(text):
     return ''.join(
@@ -724,11 +735,11 @@ def show_distribution():
 
     return render_template("distribution.html", distributions=all_values)
 
-from io import BytesIO
+
 @app.route('/ipm', methods=['POST'])
 @login_required
 def ipm_page():
-    selected_month = request.form.get('month')  # e.g. "2025-09"
+    selected_month = request.form.get('month')
     if not selected_month:
         return "Veuillez sélectionner un mois.", 400
 
@@ -738,69 +749,89 @@ def ipm_page():
     except ValueError:
         return "Format de mois invalide.", 400
 
-    # Build date range for the selected month
+    # Build date range
     start_date = datetime(year, month, 1)
-    if month == 12:
-        end_date = datetime(year + 1, 1, 1)
-    else:
-        end_date = datetime(year, month + 1, 1)
+    end_date = datetime(year + (month == 12), (month % 12) + 1, 1)
 
-    # Fetch patients data
+    # Choose IPM filter (default: 'oui')
+    ipm_value = request.form.get('ipm_value', 'non')
+
+    # --- Fetch patients ---
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("""
-        SELECT name, age, date_enregistrement
+        SELECT name, created_at
         FROM patients
-        WHERE ipm = 'oui'
-        AND date_enregistrement >= %s
-        AND date_enregistrement < %s
-        ORDER BY date_enregistrement;
-    """, (start_date, end_date))
+        WHERE ipm = %s
+        AND DATE_TRUNC('month', created_at) = DATE_TRUNC('month', %s::timestamp)
+        ORDER BY created_at;
+    """, (ipm_value, start_date))
     patients = cur.fetchall()
     cur.close()
-    conn.close()
     conn.close()
 
     # --- Create PDF ---
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", 'B', 16)
-    title = f"Patients avec IPM = 'oui' — {start_date.strftime('%B %Y')}"
-    pdf.cell(0, 10, title, ln=True, align="C")
 
+    # Add logos
+    logo_solidarite = "https://allarassemjonathan.github.io/solidarite_logo.png"
+    logo_url = "https://allarassemjonathan.github.io/marate_white.png"
+
+    try:
+        pdf.image(logo_url, x=10, y=8, w=60)   # left logo
+        pdf.image(logo_solidarite, x=165, y=8, w=25)        # right logo
+    except Exception as e:
+        print("Logo load error:", e)  # skip gracefully if image not found
+
+    pdf.ln(25)
+    pdf.set_font("Arial", 'B', 16)
+
+    # Safe title (convert unsupported chars)
+    title = f"Liste des patients IPM - {start_date.strftime('%B %Y')}"
+    title_safe = title.encode('latin-1', 'replace').decode('latin-1')
+    pdf.ln(10)
+    pdf.cell(0, 10, title_safe, ln=True, align="C")
     pdf.ln(10)
     pdf.set_font("Arial", 'B', 12)
-    pdf.cell(10, 10, "N°", 1, 0, "C")
-    pdf.cell(60, 10, "Nom", 1, 0, "C")
-    pdf.cell(25, 10, "Âge", 1, 0, "C")
-    pdf.cell(45, 10, "Date d'enregistrement", 1, 1, "C")
 
+    # Define column widths
+    col_widths = [10, 60, 45]
+    table_width = sum(col_widths)
+    page_width = pdf.w - 2 * pdf.l_margin
+    x_start = (page_width - table_width) / 2 + pdf.l_margin
+
+    # --- Table Header ---
+    pdf.set_x(x_start)
+    pdf.cell(col_widths[0], 10, "N°", 1, 0, "C")
+    pdf.cell(col_widths[1], 10, "Nom", 1, 0, "C")
+    pdf.cell(col_widths[2], 10, "Date de visite", 1, 1, "C")
+
+    # --- Table Rows ---
     pdf.set_font("Arial", '', 12)
-    for i, (name, age, date_enregistrement) in enumerate(patients, start=1):
-        date_str = date_enregistrement.strftime('%d/%m/%Y')
-        pdf.cell(10, 10, str(i), 1, 0, "C")
-        pdf.cell(60, 10, name, 1, 0, "L")
-        pdf.cell(25, 10, str(age), 1, 0, "C")
-        pdf.cell(45, 10, date_str, 1, 1, "C")
+    for i, patient in enumerate(patients, start=1):
+        name = patient['name'].encode('latin-1', 'replace').decode('latin-1')
+        date_str = patient['created_at'].strftime('%d/%m/%Y') if patient['created_at'] else ''
+        pdf.set_x(x_start)
+        pdf.cell(col_widths[0], 10, str(i), 1, 0, "C")
+        pdf.cell(col_widths[1], 10, name, 1, 0, "L")
+        pdf.cell(col_widths[2], 10, date_str, 1, 1, "C")
 
+    # --- No patients message ---
     if not patients:
         pdf.ln(10)
-        pdf.cell(0, 10, "Aucun patient trouvé pour ce mois.", ln=True, align="C")
-
+        pdf.cell(0, 10, "Aucun patient IPM pour ce mois.", ln=True, align="C")
     # --- Save to memory ---
-    buffer = BytesIO()
-    pdf.output(buffer)
-    buffer.seek(0)
+    pdf_bytes = pdf.output(dest='S').encode('latin1')
+    buffer = io.BytesIO(pdf_bytes)
 
     return send_file(
         buffer,
         as_attachment=True,
-        download_name=f"patients_ipm_oui_{selected_month}.pdf",
+        download_name=f"patients_ipm_{ipm_value}_{selected_month}.pdf",
         mimetype="application/pdf"
     )
 
-
-    return 
 from datetime import datetime, timezone, timedelta # chad timezone attempt
 from datetime import date
 @app.route('/add', methods=['POST'])
