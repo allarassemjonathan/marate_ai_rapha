@@ -1127,18 +1127,17 @@ def update_patient(patient_id):
             "max_tokens": 500
         }
         
-    # try:
-    #     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    try:
+        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
             
-    #     if response.status_code == 200:
-    #             result = response.json()
-    #             print(result['choices'][0]['message']['content'][7:])
-    #             email_content = result['choices'][0]['message']['content'][7:]
+        if response.status_code == 200:
+                result = response.json()
+                print(result['choices'][0]['message']['content'][7:])
+                email_content = result['choices'][0]['message']['content'][7:]
                  
-    # except Exception as e:
-    #     print(e)
+    except Exception as e:
+        print(e)
     
-    email_content = 'test' 
     email_reception(data['name'], '',email_content, None, acteur_med)
     email_reception(data['name'], '',email_content, None, 'jonathanjerabe@gmail.com')
 

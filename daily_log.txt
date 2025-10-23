@@ -1,2 +1,7 @@
-2025-10-22
-Nouvelle evenement: 07:37:47 medecins, Patient sélectionné, Patient avec ID 1700 selectionné.
+2025-10-23
+Nouvelle evenement: 00:19:01 medecins, Patient sélectionné, Patient avec ID 1702 selectionné.
+Nouvelle evenement: 00:19:09 medecins, modification patient, Patient avec ID 1702 a été modifié
+Nouvelle evenement: 00:19:41 medecins, Patient sélectionné, Patient avec ID 1702 selectionné.
+Nouvelle evenement: 00:20:02 medecins, Patient sélectionné, Patient avec ID 1702 selectionné.
+Nouvelle evenement: 00:20:08 medecins, modification patient, Patient avec ID 1702 a été modifié
+Nouvelle evenement: 00:20:17 medecins, modification patient, Patient avec ID 1702 a été modifié
