@@ -6,7 +6,7 @@
   <title> Marate AI </title>
  <link rel="icon" href="static/marate_ai_logo_white.ico" type="image/x-icon">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -183,11 +183,21 @@
 #invoiceCard {
   resize: both;
   overflow: auto;
-  min-width: 400px;
-  min-height: 400px;
+  min-width: 90%;  /* instead of 400px / 700px */
+  min-height: 300px;
+  max-width: 95vw;
+  max-height: 85vh;
 }
+
 /* Responsive adjustments for mobile */
 @media (max-width: 768px) {
+    h2, h3 {
+    font-size: 1.1rem; /* shrink titles */
+    }
+    
+    input, button, textarea {
+      font-size: 0.9rem; /* smaller form elements */
+    }
     #invoiceModal {
         padding: 1rem;
     }
@@ -232,8 +242,95 @@ td, th {
   overflow: hidden;
   text-overflow: ellipsis; /* show ... if text is too long */
 }
+
+/* Column Management Modal Styles */
+#columnManagementModal .scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 255, 255, 0.5) transparent;
+}
+
+#columnManagementModal .scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#columnManagementModal .scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#columnManagementModal .scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 255, 255, 0.5);
+  border-radius: 3px;
+}
+
+#columnManagementModal table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#columnManagementModal .form-checkbox,
+#columnManagementModal input[type="checkbox"] {
+  border-radius: 4px;
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+  color: #00FFFF;
+}
+
+#columnManagementModal .form-checkbox:checked,
+#columnManagementModal input[type="checkbox"]:checked {
+  background-color: #00FFFF;
+  border-color: #00FFFF;
+  color: #000000;
+}
+
+#columnManagementModal .form-checkbox:focus,
+#columnManagementModal input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+  border-color: #00FFFF;
+}
+/* Loader background overlay */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Hidden by default */
+.hidden {
+  display: none;
+}
+
+/* Simple spinning circle */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top-color: #06b6d4; /* your main theme color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
   </style>
-  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Custom Tailwind config with 1064px breakpoint
+    tailwind.config = {
+      theme: {
+        extend: {
+          screens: {
+            'lgx': '1064px',
+          },
+        },
+      },
+    };
+  </script>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 md:p-8" style="visibility: hidden;">
 <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2"></div>
@@ -258,6 +355,63 @@ td, th {
   <a>Bienvenue {{username}}</a>
 </nav>
 
+<body class="bg-gray-100">
+
+  <!-- White Responsive Nav Bar -->
+  <nav class="w-full bg-white shadow-md py-3 px-6 flex justify-between items-center mb-6 relative">
+    <span class="font-bold text-black text-lg">Marate AI</span>
+    
+    <!-- Desktop links -->
+    <div class="hidden lgx:flex space-x-4 items-center">
+      <a href="{{ url_for('logout') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Déconnexion</a>
+      {% if username == manager %}
+        <a href="{{ url_for('send_daily_report_email') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Rapport</a>
+        <a href="/stat" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Stats</a>
+        <a href="/visibility" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Permissions</a>
+      {% endif %}
+      <span class="text-gray-700">Bienvenue {{username}}</span>
+    </div>
+
+    <!-- Hamburger (mobile only) -->
+    <button id="menuBtn" class="lgx:hidden text-black text-3xl focus:outline-none">
+      ☰
+    </button>
+  </nav>
+
+  <!-- Slide-in Mobile Menu -->
+  <div id="mobileMenu" 
+      class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col space-y-4 p-6 lgx:hidden">
+    
+    <div class="flex justify-between items-center mb-4">
+      <span class="font-bold text-lg text-black">Menu</span>
+      <button id="closeBtn" class="text-2xl text-gray-700">&times;</button>
+    </div>
+
+    <a href="{{ url_for('logout') }}" class="text-black text-lg hover:text-cyan-600">Déconnexion</a>
+    {% if username == manager %}
+      <a href="{{ url_for('send_daily_report_email') }}" class="text-black text-lg hover:text-cyan-600">Rapport</a>
+      <a href="/stat" class="text-black text-lg hover:text-cyan-600">Stats</a>
+      <a href="/visibility" class="text-black text-lg hover:text-cyan-600">Permissions</a>
+    {% endif %}
+    <span class="mt-4 text-gray-700">Bienvenue {{username}}</span>
+  </div>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.remove('-translate-x-full');
+      mobileMenu.classList.add('translate-x-0');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      mobileMenu.classList.add('-translate-x-full');
+      mobileMenu.classList.remove('translate-x-0');
+    });
+  </script>
+
   <div id="splashScreen">
     <img src="https://allarassemjonathan.github.io/marate_white.png" class="h-20 md:h-28 w-auto object-contain">
   </div>
@@ -267,14 +421,15 @@ td, th {
       <img src="https://allarassemjonathan.github.io/marate_white.png" class="h-20 md:h-28 w-auto object-contain">
       </div>
     </div>
-      <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
+    
+      <!-- <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
         <div class="relative w-full">
           <input id="searchBox" type="text" placeholder="Rechercher un patient..." class="input-field w-full p-4 pl-12 rounded-xl text-sm focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
-      </div>
+      </div> -->
 
     <div class="rounded-xl mb-10 w-full overflow-hidden">
       <div class="flex items-center space-x-2 mb-4">
@@ -297,7 +452,103 @@ td, th {
             <!-- Results will be populated here -->
           </tbody>
         </table>
+
+      <div class="flex flex-col sm:flex-row items-center gap-4 mb-8 relative">
+  <div class="relative w-full">
+    <input id="searchBox" 
+           type="text" 
+           placeholder="Rechercher un patient..." 
+           class="input-field w-full p-4 pl-12 pr-12 rounded-xl text-sm focus:outline-none bg-white border border-gray-300 shadow-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" 
+         class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-400" 
+         fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+
+   
+    <!-- Gear Icon Button -->
+    <button onclick="toggleSettingsMenu()" 
+            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-cyan-600 focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" 
+           class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 
+              0a1.724 1.724 0 002.573 1.066c1.543-.94 
+              3.31.826 2.37 2.37a1.724 1.724 0 
+              001.065 2.572c1.756.426 1.756 2.924 
+              0 3.35a1.724 1.724 0 00-1.066 
+              2.573c.94 1.543-.826 3.31-2.37 
+              2.37a1.724 1.724 0 00-2.572 
+              1.065c-.426 1.756-2.924 
+              1.756-3.35 0a1.724 1.724 0 
+              00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 
+              1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 
+              0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 
+              2.37-2.37.996.608 2.296.07 
+              2.572-1.065z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </button>
+
+    <!-- Dropdown Menu -->
+    <div id="settingsMenu" 
+         class="hidden absolute right-0 top-14 bg-white border border-gray-200 rounded-lg shadow-lg w-64 z-50">
+         <div class="p-4 space-y-4">
+        <!-- Nombre de patients -->
+        <div class="flex items-center space-x-2">
+          <label for="pageSizeInput" class="text-gray-700 text-sm whitespace-nowrap">Nombre de patients :</label>
+          <input type="number" id="pageSizeInput" 
+                 class="p-2 rounded border border-gray-300 text-gray-800 w-20 bg-white" 
+                 value="20" min="1" />
+        </div>
+        {% if username == manager %}
+        <br><br>
+        <!-- Gérer les Colonnes -->
+        <button onclick="openColumnManagementModal(); toggleSettingsMenu();" 
+                class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm">
+          Gérer les Colonnes
+        </button>
+        {%endif%}
+        {% if cabinet == 'solidarite'%}
+        <!-- IPM  patients-->
+          <br><br>
+           <form action="/ipm" method="POST">
+            <label for="month">Sélectionnez le mois :</label><br><br>
+            <input type="month" id="month" name="month" required>
+            <br><br>
+            <button class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm" type="submit">Télécharger la liste des patients IPM</button>
+          </form>
+        {%endif%}
       </div>
+    </div>
+    
+  </div>
+</div>
+<script>
+function toggleSettingsMenu() {
+  const menu = document.getElementById('settingsMenu');
+  menu.classList.toggle('hidden');
+}
+
+// Optional: Close menu if clicking outside
+window.addEventListener('click', function(e) {
+  const menu = document.getElementById('settingsMenu');
+  const button = e.target.closest('button[onclick="toggleSettingsMenu()"]');
+  if (!menu.contains(e.target) && !button) {
+    menu.classList.add('hidden');
+  }
+});
+</script>
+    <div class="overflow-x-auto rounded-xl mb-10">
+      <table class="min-w-full text-sm">
+        <thead class="table-header">
+          <tr id="tableHeader"></tr>
+        </thead>
+        <tbody id="resultsTable" class="text-gray-800 text-sm"></tbody>
+      </table>
+    </div>
       
       <div class="border-t border-gray-700 mt-10 pt-8">
         <h2 class="text-2xl font-bold text-black bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-6">Ajouter un patient</h2>
@@ -425,19 +676,67 @@ td, th {
     </div>
   </div>
 
+          <form id="addForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">          {% for el in visible_columns %}
+          {% if el['column_name'] == 'age' %}
+            <div class="flex gap-2">
+              {{ el['display_name'] }}
+              
+              <div class="relative w-1/3">
+                <input id="age_years" name="age_years" type="number" placeholder="Années" class="input-field w-full p-4 rounded-xl">
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              </div>
+
+              <div class="relative w-1/3">
+                <input id="age_months" name="age_months" type="number" placeholder="Mois" class="input-field w-full p-4 rounded-xl">
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              </div>
+
+              <div class="relative w-1/3">
+                <input id="age_days" name="age_days" type="number" placeholder="Jours" class="input-field w-full p-4 rounded-xl">
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              </div>
+            </div>
+          {% elif el['column_name'] == 'date_of_birth' or  el['column_name'] == 'created_at' %}
+            <div class="relative">
+              {{el['display_name']}}
+              <input id="{{ el['column_name'] }}" name="{{el['column_name'] }}" type="date" class="input-field w-full p-4 rounded-xl">
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            </div>
+          {% elif el['column_name'] != 'id'and el['column_name'] != 'signature'  and el['column_name'] in role_col %}
+            <div class="relative">
+              {{ el['display_name'] }}
+              <input 
+                id="{{ el['column_name'] }}" 
+                name="{{ el['column_name'] }}" 
+                placeholder="{{ el['display_name'] }}"  
+                class="input-field w-full p-4 rounded-xl">
+              
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            </div>
+          {% endif %}
+        {% endfor %}
+            <div class="md:col-span-2 mt-4">
+              <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Ajouter Patient</button>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
 <!-- Invoice Modal -->
 <!-- Outer backdrop -->
 <div id="invoiceModal"
-     class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center"
+     class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center px-2"
      style="display: none !important;">
 
   <!-- Inner modal box -->
   <div id="invoiceCard"
        class="bg-white text-black resize rounded-xl p-8 overflow-auto scrollbar shadow-lg"
        style="min-width: 700px; min-height: 500px; max-width: 90vw; max-height: 90vh; resize: both;">
+       class="bg-white text-black rounded-xl p-6 md:p-8 shadow-lg w-full max-w-lg md:max-w-2xl lg:max-w-3xl max-h-[80vh] overflow-y-auto">
 
+    <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-black mb-0">Générer Facture</h2>
+      <h2 class="text-lg md:text-2xl font-bold text-black mb-0">Générer Facture</h2>
       <button onclick="closeInvoiceModal()" class="text-gray-600 hover:text-red-500 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -447,38 +746,49 @@ td, th {
 
     <!-- Patient Info Section -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <input id="input_nom" type="text" placeholder="Nom du patient" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
-      <input id="input_prenom" type="text" placeholder="Prénom du patient" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
-      <input id="input_police" type="text" placeholder="Numéro de police" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
-      <input id="input_assurance" type="text" placeholder="Nom de l'assurance" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
-      <input id="input_pourcentage" type="number" placeholder="% couvert par l'assurance (ex: 80)" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" min="0" max="100" value="80">
-      <input id="input_envoye_a" type="text" placeholder="Envoyé à (ex: Assurance X ou Parent)" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+      <input id="input_nom" type="text" placeholder="Nom du patient"
+             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
+      <input id="input_prenom" type="text" placeholder="Prénom du patient"
+             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
+      <input id="input_police" type="text" placeholder="Numéro de police"
+             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+      <input id="input_assurance" type="text" placeholder="Nom de l'assurance"
+             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+      <input id="input_pourcentage" type="number" placeholder="% couvert par l'assurance (ex: 80)" min="0" max="100" value="80"
+             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+      <input id="input_envoye_a" type="text" placeholder="Envoyé à (ex: Assurance X ou Parent)"
+             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
     </div>
 
-    <!-- Section container -->
+    <!-- Dynamic Section container -->
     <div id="invoice-items-container" class="space-y-6 mb-6"></div>
 
+    <!-- Add Section Button -->
     <div class="flex justify-start mb-6">
-      <button type="button" onclick="addInvoiceSection()" class="bg-cyan-600 hover:bg-cyan-700 text-black px-5 py-2 rounded-xl transition">
+      <button type="button" onclick="addInvoiceSection()"
+              class="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2 rounded-xl transition">
         Ajouter une section
       </button>
     </div>
 
-    <div class="flex justify-between">
-      <button onclick="closeInvoiceModal()" class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-black rounded-xl transition">Annuler</button>
-      <button onclick="generateInvoice()" class="glow-button px-6 py-3 rounded-xl text-white font-medium bg-cyan-600 hover:bg-cyan-700">
+    <!-- Action Buttons -->
+    <div class="flex flex-col md:flex-row justify-between gap-3">
+      <button onclick="closeInvoiceModal()"
+              class="w-full md:w-auto px-6 py-3 bg-gray-300 hover:bg-gray-400 text-black rounded-xl transition">
+        Annuler
+      </button>
+      <button onclick="generateInvoice()"
+              class="w-full md:w-auto glow-button px-6 py-3 rounded-xl text-white font-medium bg-cyan-600 hover:bg-cyan-700">
         Générer PDF
       </button>
     </div>
   </div>
 </div>
 
-
   <!-- Edit Modal -->
   <div id="editModalOverlay" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
     <div class="card rounded-2xl p-8 max-w-4xl w-full max-h-screen overflow-y-auto scrollbar" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Modifier le patient</h3>
         <button onclick="closeEditModal()" class="text-gray-400 hover:text-cyan-400 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -490,6 +800,53 @@ td, th {
         <input type="hidden" id="editId" name="id">
         
         <div class="relative">
+
+      <form id="editForm" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <input type="hidden" id="editId" name="id">
+        
+      {% for el in visible_columns %}
+        {% if el['column_name'] == 'age' %}
+          <div class="flex gap-2">
+            {{ el['display_name'] }}
+            
+            <div class="relative w-1/3">
+              <input id="edit_age_years" name="age_years" type="number" placeholder="Années" class="input-field w-full p-4 rounded-xl">
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            </div>
+
+            <div class="relative w-1/3">
+              <input id="edit_age_months" name="age_months" type="number" placeholder="Mois" class="input-field w-full p-4 rounded-xl">
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            </div>
+
+            <div class="relative w-1/3">
+              <input id="edit_age_days" name="age_days" type="number" placeholder="Jours" class="input-field w-full p-4 rounded-xl">
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            </div>
+          </div>
+        {% elif el['column_name'] == 'date_of_birth' or  el['column_name'] == 'created_at' %}
+          <div class="relative">
+            {{el['display_name']}}
+            <input id="edit_{{ el['column_name'] }}" name="{{el['column_name'] }}" type="date" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+        {% elif el['column_name'] != 'id' and el['column_name'] in role_col %}
+          <div class="relative">
+            {{ el['display_name'] }}
+            <input 
+              id="edit_{{ el['column_name'] }}" 
+              name="{{ el['column_name'] }}" 
+              placeholder="{{ el['display_name'] }}"  
+              class="input-field w-full p-4 rounded-xl">
+            
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+        {% endif %}
+      {% endfor %}
+      <br>
+      <br>
+
+        <!-- <div class="relative">
           Nom
           <input id="edit_name" name="name" placeholder="Nom" required class="input-field w-full p-4 rounded-xl">
           <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
@@ -591,6 +948,7 @@ td, th {
           Ordonnance
           <textarea id="edit_ordonnance" name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
         </div>
+        </div> -->
 
         <div class="sm:col-span-2 mt-4">
           <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Enregistrer les modifications</button>
@@ -598,6 +956,96 @@ td, th {
       </form>
     </div>
   </div>
+<!-- Column Management Modal -->
+<div id="columnManagementModal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <div class="card rounded-2xl p-8 max-w-4xl w-full max-h-screen overflow-y-auto scrollbar bg-white" onclick="event.stopPropagation()">
+    
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-black">Gestion des Colonnes</h2>
+      <button onclick="closeColumnManagementModal()" class="text-gray-600 hover:text-cyan-500 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Add New Column Section -->
+    <div class="rounded-xl p-6 mb-6 bg-gray-50 border border-gray-200">
+      <h3 class="text-lg font-semibold mb-4 text-black">Ajouter une Nouvelle Colonne</h3>
+      
+      <form id="addColumnFormModal" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Nom de la colonne</label>
+          <input type="text" id="columnNameModal" 
+                 class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400"
+                 placeholder="ex: nouveau_champ"
+                 pattern="[a-zA-Z_][a-zA-Z0-9_]*">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Nom d'affichage</label>
+          <input type="text" id="displayNameModal" 
+                 class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400"
+                 placeholder="ex: Nouveau Champ">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Type de données</label>
+          <select id="dataTypeModal" 
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+            <option value="TEXT">Texte</option>
+            <option value="INTEGER">Nombre entier</option>
+            <option value="REAL">Nombre décimal</option>
+            <option value="DATE">Date</option>
+            <option value="BOOLEAN">Vrai/Faux</option>
+          </select>
+        </div>
+        
+        <div class="flex items-end">
+          <button type="submit" 
+                  class="w-full py-3 px-4 rounded-xl font-medium bg-cyan-500 text-white hover:bg-cyan-600 transition">
+            Ajouter
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Existing Columns Section -->
+    <div class="rounded-xl border border-gray-200 bg-gray-50">
+      <h3 class="text-lg font-semibold p-6 border-b border-gray-200 text-black">Colonnes Existantes</h3>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-4 py-3 text-left text-sm font-medium text-black">Nom d'Affichage</th>
+              <th class="px-4 py-3 text-left text-sm font-medium text-black">Type</th>
+              <th class="px-4 py-3 text-sm font-medium text-black">Action</th>
+            </tr>
+          </thead>
+          <tbody id="columnsModalTableBody" class="divide-y divide-gray-200 text-gray-800">
+            <!-- Dynamic content will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex justify-end mt-6 pt-4 border-t border-gray-200">
+      <button onclick="closeColumnManagementModal()" 
+              class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-black rounded-xl transition mr-3">
+        Fermer
+      </button>
+      <button onclick="refreshMainPageColumns()" 
+              class="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl font-medium transition">
+        Actualiser la Page
+      </button>
+    </div>
+
+  </div>
+</div>
+
 
   <script>
 
@@ -904,7 +1352,7 @@ td, th {
         const newInputs = itemDiv.querySelectorAll('.input-field');
         newInputs.forEach(input => {
             input.addEventListener('focus', function() {
-                const underline = this.nextElementSibling;
+                const underline =this.nextElementSibling;
                 if (underline && underline.classList.contains('input-underline')) {
                     underline.style.width = '100%';
                 }
@@ -998,10 +1446,218 @@ td, th {
     alert('Erreur: ' + error.message);
   });
 }
+
+// Column Management Modal Functions
+function openColumnManagementModal() {
+  document.getElementById('columnManagementModal').classList.remove('hidden');
+  loadColumnsInModal();
+}
+
+function closeColumnManagementModal() {
+  document.getElementById('columnManagementModal').classList.add('hidden');
+}
+
+function loadColumnsInModal() {
+  fetch('/api/columns')
+    .then(response => response.json())
+    .then(data => {
+      const tbody = document.getElementById('columnsModalTableBody');
+      tbody.innerHTML = '';
+      
+      data.all_columns.forEach(column => {
+        const row = document.createElement('tr');
+        row.className = 'table-row hover:bg-opacity-10';
+        
+        const isEssential = ['id', 'name', 'created_at'].includes(column.column_name);
+        
+        row.innerHTML = `
+          <td class="px-4 py-3 font-mono text-sm">${column.column_name}</td>
+          <td class="px-4 py-3">${column.data_type}</td>
+          <td class="px-4 py-3 text-center">
+            ${!isEssential ? 
+              `<button onclick="removeColumnModal('${column.column_name}', '${column.display_name}')" 
+                       class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors text-sm">
+                 Supprimer
+               </button>` : 
+              '<span class="text-gray-500 text-sm">Essentielle</span>'
+            }
+          </td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    })
+    .catch(error => {
+      console.error('Error loading columns:', error);
+      showToast('Erreur lors du chargement des colonnes');
+    });
+}
+
+// Add column form handler
+document.addEventListener('DOMContentLoaded', function() {
+  const addColumnForm = document.getElementById('addColumnFormModal');
+  if (addColumnForm) {
+    addColumnForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const columnName = document.getElementById('columnNameModal').value.trim();
+      const displayName = document.getElementById('displayNameModal').value.trim();
+      const dataType = document.getElementById('dataTypeModal').value;
+      
+      if (!columnName || !displayName) {
+        showToast('Veuillez remplir tous les champs');
+        return;
+      }
+      
+      fetch('/api/add_column', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          column_name: columnName,
+          display_name: displayName,
+          data_type: dataType
+        })
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.status === 'success') {
+          showToast('Colonne ajoutée avec succès!');
+          // Clear form
+          document.getElementById('columnNameModal').value = '';
+          document.getElementById('displayNameModal').value = '';
+          document.getElementById('dataTypeModal').value = 'TEXT';
+          // Reload columns in modal
+          loadColumnsInModal();
+        } else {
+          showToast(result.message || 'Erreur lors de l\'ajout');
+        }
+      })
+      .catch(error => {
+        showToast('Erreur de connexion');
+        console.error('Error:', error);
+      });
+    });
+  }
+});
+
+function toggleColumnVisibility(columnName, isVisible) {
+  fetch(`/api/toggle_column/${columnName}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ is_visible: isVisible })
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.status === 'success') {
+      showToast(`Colonne ${isVisible ? 'affichée' : 'masquée'}`);
+      // Update the visual feedback in the row
+      const row = document.querySelector(`input[data-column="${columnName}"]`).closest('tr');
+      const statusSpan = row.querySelector('td:nth-child(4) span span');
+      if (statusSpan) {
+        statusSpan.textContent = isVisible ? '✓ Visible' : 'Masquée';
+        statusSpan.className = isVisible ? 'ml-2 text-sm text-cyan-400' : 'ml-2 text-sm text-gray-500';
+      }
+    } else {
+      // Revert checkbox state
+      const checkbox = document.querySelector(`input[data-column="${columnName}"]`);
+      checkbox.checked = !isVisible;
+      showToast(result.message || 'Erreur lors de la modification');
+    }
+  })
+  .catch(error => {
+    // Revert checkbox state
+    const checkbox = document.querySelector(`input[data-column="${columnName}"]`);
+    checkbox.checked = !isVisible;
+    showToast('Erreur de connexion');
+    console.error('Error:', error);
+  });
+}
+
+function removeColumnModal(columnName, displayName) {
+  if (confirm(`Êtes-vous sûr de vouloir supprimer définitivement la colonne "${displayName}"?\nCette action ne peut pas être annulée!`)) {
+    fetch(`/api/remove_column/${columnName}`, {
+      method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.status === 'success') {
+        showToast('Colonne supprimée avec succès!');
+        loadColumnsInModal(); // Reload the table
+      } else {
+        showToast(result.message || 'Erreur lors de la suppression');
+      }
+    })
+    .catch(error => {
+      showToast('Erreur de connexion');
+      console.error('Error:', error);
+    });
+  }
+}
+
+function refreshMainPageColumns() {
+  // Close modal and refresh page to show updated columns
+  closeColumnManagementModal();
+  window.location.reload();
+}
+// Submit event for the edit form
+// editForm.addEventListener('submit', (e) => {
+//   e.preventDefault();
+//   const patientId = document.getElementById('editId').value;
+//   const formData = new FormData(editForm);
+//   const data = Object.fromEntries(formData.entries());
+//   delete data.id;
+
+//   // Show loader
+
+//   fetch(`/update/${patientId}`, {
+//     method: 'PUT',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(data)
+//   })
+//   .then(res => res.json())
+//   .then(result => {
+//     if (result.status === 'success') {
+//       closeEditModal();
+//       //loadPatients(searchBox.value);
+//       showToast('Patient modifié avec succès', 2500);
+//     } else {
+//       alert(result.message || 'Error updating patient');
+//     }
+//   })
+//   .catch(err => {
+//     console.error('Erreur de mise à jour:', err);
+//     alert('Erreur de connexion au serveur');
+//   })
+
+// });
+
+
+function showToast(message, duration = 3000) {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.textContent = message;
+
+  container.appendChild(toast);
+
+  // Trigger show animation
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
+
+  // Auto-remove after duration
+  setTimeout(() => {
+    toast.classList.remove('show');
+    toast.addEventListener('transitionend', () => toast.remove());
+  }, duration);
+};
+
 window.USER_TYPE = "{{user_type}}"
 
   </script>
   <script src="/static/js/search.js">
   </script>
 </body>
+
 </html>

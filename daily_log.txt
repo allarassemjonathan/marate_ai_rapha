@@ -1,2 +1,4 @@
 2025-10-21
-Nouvelle evenement: 14:31:19 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 14:31:19 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connectï¿½ avec succï¿½s
+2025-10-22
+Nouvelle evenement: 07:37:47 medecins, Patient sï¿½lectionnï¿½, Patient avec ID 1700 selectionnï¿½.

@@ -6,7 +6,35 @@ document.addEventListener('DOMContentLoaded', () => {
   const editForm = document.getElementById('editForm');
   
   let currentPatientId = null;
-// class="p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider"
+  let visibleColumns = []; // Will be loaded dynamically
+  let columnHeaders = {}; // Will be loaded dynamically
+
+  const columnVisibility = {
+        'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
+        'infirmiers': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases','age','poids','taille','tension_arterielle','temperature'],
+        'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting', 'new_cases', 'phone_number']
+      };
+
+   const defaultColumnHeaders = {
+        'created_at': 'Date de création',
+        'name': 'Nom',
+        'adresse': 'Adresse',
+        'age': 'Age',
+        'poids': 'Poids',
+        'taille': 'Taille',
+        'tension_arterielle': 'Tension',
+        'temperature': 'Température',
+        'hypothese_de_diagnostique': 'Hypothèse de diagnostique',
+        'renseignements_clinique':'Renseignement clinique',
+        'bilan': 'Bilan',
+        'resultat_bilan': 'Conclusion du bilan',
+        'ordonnance': 'Ordonnance',
+        'signature':'Signature', 
+        'meeting':'Rendez-vous',
+        'new_cases':'Nouveaux cas',
+        'phone_number':'Numero de telephone'
+      };
+    
   const userType = window.USER_TYPE;
   console.log(userType);
   console.log("userType");
@@ -38,6 +66,46 @@ document.addEventListener('DOMContentLoaded', () => {
     'phone_number':'Numero de telephone'
   };
 
+  // Load dynamic column configuration
+  async function loadColumnConfiguration() {
+    try {
+      
+    const response = await fetch(`/get_visibility/${userType}`);
+    const data = await response.json();   // ✅ wait for JSON here
+    console.log("Full JSON response:", data);
+
+    visibleColumns = columnVisibility[userType] = data;
+    columnHeaders = {};
+
+    for (let i = 0; i < data.length; i++){
+      columnHeaders[data[i]] = defaultColumnHeaders[data[i]]; // column_name -> display_name
+    }
+
+    console.log("Loaded visible columns:", visibleColumns);
+    console.log("Loaded column headers:", columnHeaders);
+      
+      return true;
+    } catch (error) {
+      console.error('Error loading column configuration:', error);
+      // Fallback to default configuration
+      
+      visibleColumns = columnVisibility[userType] || [];
+      columnHeaders = defaultColumnHeaders;
+      return false;
+    }
+  }
+
+  // async function fetchVisibility() {
+  //   const res = await fetch(`/get_visibility/${userType}`);
+  //   console.log("ici");
+  //   columnVisibility[userType] = await res.json();
+  //   createTableHeaders();
+  //   loadPatients();
+  // }
+
+  // Initial load when user logs in
+  // fetchVisibility();
+
   async function fetchVisibility() {
     const res = await fetch(`/get_visibility/${userType}`);
     console.log("ici");
@@ -50,15 +118,89 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchVisibility();
 
   function createTableHeaders(){
-    const visibleColumns = columnVisibility[userType] || [];
+    const tableHeader = document.getElementById('tableHeader');
     tableHeader.innerHTML = '';
 
     visibleColumns.forEach(columnKey => {
       const th = document.createElement('th');
-      th.className = "p-4 text-left text-cyan-400 font-semibold uppercase text-xs tracking-wider";
+      th.className = "p-4 text-left text-black-400 font-semibold uppercase text-xs tracking-wider";
       th.textContent = columnHeaders[columnKey] || columnKey;
       tableHeader.appendChild(th);
-  });}
+    });
+  }
+
+  // // Function to create dynamic form fields for adding patients
+  // function createDynamicFormFields() {
+  //   const form = document.getElementById('addForm');
+  //   const submitButton = form.querySelector('button[type="submit"]').parentElement;
+    
+  //   // Remove existing dynamic fields but keep submit button
+  //   const existingFields = form.querySelectorAll('.dynamic-field');
+  //   existingFields.forEach(field => field.remove());
+    
+  //   visibleColumns.forEach(columnKey => {
+  //     // Skip system fields that shouldn't be in the add form
+  //     if (columnKey === 'id' || columnKey === 'created_at') return;
+      
+  //     const fieldContainer = document.createElement('div');
+  //     fieldContainer.className = 'relative dynamic-field';
+      
+  //     const displayName = columnHeaders[columnKey] || columnKey;
+  //     let inputElement;
+      
+  //     // Create appropriate input type based on column name and type
+  //     if (columnKey === 'date_of_birth') {
+  //       inputElement = document.createElement('input');
+  //       inputElement.type = 'date';
+  //     } else if (columnKey.includes('age') || columnKey.includes('poids') || columnKey.includes('taille') || columnKey.includes('temperature')) {
+  //       inputElement = document.createElement('input');
+  //       inputElement.type = 'number';
+  //       if (columnKey.includes('poids') || columnKey.includes('taille') || columnKey.includes('temperature')) {
+  //         inputElement.step = '0.1';
+  //       }
+  //     } else if (columnKey.includes('tension_arterielle')) {
+  //       inputElement = document.createElement('input');
+  //       inputElement.type = 'text';
+  //     } else if (columnKey.includes('diagnostique') || columnKey.includes('ordonnance') || columnKey.includes('bilan') || columnKey.includes('signature') || columnKey.includes('renseignements')) {
+  //       inputElement = document.createElement('textarea');
+  //       inputElement.className = 'input-field w-full p-4 rounded-xl h-20';
+  //     } else {
+  //       inputElement = document.createElement('input');
+  //       inputElement.type = 'text';
+  //     }
+      
+  //     if (inputElement.tagName !== 'TEXTAREA') {
+  //       inputElement.className = 'input-field w-full p-4 rounded-xl';
+  //     }
+      
+  //     inputElement.name = columnKey;
+  //     inputElement.placeholder = displayName;
+      
+  //     // Make name field required
+  //     if (columnKey === 'name') {
+  //       inputElement.required = true;
+  //     }
+      
+  //     fieldContainer.appendChild(inputElement);
+      
+  //     // Add the underline animation
+  //     const underline = document.createElement('div');
+  //     underline.className = 'absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline';
+  //     fieldContainer.appendChild(underline);
+      
+  //     // Insert before submit button
+  //     form.insertBefore(fieldContainer, submitButton);
+      
+  //     // Add focus/blur event listeners for underline animation
+  //     inputElement.addEventListener('focus', function() {
+  //       underline.style.width = '100%';
+  //     });
+      
+  //     inputElement.addEventListener('blur', function() {
+  //       underline.style.width = '0';
+  //     });
+  //   });
+  // }
 
   // Make these functions globally accessible
   window.openInvoiceModal = function(patient) {
@@ -479,8 +621,124 @@ function showFlash(message) {
       } else {
         alert(result.message || 'Error updating patient');
       }
+      // Populate the edit form
+      document.getElementById('editId').value = data.id;
+      document.getElementById('edit_name').value = data.name;
+      document.getElementById('edit_date_of_birth').value = data.date_of_birth;
+      console.log(data.age);
+      // Convert age into years, months, days
+
+      if (data.age != undefined && data.age != null){
+         const ageFloat = parseFloat(data.age);
+
+        // Extract years, months, days
+        const years = Math.floor(ageFloat);
+        const months = Math.floor((ageFloat - years) * 12);
+        const days = Math.floor((((ageFloat - years) * 12) - months) * 30);
+
+        console.log(`Age parsed → ${years} years, ${months} months, ${days} days`);
+
+        // Fill inputs if they exist in your form
+        const yearInput = document.getElementById("edit_age_years");
+        const monthInput = document.getElementById("edit_age_months");
+        const dayInput = document.getElementById("edit_age_days");
+
+        if (yearInput) yearInput.value = data['age_years'];
+        if (monthInput) monthInput.value = data['age_months'];
+        if (dayInput) dayInput.value = data['age_days'];
+      }
+
+      // Populate all fields based on visible columns
+      visibleColumns.forEach(field => {
+        const input = document.getElementById(`edit_${field}`);
+        if (input) {
+          console.log(input);
+          input.value = data[field] || '';
+        }
+        if (field=='created_at'){
+            const createdDate = data.created_at
+            ? new Date(data.created_at).toISOString().split('T')[0]
+            : '';
+
+            document.getElementById('edit_created_at').value = createdDate;
+            console.log("hereeeeeeeee");
+          }
+        if (field == 'date_of_birth'){
+          const birthdate = data.date_of_birth
+            ? new Date(data.date_of_birth).toISOString().split('T')[0]
+            : '';
+            console.log("birthday .. ");
+            console.log(birthdate);
+
+            document.getElementById('edit_date_of_birth').value = birthdate;
+            console.log("here");
+            console.log(data.date_of_birth);
+        }
+      });
+
+      // Show the modal
+      document.getElementById('editModalOverlay').classList.remove('hidden');
+    })
+    .catch(err => {
+      console.error(err);
+      showToast(" Erreur reseau. Impossible de récupérer les données du patient.");
     });
+};
+
+
+// Example flash message display function
+function showFlash(message) {
+  const flash = document.createElement('div');
+  flash.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-2';
+  flash.role = 'alert';
+  flash.innerHTML = `
+    <strong class="font-bold">Erreur: </strong>
+    <span class="block sm:inline">${message}</span>
+  `;
+
+  const flashContainer = document.getElementById('flash-container') || document.body;
+  flashContainer.appendChild(flash);
+
+  setTimeout(() => flash.remove(), 5000); // Auto-remove after 5 seconds
+}
+
+// Submit event for the edit form
+// Submit event for the edit form
+editForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const patientId = document.getElementById('editId').value;
+  const formData = new FormData(editForm);
+  const data = Object.fromEntries(formData.entries());
+  delete data.id;
+
+  // Show loader
+  
+
+  fetch(`/update/${patientId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (result.status === 'success') {
+      closeEditModal();
+      loadPatients(searchBox.value);
+      showToast('Patient modifié avec succès', 2500);
+    } else {
+      alert(result.message || 'Error updating patient');
+    }
+  })
+  .catch(err => {
+    console.error('Erreur de mise à jour:', err);
+    alert('Erreur de connexion au serveur');
+  })
+  .finally(() => {
+    // Hide loader regardless of outcome
+    
   });
+});
+
 
   // Add new patient form submission
   form.addEventListener('submit', e => {
@@ -526,8 +784,10 @@ function showFlash(message) {
   }, duration);
 };
 
-
-  // Initial load
-  createTableHeaders();
-  loadPatients();
+  // Initial load - load columns first, then setup table and load patients
+  loadColumnConfiguration().then(() => {
+    createTableHeaders();
+    //createDynamicFormFields();
+    loadPatients();
+  });
 });
