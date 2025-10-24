@@ -328,11 +328,14 @@ init_db()
 print('hello')
 app.secret_key = os.environ.get('FLASK_SECRET')
 Special_user = ''
+
 # Simple credential storage (in production, use a database)
 CREDENTIALS = {
     'medecins': os.environ.get('medecins'),
+    'Erik_Toralta': os.environ.get('Erik_Toralta'),
     'Dr_Mommar_Gueye': os.environ.get('Dr_Mommar_Gueye'), 
     'receptionistes': os.environ.get('receptionistes'),
+    'infirmiers': os.environ.get('infirmiers'),
     'Dr_Pape_Amadou_Ndiaye':os.environ.get('Dr_Pape_Amadou_Ndiaye'),
     'Dr_Fatou_Sarr':os.environ.get('Dr_Fatou_Sarr'), 
     'Dr_Hassir_Sylla':os.environ.get('Dr_Hassir_Sylla'), 
@@ -1051,7 +1054,7 @@ def get_patient(patient_id):
         return jsonify(row)
     if row['signature'] is None:
         return jsonify(row)
-    if session['username'] == 'Dr_Mommar_Gueye':
+    if session['username'] == 'Dr_Mommar_Gueye' or session['username'] == 'Erik_Toralta':
         print('ot here?')
         return jsonify(row)
     if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
@@ -1139,7 +1142,7 @@ def update_patient(patient_id):
         print(e)
     
     email_reception(data['name'], '',email_content, None, acteur_med)
-    email_reception(data['name'], '',email_content, None, 'jonathanjerabe@gmail.com')
+    # email_reception(data['name'], '',email_content, None, 'jonathanjerabe@gmail.com')
 
     return jsonify({'status': 'success'})
 
@@ -1165,7 +1168,7 @@ def login():
         # Check credentials
         if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
             physicians = {
-                'Dr_Mommar_Gueye', 'Dr_Pape_Amadou_Ndiaye', 'Dr_Fatou_Sarr', 'Dr_Hassir_Sylla'
+                'Dr_Mommar_Gueye', 'Dr_Pape_Amadou_Ndiaye', 'Dr_Fatou_Sarr', 'Dr_Hassir_Sylla', 'Erik_Toralta'
             }
 
             # Always set both username & user_type
@@ -1668,6 +1671,8 @@ def get_visibility_backend(role):
     cur = conn.cursor()
     cur.execute("SELECT columns FROM column_visibility WHERE role=%s;", (role,))
     row = cur.fetchone()
+    print(role)
+    print(row)
     cur.close()
     conn.close()
     print(row['columns'])

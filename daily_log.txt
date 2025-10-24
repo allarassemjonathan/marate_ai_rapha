@@ -5,3 +5,23 @@ Nouvelle evenement: 00:19:41 medecins, Patient sélectionné, Patient avec ID 1702
 Nouvelle evenement: 00:20:02 medecins, Patient sélectionné, Patient avec ID 1702 selectionné.
 Nouvelle evenement: 00:20:08 medecins, modification patient, Patient avec ID 1702 a été modifié
 Nouvelle evenement: 00:20:17 medecins, modification patient, Patient avec ID 1702 a été modifié
+Nouvelle evenement: 22:14:33 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 22:14:42 Erik_Toralta, login, L'utilisateur 'Erik_Toralta' s'est connecté avec succès
+Nouvelle evenement: 22:14:55 medecins, Patient sélectionné, Patient avec ID 2 selectionné.
+Nouvelle evenement: 22:15:01 medecins, modification patient, Patient avec ID 2 a été modifié
+Nouvelle evenement: 22:17:19 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 22:27:03 Receptionistes, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 22:28:10 Receptionistes, login, L'utilisateur 'Receptionistes' s'est connecté avec succès
+Nouvelle evenement: 22:34:58 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 22:35:08 receptionistes, login, L'utilisateur 'receptionistes' s'est connecté avec succès
+Nouvelle evenement: 22:35:50 receptionistes, Ajout d'un patient, Le patient 'Jonathan Allarassem' a été ajouté
+Nouvelle evenement: 22:35:55 receptionistes, logout, L'utilisateur 'receptionistes' s'est déconnecté
+Nouvelle evenement: 22:36:03 infirmiers, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 22:38:49 infirmiers, login, L'utilisateur 'infirmiers' s'est connecté avec succès
+Nouvelle evenement: 22:38:57 infirmiers, Patient sélectionné, Patient avec ID 5 selectionné.
+Nouvelle evenement: 22:45:29 infirmiers, Patient sélectionné, Patient avec ID 5 selectionné.
+Nouvelle evenement: 22:45:46 infirmiers, modification patient, Patient avec ID 5 a été modifié
+Nouvelle evenement: 22:46:03 infirmiers, logout, L'utilisateur 'infirmiers' s'est déconnecté
+Nouvelle evenement: 22:46:15 Erik_Toralta, login, L'utilisateur 'Erik_Toralta' s'est connecté avec succès
+Nouvelle evenement: 22:46:32 medecins, Patient sélectionné, Patient avec ID 5 selectionné.
+Nouvelle evenement: 22:46:48 medecins, modification patient, Patient avec ID 5 a été modifié
