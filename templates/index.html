@@ -337,6 +337,24 @@ td, th {
 <body>
 </body>
 <!-- Modern Nav Bar -->
+<nav class="w-full bg-gradient-to-r from-cyan-500 to-purple-600 shadow-md py-3 px-6 rounded-xl flex justify-end space-x-4 items-center mb-6">
+  <a href="{{ url_for('logout') }}" class="text-black font-medium hover:bg-white-600 px-4 py-2 rounded-lg transition duration-200 bg-white-500">
+    Déconnexion
+  </a>
+  {%if username == "Dr Toralta G .Josephine" %}
+  <a href="{{ url_for('send_daily_report_email') }}" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
+    Rapport d'activités
+  </a>
+  <a href="/stat" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
+    Statistiques
+  </a>
+    <a href="/visibility" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
+    Permissions
+  </a>
+  {%endif%}
+  <a>Bienvenue {{username}}</a>
+</nav>
+
 <body class="bg-gray-100">
 
   <!-- White Responsive Nav Bar -->
@@ -413,6 +431,27 @@ td, th {
         </div>
       </div> -->
 
+    <div class="rounded-xl mb-10 w-full overflow-hidden">
+      <div class="flex items-center space-x-2 mb-4">
+      <label for="pageSizeInput" class="text-black-300 text-sm">Nombre de patients à afficher:</label>
+      <input 
+        type="number" 
+        id="pageSizeInput" 
+        class="p-2 rounded bg-white-800 text-black-200 w-24" 
+        value="20" 
+        min="1" 
+      />
+    </div>
+      <table class=" w-full table-fixed border-collapse text-sm">
+          <thead class="table-header">
+            <tr id="tableHeader">
+              <!-- Headers will be populated here -->
+            </tr>
+          </thead>
+          <tbody id="resultsTable" class="text-gray-300 text-sm">
+            <!-- Results will be populated here -->
+          </tbody>
+        </table>
 
       <div class="flex flex-col sm:flex-row items-center gap-4 mb-8 relative">
   <div class="relative w-full">
@@ -513,6 +552,130 @@ window.addEventListener('click', function(e) {
       
       <div class="border-t border-gray-700 mt-10 pt-8">
         <h2 class="text-2xl font-bold text-black bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-6">Ajouter un patient</h2>
+        <form id="addForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="relative">
+            Nom
+            <input name="name" placeholder="Nom" required class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            Addresse
+            <input name="adresse" placeholder="Adresse" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            Numéro
+            <input name="phone_number" placeholder="Numero" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            Rendez-vous
+            <input name="meeting" placeholder="Rendez-vous" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            Nouveaux cas
+            <input name="new_cases" placeholder="Nouveaux cas" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            Date de naissance
+            <input name="date_of_birth" type="date" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="flex gap-2">
+            Age
+            <div class="relative w-1/3">
+              <input name="age_years" type="number" placeholder="Années" class="input-field w-full p-4 rounded-xl">
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            </div>
+
+            <div class="relative w-1/3">
+              <input name="age_months" type="number" placeholder="Mois" class="input-field w-full p-4 rounded-xl">
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            </div>
+
+            <div class="relative w-1/3">
+              <input name="age_days" type="number" placeholder="Jours" class="input-field w-full p-4 rounded-xl">
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            </div>
+          </div>
+          {%if user_type == 'infirmiers' or user_type == 'medecins'%}
+          <div class="relative">
+            Poids
+            <input name="poids" type="number" step="0.1" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            Taille
+            <input name="taille" type="number" step="0.01" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            Tension arterielle
+            <input name="tension_arterielle" placeholder="Tension" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            Température
+            <input name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          {%endif%}
+          {%if user_type == 'medecins'%}
+          <div class="relative">
+            Renseignement clinique
+            <input name="renseignements_clinique" placeholder="Renseignement clinique" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            Hypothese de diagnostique
+            <input name="hypothese_de_diagnostique" placeholder="Hypothèse de diagnostique" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            Bilan
+            <input name="bilan" placeholder="Bilan" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            Résultat
+            <input name="resultat_bilan" placeholder="Conclusion du bilan" class="input-field w-full p-4 rounded-xl">
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+          
+          <div class="relative">
+            Ordonnance
+            <textarea name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            Date de visite
+            <input name="date_creation" id="dateCreation" type="datetime-local" placeholder="Date de création" class="input-field w-full p-4 rounded-xl" disabled>
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+        </div>
+        {%endif%}
+          <div class="md:col-span-2 mt-4">
+            <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Ajouter Patient</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
           <form id="addForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">          {% for el in visible_columns %}
           {% if el['column_name'] == 'age' %}
             <div class="flex gap-2">
@@ -567,6 +730,8 @@ window.addEventListener('click', function(e) {
 
   <!-- Inner modal box -->
   <div id="invoiceCard"
+       class="bg-white text-black resize rounded-xl p-8 overflow-auto scrollbar shadow-lg"
+       style="min-width: 700px; min-height: 500px; max-width: 90vw; max-height: 90vh; resize: both;">
        class="bg-white text-black rounded-xl p-6 md:p-8 shadow-lg w-full max-w-lg md:max-w-2xl lg:max-w-3xl max-h-[80vh] overflow-y-auto">
 
     <!-- Header -->
@@ -631,6 +796,10 @@ window.addEventListener('click', function(e) {
         </button>
       </div>
       <h2 class="text-2xl font-bold text-black bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-6">Modifier un patient</h2>
+      <form id="editForm" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <input type="hidden" id="editId" name="id">
+        
+        <div class="relative">
 
       <form id="editForm" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <input type="hidden" id="editId" name="id">
@@ -778,6 +947,7 @@ window.addEventListener('click', function(e) {
         <div class="relative md:col-span-2">
           Ordonnance
           <textarea id="edit_ordonnance" name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
+        </div>
         </div> -->
 
         <div class="sm:col-span-2 mt-4">

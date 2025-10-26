@@ -37,6 +37,21 @@
 
         .header {
             display: flex;
+            align-items: center;
+            justify-content: center; /* centers logo + text */
+            gap: 15px;
+            margin-bottom: 30px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .header img {
+            height: 50px;
+            width: auto;
+        }
+
+        .chart {
+            margin-bottom: 40px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -100,6 +115,45 @@
     </div>
 
     <div class="chart">
+        <h3>Estimations des revenus journaliers</h3>
+        <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier">
+    </div>
+
+    <div class="chart">
+        <h3>Estimations des revenus mensuels</h3>
+        <img src="data:image/png;base64,{{ img2 }}" alt="Revenu mensuel">
+    </div>
+
+    <div class="chart">
+        <h3>Patients récurrents</h3>
+        <img src="data:image/png;base64,{{ img3 }}" alt="Fréquences patients">
+    </div>
+    <div class="chart">
+        <h3>Distribution des personnes par quartier</h3>
+        <img src="data:image/png;base64,{{ img4 }}" alt="Repartition des quartiers" width="630px">
+    </div>
+    <div class="chart">
+        <h3>Nombre de nouveaux patients par mois</h3>
+        <img src="data:image/png;base64,{{ img5 }}" alt="Nouveaux patients par mois">
+    </div>
+    <div class="chart">
+        <h2>Nombre de patients par medecins</h3>
+        <h3>Selection du mois</h2>
+            <!--Formulaire qui envoie une requete get vers la route-->
+            <form action="/stat" method="get"> 
+                <select name="mois" id="" onchange="this.form.submit()">  <!--onchange="this.form.submit()" → dès que tu changes le mois, le formulaire se soumet automatiquement (pas besoin de bouton).-->
+                    {% for m in list_mois%}
+                    <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{m}}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        <h3 id="id1">Nombre de patients par medecins</h3>
+        <img src="data:image/png;base64,{{ img6 }}" alt="Nombre de patients par malades">
+    </div>
+
+    <div class="chart">
+        <h3>Evolution des patients par mois</h3>
+        <img src="data:image/png;base64,{{ img7 }}" alt="Evolution des patients par mois">
         {% if img1 %}
         <h3>Estimations des revenus journaliers</h3>
         <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier">

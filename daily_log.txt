@@ -1,4 +1,0 @@
-2025-10-25
-Nouvelle evenement: 22:42:59 medecins, Column Added, Added column: Montant (montant)
-Nouvelle evenement: 22:47:08 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
-Nouvelle evenement: 22:47:16 receptionistes, login, L'utilisateur 'receptionistes' s'est connecté avec succès

@@ -40,6 +40,33 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log(userType);
   console.log("userType");
 
+  // Define which columns each user type can see
+  const columnVisibility = {
+    'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
+    'infirmiers': ['created_at', 'name','poids','taille','tension_arterielle','temperature'],
+    'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting']
+  };
+
+    const columnHeaders = {
+    'created_at': 'Date de création',
+    'name': 'Nom',
+    'adresse': 'Adresse',
+    'age': 'Age',
+    'poids': 'Poids',
+    'taille': 'Taille',
+    'tension_arterielle': 'Tension',
+    'temperature': 'Température',
+    'hypothese_de_diagnostique': 'Hypothèse de diagnostique',
+    'renseignements_clinique':'Renseignement clinique',
+    'bilan': 'Bilan',
+    'resultat_bilan': 'Conclusion du bilan',
+    'ordonnance': 'Ordonnance',
+    'signature':'Signature', 
+    'meeting':'Rendez-vous',
+    'new_cases':'Nouveaux cas',
+    'phone_number':'Numero de telephone'
+  };
+
   // Load dynamic column configuration
   async function loadColumnConfiguration() {
     try {
@@ -79,6 +106,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial load when user logs in
   // fetchVisibility();
+
+  async function fetchVisibility() {
+    const res = await fetch(`/get_visibility/${userType}`);
+    console.log("ici");
+    columnVisibility[userType] = await res.json();
+    createTableHeaders();
+    loadPatients();
+  }
+
+  // Initial load when user logs in
+  fetchVisibility();
 
   function createTableHeaders(){
     const tableHeader = document.getElementById('tableHeader');
@@ -359,6 +397,8 @@ function loadPatients(q = '') {
         const tr = document.createElement('tr');
         tr.className = "cursor-pointer hover:bg-blue-50 transition-colors duration-200";
 
+        const visibleColumns = columnVisibility[userType] || [];
+
         visibleColumns.forEach(k => {
           const td = document.createElement('td');
           td.className = "p-2 border text-black";
@@ -523,6 +563,93 @@ window.editPatient = function(id) {
       }
 
       // Populate all fields based on visible columns
+      const fields = columnVisibility[userType];
+      fields.forEach(field => {
+        const input = document.getElementById(`edit_${field}`);
+        if (input) {
+          console.log(input);
+          input.value = data[field] || '';
+        }
+      });
+
+      // Show the modal
+      document.getElementById('editModalOverlay').classList.remove('hidden');
+    })
+    .catch(err => {
+      console.error(err);
+      showToast(" Erreur reseau. Impossible de récupérer les données du patient.");
+    });
+};
+
+
+// Example flash message display function
+function showFlash(message) {
+  const flash = document.createElement('div');
+  flash.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-2';
+  flash.role = 'alert';
+  flash.innerHTML = `
+    <strong class="font-bold">Erreur: </strong>
+    <span class="block sm:inline">${message}</span>
+  `;
+
+  const flashContainer = document.getElementById('flash-container') || document.body;
+  flashContainer.appendChild(flash);
+
+  setTimeout(() => flash.remove(), 5000); // Auto-remove after 5 seconds
+}
+
+  // Submit event for the edit form
+  editForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const patientId = document.getElementById('editId').value;
+    const formData = new FormData(editForm);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Remove the ID field from the data to be sent
+    delete data.id;
+    
+    fetch(`/update/${patientId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+      if (result.status === 'success') {
+        closeEditModal();
+        loadPatients(searchBox.value);
+        showToast('Patient modifié avec succès', 2500);
+      } else {
+        alert(result.message || 'Error updating patient');
+      }
+      // Populate the edit form
+      document.getElementById('editId').value = data.id;
+      document.getElementById('edit_name').value = data.name;
+      document.getElementById('edit_date_of_birth').value = data.date_of_birth;
+      console.log(data.age);
+      // Convert age into years, months, days
+
+      if (data.age != undefined && data.age != null){
+         const ageFloat = parseFloat(data.age);
+
+        // Extract years, months, days
+        const years = Math.floor(ageFloat);
+        const months = Math.floor((ageFloat - years) * 12);
+        const days = Math.floor((((ageFloat - years) * 12) - months) * 30);
+
+        console.log(`Age parsed → ${years} years, ${months} months, ${days} days`);
+
+        // Fill inputs if they exist in your form
+        const yearInput = document.getElementById("edit_age_years");
+        const monthInput = document.getElementById("edit_age_months");
+        const dayInput = document.getElementById("edit_age_days");
+
+        if (yearInput) yearInput.value = data['age_years'];
+        if (monthInput) monthInput.value = data['age_months'];
+        if (dayInput) dayInput.value = data['age_days'];
+      }
+
+      // Populate all fields based on visible columns
       visibleColumns.forEach(field => {
         const input = document.getElementById(`edit_${field}`);
         if (input) {
@@ -657,7 +784,6 @@ editForm.addEventListener('submit', (e) => {
     toast.addEventListener('transitionend', () => toast.remove());
   }, duration);
 };
-
 
   // Initial load - load columns first, then setup table and load patients
   loadColumnConfiguration().then(() => {
