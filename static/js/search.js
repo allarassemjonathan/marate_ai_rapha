@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'created_at': 'Date de création',
         'name': 'Nom',
         'adresse': 'Adresse',
+        'date_of_birth':'date de naissance',
         'age': 'Age',
         'poids': 'Poids',
         'taille': 'Taille',
