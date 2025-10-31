@@ -150,58 +150,5 @@
         <h3 id="id1">Nombre de patients par medecins</h3>
         <img src="data:image/png;base64,{{ img6 }}" alt="Nombre de patients par malades">
     </div>
-
-    <div class="chart">
-        <h3>Evolution des patients par mois</h3>
-        <img src="data:image/png;base64,{{ img7 }}" alt="Evolution des patients par mois">
-        {% if img1 %}
-        <h3>Estimations des revenus journaliers</h3>
-        <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier">
-        {% endif %}
-    </div>
-
-    <div class="chart">
-        {% if img2 %}
-        <h3>Estimations des revenus mensuels</h3>
-        <img src="data:image/png;base64,{{ img2 }}" alt="Revenu mensuel">
-        {% endif %}
-    </div>
-
-    <div class="chart">
-        {% if img3 %}
-        <h3>Patients récurrents</h3>
-        <img src="data:image/png;base64,{{ img3 }}" alt="Fréquences patients">
-        {% endif %}
-    </div>
-
-    <div class="chart">
-        {% if img4 %}
-        <h3>Distribution des personnes par quartier</h3>
-        <img src="data:image/png;base64,{{ img4 }}" alt="Répartition des quartiers">
-        {% endif %}
-    </div>
-
-    <div class="chart">
-        {% if img5 %}
-        <h3>Nombre de nouveaux patients par mois</h3>
-        <img src="data:image/png;base64,{{ img5 }}" alt="Nouveaux patients par mois">
-        {% endif %}
-    </div>
-
-    <div class="chart">
-        {% if img6 %}
-        <h2>Nombre de patients par médecins</h2>
-        <h3>Sélection du mois</h3>
-        <form action="/stat" method="get">
-            <select name="mois" onchange="this.form.submit()">
-                {% for m in list_mois %}
-                <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{ m }}</option>
-                {% endfor %}
-            </select>
-        </form>
-        <h3>Nombre de patients par médecins</h3>
-        <img src="data:image/png;base64,{{ img6 }}" alt="Nombre de patients par médecins">
-        {% endif %}
-    </div>
 </body>
 </html>

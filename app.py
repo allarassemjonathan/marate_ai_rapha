@@ -28,6 +28,8 @@ from psycopg2.extras import RealDictCursor
 import unicodedata
 from flask import g
 import time
+from argon2 import PasswordHasher, exceptions
+import os
 
 import locale
 # Optional: to display French month names (if your OS supports it)
@@ -56,6 +58,32 @@ SCOPES = ['https://www.googleapis.com/auth/drive.file']
 #Mn = Mark,Nonspacing c'est-à-dire les qccents et diacritiques
 #Donc cette condition veut dire de garder seulement les caracteres qui ne sont pas des accents
 #''.join() enfin on rassemble tous les caracteres qu'on a gardes pour former une nouvelle chaine
+
+ph = PasswordHasher(
+    time_cost=3,
+    memory_cost=64 * 1024,
+    parallelism=4,
+    hash_len=32,
+    salt_len=16
+)
+
+PEPPER_ENV = os.getenv("PEPPER_ENV")
+
+def _apply_pepper(password: str) -> str:
+    pepper = os.getenv(PEPPER_ENV)
+    if pepper:
+        return password + pepper
+    return password
+
+def verify_password(stored_hash: str, candidate_password: str) -> bool:
+    candidate = _apply_pepper(candidate_password)
+    try:
+        return ph.verify(stored_hash, candidate)
+    except exceptions.VerifyMismatchError:
+        return False
+    except exceptions.InvalidHash:
+        raise ValueError("Stored password hash has invalid format.")
+
 
 def safe_text(text):
     return text.encode('latin-1', 'replace').decode('latin-1')
@@ -330,24 +358,24 @@ app.secret_key = os.environ.get('FLASK_SECRET')
 Special_user = ''
 
 # Simple credential storage (in production, use a database)
-CREDENTIALS = {
-    'medecins': os.environ.get('medecins'),
-    'Erik_Toralta': os.environ.get('Erik_Toralta'),
-    'Dr_Mommar_Gueye': os.environ.get('Dr_Mommar_Gueye'), 
-    'receptionistes': os.environ.get('receptionistes'),
-    'infirmiers': os.environ.get('infirmiers'),
-    'Dr_Pape_Amadou_Ndiaye':os.environ.get('Dr_Pape_Amadou_Ndiaye'),
-    'Dr_Fatou_Sarr':os.environ.get('Dr_Fatou_Sarr'), 
-    'Dr_Hassir_Sylla':os.environ.get('Dr_Hassir_Sylla'), 
-    'Sf_Binetou_Coumdal':os.environ.get('Sf_Binetou_Coumdal'), 
-    'Sf_Seynabou_Diop':os.environ.get('Sf_Seynabou_Diop'), 
-    'inf_Sokhna_Safieta_Goumbo':os.environ.get('inf_Sokhna_Safieta_Goumbo'), 
-    'inf_Sidy_Thiam':os.environ.get('inf_Sidy_Thiam'), 
-    'rec_Ndeye_Ware_Samb_Ndioum':os.environ.get('rec_Ndeye_Ware_Samb_Ndioum'), 
-    'rec_Maimouna_Ndiaye': os.environ.get('rec_Maimouna_Ndiaye'),
-    'rec_Arane_Wade':os.environ.get('rec_Arane_Wade'),
-    'bio_Modou_Diome':os.environ.get('bio_Modou_Diome')
-}
+# CREDENTIALS = {
+#     'medecins': os.environ.get('medecins'),
+#     'Erik_Toralta': os.environ.get('Erik_Toralta'),
+#     'Dr_Mommar_Gueye': os.environ.get('Dr_Mommar_Gueye'), 
+#     'receptionistes': os.environ.get('receptionistes'),
+#     'infirmiers': os.environ.get('infirmiers'),
+#     'Dr_Pape_Amadou_Ndiaye':os.environ.get('Dr_Pape_Amadou_Ndiaye'),
+#     'Dr_Fatou_Sarr':os.environ.get('Dr_Fatou_Sarr'), 
+#     'Dr_Hassir_Sylla':os.environ.get('Dr_Hassir_Sylla'), 
+#     'Sf_Binetou_Coumdal':os.environ.get('Sf_Binetou_Coumdal'), 
+#     'Sf_Seynabou_Diop':os.environ.get('Sf_Seynabou_Diop'), 
+#     'inf_Sokhna_Safieta_Goumbo':os.environ.get('inf_Sokhna_Safieta_Goumbo'), 
+#     'inf_Sidy_Thiam':os.environ.get('inf_Sidy_Thiam'), 
+#     'rec_Ndeye_Ware_Samb_Ndioum':os.environ.get('rec_Ndeye_Ware_Samb_Ndioum'), 
+#     'rec_Maimouna_Ndiaye': os.environ.get('rec_Maimouna_Ndiaye'),
+#     'rec_Arane_Wade':os.environ.get('rec_Arane_Wade'),
+#     'bio_Modou_Diome':os.environ.get('bio_Modou_Diome')
+# }
 
 # Decorator to require login
 def login_required(f):
@@ -1162,33 +1190,68 @@ def login():
         return redirect(url_for('index', user_type=session.get('user_type')))
 
     if request.method == 'POST':
-        username_input = request.form['username'].replace(' ', '_')
+        # username_input = request.form['username'].replace(' ', '_')
+        username_input = request.form['username']
         password = request.form['password']
 
-        # Check credentials
-        if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
-            physicians = {
-                'Dr_Mommar_Gueye', 'Dr_Pape_Amadou_Ndiaye', 'Dr_Fatou_Sarr', 'Dr_Hassir_Sylla', 'Erik_Toralta'
-            }
+        print(username_input, password)
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT password, role FROM users WHERE username = %s", (username_input,))
+            user = cur.fetchone()
+            print(user)
+            cur.close()
+            conn.close()
+        except Exception as e:
+            print('DB connection error')
+            print(e)
+            return render_template('login.html')
 
-            # Always set both username & user_type
-            if username_input in physicians:
-                session['username'] = username_input
-                session['user_type'] = 'medecins'
-            else:
-                session['username'] = username_input  # ✅ Added so it's never missing
-                session['user_type'] = username_input
-
+        if not user:
+            print('USER does not exist')
+            return render_template('login.html')
+        
+        stored_hash = user['password']
+        if verify_password(stored_hash, password):
+            session['username'] = username_input
             session['logged_in'] = True
+            session['user_type'] = user['role']
             log_file(username_input, 'login', f"L'utilisateur '{username_input}' s'est connecté avec succès")
             dic = backend_api_get_columns()
+            print('win')
             print("just checking", dic["all_columns"])
+
             return redirect(url_for('index', user_type=session['user_type']))
         else:
             flash('Rôle et/ou mot de passe incorrects.')
             log_file(username_input, 'La connexion a échoué', "Failed login attempt")
-
     return render_template('login.html')
+
+        # Check credentials
+    #     if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
+    #         physicians = {
+    #             'Dr_Mommar_Gueye', 'Dr_Pape_Amadou_Ndiaye', 'Dr_Fatou_Sarr', 'Dr_Hassir_Sylla', 'Erik_Toralta'
+    #         }
+
+    #         # Always set both username & user_type
+    #         if username_input in physicians:
+    #             session['username'] = username_input
+    #             session['user_type'] = 'medecins'
+    #         else:
+    #             session['username'] = username_input  # ✅ Added so it's never missing
+    #             session['user_type'] = username_input
+
+    #         session['logged_in'] = True
+    #         log_file(username_input, 'login', f"L'utilisateur '{username_input}' s'est connecté avec succès")
+    #         dic = backend_api_get_columns()
+    #         print("just checking", dic["all_columns"])
+    #         return redirect(url_for('index', user_type=session['user_type']))
+    #     else:
+    #         flash('Rôle et/ou mot de passe incorrects.')
+    #         log_file(username_input, 'La connexion a échoué', "Failed login attempt")
+
+    # return render_template('login.html')
 
 
 from io import StringIO
