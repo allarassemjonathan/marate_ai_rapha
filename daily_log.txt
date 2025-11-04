@@ -1,2 +1,5 @@
-2025-10-28
-Nouvelle evenement: 22:47:57 Erik_Toralta, login, L'utilisateur 'Erik_Toralta' s'est connecté avec succès
+2025-11-04
+Nouvelle evenement: 08:06:34 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 08:07:43 innocentm, sms_verification, L'utilisateur 'innocentm' a confirmé son compte.
+Nouvelle evenement: 08:08:05 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 08:08:22 innocentm, login, L'utilisateur 'innocentm' s'est connecté avec succès
