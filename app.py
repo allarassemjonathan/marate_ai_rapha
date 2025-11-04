@@ -153,8 +153,7 @@ CREDENTIALS = {
     'infirmiers': os.environ.get('infirmiers'), 
     'receptionistes': os.environ.get('receptionistes'),
     'Dr_Toralta_G_.Josephine':os.environ.get('Dr_Toralta_G_.Josephine'),
-    'Dr_Djaury_Dadji_-A':os.environ.get('Dr_Djaury_Dadji_-A'),
-    'Dr_Ndortolnan_Azer':os.environ.get('Dr_Ndortolnan_Azer'), 
+    'Dr_Abaye_Evelet':os.environ.get('Dr_Abaye_Evelet'), 
     'Dr_Doumgo_Monna_Doni_Nelson':os.environ.get('Dr_Doumgo_Monna_Doni_Nelson'), 
     'Dr_Ngetigal_Hyacinte':os.environ.get('Dr_Ngetigal_Hyacinte'), 
     'Dr_Ousmane_Hamane_Gadji':os.environ.get('Dr_Ousmane_Hamane_Gadji'), 
@@ -794,7 +793,7 @@ def login():
         # Check credentials
         if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
             physicians = {
-                'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A', 'Dr_Ndortolnan_Azer',
+                'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A', 'Dr_Abaye_Evelet',
                 'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji',
                 'Dr_Toralta_Emmanuelle_Mantar', 'Dr_Madjibeye_Mirielle',
                 'Dr_Robnodji_Adoucie', 'Dr_Ndoubabe_Bonheur'
