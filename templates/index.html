@@ -346,7 +346,7 @@ td, th {
     <!-- Desktop links -->
     <div class="hidden lgx:flex space-x-4 items-center">
       <a href="{{ url_for('logout') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Déconnexion</a>
-      {% if username == manager %}
+      {% if user_type == 'manager' %}
         <a href="{{ url_for('send_daily_report_email') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Rapport</a>
         <a href="/stat" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Stats</a>
         <a href="/visibility" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Permissions</a>
@@ -370,7 +370,8 @@ td, th {
     </div>
 
     <a href="{{ url_for('logout') }}" class="text-black text-lg hover:text-cyan-600">Déconnexion</a>
-    {% if username == manager %}
+    {{user_type}}
+    {% if user_type == 'manager' %}
       <a href="{{ url_for('send_daily_report_email') }}" class="text-black text-lg hover:text-cyan-600">Rapport</a>
       <a href="/stat" class="text-black text-lg hover:text-cyan-600">Stats</a>
       <a href="/visibility" class="text-black text-lg hover:text-cyan-600">Permissions</a>
@@ -464,7 +465,7 @@ td, th {
                  class="p-2 rounded border border-gray-300 text-gray-800 w-20 bg-white" 
                  value="20" min="1" />
         </div>
-        {% if username == manager %}
+        {% if user_type == "manager" %}
         <br><br>
         <!-- Gérer les Colonnes -->
         <button onclick="openColumnManagementModal(); toggleSettingsMenu();" 

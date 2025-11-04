@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Vérification par SMS</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-50">
+  <div class="bg-white shadow-md rounded-2xl p-8 w-full max-w-md">
+    <h1 class="text-2xl font-semibold text-center text-cyan-600 mb-6">Vérification par code</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-4 text-red-500 text-center">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="space-y-4">
+      <input type="text" name="code" required placeholder="Entrez le code reçu"
+             class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-cyan-400 focus:outline-none text-center text-lg tracking-widest">
+    <button type="submit"
+      class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2.5 rounded-xl transition-colors"
+      style="background-color: #06b6d4; color: white; border: 1px solid black;">
+      Vérifier
+    </button>
+    </form>
+  </div>
+</body>
+</html>

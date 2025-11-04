@@ -1183,6 +1183,21 @@ def logout():
     session.clear()  # Clears all session data
     return redirect(url_for('login'))  # Redirects to login page
 
+from twilio.rest import Client
+
+def sms(name, phone, date, time, place, message, code): 
+    message = message + f"\nHere is the code {code}" 
+    try: 
+        account_sid = os.getenv('account_sid') 
+        auth_token = os.getenv('auth_token') 
+        client = Client(account_sid, auth_token) 
+        msg = client.messages.create( from_='+18666100438', body=message, to=f'+{phone}' ) 
+        print(msg.sid) 
+        print(message) 
+    except Exception as e: 
+        print(e)
+
+import random
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # If already logged in, go to index
@@ -1198,35 +1213,136 @@ def login():
         try:
             conn = get_db_connection()
             cur = conn.cursor()
-            cur.execute("SELECT password, role FROM users WHERE username = %s", (username_input,))
+            cur.execute("SELECT password, role, numero, last_sms_verification FROM users WHERE username = %s", (username_input,))
             user = cur.fetchone()
             print(user)
             cur.close()
             conn.close()
         except Exception as e:
-            print('DB connection error')
             print(e)
+            flash('Erreur de connection avec la base de donnee', e)
             return render_template('login.html')
 
         if not user:
-            print('USER does not exist')
+            flash('Cet utilisateur n\'existe pas.')
             return render_template('login.html')
         
         stored_hash = user['password']
         if verify_password(stored_hash, password):
+            # store session info
             session['username'] = username_input
-            session['logged_in'] = True
             session['user_type'] = user['role']
+
+            # check if verification needed
+            last_verified = user['last_sms_verification']
+            needs_verification = (
+                not last_verified or 
+                (datetime.now().date() - last_verified) > timedelta(days=180)
+            )
+
+            if needs_verification:
+                # Generate code
+                code = str(random.randint(100000, 999999))
+
+                # Store the code in the db
+                try:
+                    conn = get_db_connection()
+                    cur = conn.cursor()
+                    cur.execute(
+                        "UPDATE users SET pending_code = %s WHERE username = %s",
+                        (code, username_input)
+                    )
+                    conn.commit()
+                    cur.close()
+                    conn.close()
+                except Exception as e:
+                    print('DB update error', e)
+
+                # Send via SMS
+                sms(username_input, user['numero'], '', '', '', "Veuillez confirmer votre compte.", code)
+
+                session['pending_verification'] = True
+                flash('Un code de vérification a été envoyé à votre téléphone.')
+                return redirect(url_for('verify_sms'))
+            
+            session['logged_in'] = True
             log_file(username_input, 'login', f"L'utilisateur '{username_input}' s'est connecté avec succès")
             dic = backend_api_get_columns()
-            print('win')
             print("just checking", dic["all_columns"])
 
             return redirect(url_for('index', user_type=session['user_type']))
         else:
-            flash('Rôle et/ou mot de passe incorrects.')
+            flash('username et/ou mot de passe incorrects.')
             log_file(username_input, 'La connexion a échoué', "Failed login attempt")
     return render_template('login.html')
+
+
+from datetime import datetime, timedelta
+from flask import request, session, redirect, url_for, render_template, flash
+
+@app.route('/verify_sms', methods=['GET', 'POST'])
+def verify_sms():
+    # Ensure the user actually needs verification
+    if not session.get('pending_verification') or not session.get('username'):
+        flash("Aucune vérification en attente. Veuillez vous connecter.")
+        return redirect(url_for('login'))
+
+    username = session['username']
+
+    if request.method == 'POST':
+        entered_code = request.form.get('code')
+
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT pending_code FROM users WHERE username = %s",
+                (username,)
+            )
+            result = cur.fetchone()
+            cur.close()
+            conn.close()
+        except Exception as e:
+            print("DB error:", e)
+            flash("Erreur de connexion à la base de données.")
+            return render_template('verify_sms.html')
+
+        # No record found
+        if not result:
+            flash("Utilisateur introuvable.")
+            return render_template('verify_sms.html')
+
+        stored_code = result[0] if isinstance(result, (list, tuple)) else result['pending_code']
+
+        if entered_code == stored_code:
+            try:
+                conn = get_db_connection()
+                cur = conn.cursor()
+                cur.execute("""
+                    UPDATE users 
+                    SET last_sms_verification = %s, pending_code = NULL
+                    WHERE username = %s
+                """, (datetime.now(), username))
+                conn.commit()
+                cur.close()
+                conn.close()
+            except Exception as e:
+                print("DB update error:", e)
+                flash("Erreur lors de la mise à jour de la vérification.")
+                return render_template('verify_sms.html')
+
+            # Clear verification flag and log the user in
+            session['pending_verification'] = False
+            session['logged_in'] = True
+
+            log_file(username, 'sms_verification', f"L'utilisateur '{username}' a confirmé son compte.")
+            flash("Vérification réussie !")
+            return redirect(url_for('index', user_type=session['user_type']))
+        else:
+            flash("Code invalide. Veuillez réessayer.")
+
+    return render_template('verify_sms.html')
+
 
         # Check credentials
     #     if username_input in CREDENTIALS and CREDENTIALS[username_input] == password:
@@ -1283,6 +1399,7 @@ def generate_daily_report(date_of_report=None):
 
     output.seek(0)
     return output
+
 
 @app.route('/report')
 @login_required
