@@ -37,21 +37,6 @@
 
         .header {
             display: flex;
-            align-items: center;
-            justify-content: center; /* centers logo + text */
-            gap: 15px;
-            margin-bottom: 30px;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        .header img {
-            height: 50px;
-            width: auto;
-        }
-
-        .chart {
-            margin-bottom: 40px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -115,40 +100,117 @@
     </div>
 
     <div class="chart">
+        {% if img1 %}
         <h3>Estimations des revenus journaliers</h3>
         <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier">
+        {% endif %}
     </div>
 
     <div class="chart">
+        {% if img2 %}
         <h3>Estimations des revenus mensuels</h3>
         <img src="data:image/png;base64,{{ img2 }}" alt="Revenu mensuel">
+        {% endif %}
     </div>
 
     <div class="chart">
+        {% if img3 %}
         <h3>Patients récurrents</h3>
         <img src="data:image/png;base64,{{ img3 }}" alt="Fréquences patients">
+        {% endif %}
     </div>
+
     <div class="chart">
+        {% if img4 %}
         <h3>Distribution des personnes par quartier</h3>
-        <img src="data:image/png;base64,{{ img4 }}" alt="Repartition des quartiers" width="630px">
+        <img src="data:image/png;base64,{{ img4 }}" alt="Répartition des quartiers">
+        {% endif %}
     </div>
+
     <div class="chart">
+        {% if img5 %}
         <h3>Nombre de nouveaux patients par mois</h3>
         <img src="data:image/png;base64,{{ img5 }}" alt="Nouveaux patients par mois">
+        {% endif %}
     </div>
+
     <div class="chart">
-        <h2>Nombre de patients par medecins</h3>
-        <h3>Selection du mois</h2>
-            <!--Formulaire qui envoie une requete get vers la route-->
-            <form action="/stat" method="get"> 
-                <select name="mois" id="" onchange="this.form.submit()">  <!--onchange="this.form.submit()" → dès que tu changes le mois, le formulaire se soumet automatiquement (pas besoin de bouton).-->
-                    {% for m in list_mois%}
-                    <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{m}}</option>
+        {% if img6 %}
+        <h2>Nombre de patients par médecins</h2>
+        <h3>Sélection du mois</h3>
+        <form action="/stat" method="get">
+            <select name="mois" onchange="this.form.submit()">
+                {% for m in list_mois %}
+                <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <h3>Nombre de patients par médecins</h3>
+        <img src="data:image/png;base64,{{ img6 }}" alt="Nombre de patients par médecins">
+        {% endif %}
+    </div>
+
+    <div class="chart">
+        {% if img7 %}
+        <h3>Evolution des patients par mois</h3>
+        <img src="data:image/png;base64,{{ img7 }}" alt="Evolution des patients" height="400px">
+        {% endif %}
+    </div>
+
+    <div class="chart">
+    {% if img8 %}
+        <style>
+            .info {
+            background: #62bdf263;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container{
+            margin-top: 50px;
+        }
+
+        h2 { color: #333; }
+        form { margin: 30px 0; }
+        select, button { 
+            padding: 12px 20px; 
+            margin: 10px; 
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover { background: #45a049; }
+        </style>
+        <div class="container">
+            <h3>Distribution des données</h3>
+            <p>Selectionnez une colonne pour voir sa distribution </p>
+
+            <form method="POST" action="/stat">
+                <label><strong>📊 Choisir la colonne :</strong></label><br>
+                <select name="column" required>
+                    <option value="">--Selectionner--</option>
+                    {% for col in columns %}
+                    <option value="{{col}}">{{col}}</option>
                     {% endfor %}
-                </select>
+                </select><br>
+                <button type="submit">📈 Générer la distribution</button>
             </form>
-        <h3 id="id1">Nombre de patients par medecins</h3>
-        <img src="data:image/png;base64,{{ img6 }}" alt="Nombre de patients par malades">
+            <div class="info">
+                <strong>{{ column_name }}</strong><br>
+            </div>
+            <img src="data:image/png;base64,{{ img8 }}" alt="Evolution des patients" width="800">
+        </div>
+    {% endif %}
     </div>
 </body>
 </html>
