@@ -524,7 +524,8 @@ class InvoicePDF(FPDF):
         mois_annee = now.strftime('%B %Y').capitalize()
         month = mois_annee.split(' ')[0]
         print(month)
-        mois_annee = mois_annee.replace(month, dic.get(month))
+        print(dic.get(month))
+        mois_annee = month if month not in dic else mois_annee.replace(month, dic.get(month))
         
         self.set_font('Arial', 'B', 14)
         self.set_text_color(0)
@@ -879,6 +880,7 @@ def add():
     # get all the data on columns 
     conn = get_db_connection()
     cur = conn.cursor()
+
     cur.execute("select * from patient_columns_meta")
     rows = cur.fetchall()
     rows = [dict(row) for row in rows]
@@ -1101,14 +1103,21 @@ def update_patient(patient_id):
     if not data.get('name'):
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
 
-    # List of known date fields in the table
-    date_fields = {'name', 'adresse', 'age', 'date_of_birth', 'poids', 'taille', 'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 'bilan', 'resultat_bilan', 'signature', 'renseignements_clinique', 'ordonnance', 'created_at', 'age_months', 'age_days', 'age_years'}
 
+    # get all the data on columns 
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("select * from patient_columns_meta")
+    rows = cur.fetchall()
+    rows = [dict(row) for row in rows]
+    print("rows are ", rows)
+    data_fields = set(row['column_name'] for row in rows)
 
     # Replace empty strings with None for date fields
     cleaned_data = {}
     for k, v in data.items():
-        if k in date_fields and v == '':
+        if k in data_fields and v == '':
             cleaned_data[k] = None
         else:
             cleaned_data[k] = v
@@ -1130,46 +1139,46 @@ def update_patient(patient_id):
         f"Patient avec ID {patient_id} a été modifié"
     )
 
-    # get comments from the AI
-    conn_ai = get_db_connection()
-    cur_ai= conn_ai.cursor()
-    cur_ai.execute(f'select * from patients where id = {patient_id}')
-    rows = cur_ai.fetchall()[-1]
+    # # get comments from the AI
+    # conn_ai = get_db_connection()
+    # cur_ai= conn_ai.cursor()
+    # cur_ai.execute(f'select * from patients where id = {patient_id}')
+    # rows = cur_ai.fetchall()[-1]
 
-    prompt = rows
-    api_key = os.getenv('api_key')
-    headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}"
-        }
-    payload = {
-            "model": "gpt-4o-mini",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": 'This patient is coming to the clinic. This is his/her data ' + str(prompt) + " what do you think it the problem. Answer in french. You are talking to a doctor so be precise and very organized in your analysis. Make sentences. This is a small report.This will go into an email so make it sound like one. The physician you are talking to is about to receive this patient. Make an educated guess regarding what he/she could be suffering from if the patient has not been diangosed yet. Use inline tags in order to format well your message. It will be send straight to the person without any formatting "
-                        }
-                    ]
-                }
-            ],
-            "max_tokens": 500
-        }
+    # prompt = rows
+    # api_key = os.getenv('api_key')
+    # headers = {
+    #         "Content-Type": "application/json",
+    #         "Authorization": f"Bearer {api_key}"
+    #     }
+    # payload = {
+    #         "model": "gpt-4o-mini",
+    #         "messages": [
+    #             {
+    #                 "role": "user",
+    #                 "content": [
+    #                     {
+    #                         "type": "text",
+    #                         "text": 'This patient is coming to the clinic. This is his/her data ' + str(prompt) + " what do you think it the problem. Answer in french. You are talking to a doctor so be precise and very organized in your analysis. Make sentences. This is a small report.This will go into an email so make it sound like one. The physician you are talking to is about to receive this patient. Make an educated guess regarding what he/she could be suffering from if the patient has not been diangosed yet. Use inline tags in order to format well your message. It will be send straight to the person without any formatting "
+    #                     }
+    #                 ]
+    #             }
+    #         ],
+    #         "max_tokens": 500
+    #     }
         
-    try:
-        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    # try:
+    #     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
             
-        if response.status_code == 200:
-                result = response.json()
-                print(result['choices'][0]['message']['content'][7:])
-                email_content = result['choices'][0]['message']['content'][7:]
+    #     if response.status_code == 200:
+    #             result = response.json()
+    #             print(result['choices'][0]['message']['content'][7:])
+    #             email_content = result['choices'][0]['message']['content'][7:]
                  
-    except Exception as e:
-        print(e)
+    # except Exception as e:
+    #     print(e)
     
-    email_reception(data['name'], '',email_content, None, acteur_med)
+    # email_reception(data['name'], '',email_content, None, acteur_med)
     # email_reception(data['name'], '',email_content, None, 'jonathanjerabe@gmail.com')
 
     return jsonify({'status': 'success'})
@@ -1495,19 +1504,22 @@ def nettoyer_donnees(df):
             'ancienne': 'non'
         })
 
-        df['phone_number'] = df['phone_number'].replace({
+        if 'phone_number' in df.columns:
+            df['phone_number'] = df['phone_number'].replace({
             '': 'Non specifié',
         })
-        df['ordonnance'] = df['ordonnance'].replace({
-            '': 'Non specifié',
-        })
-        df['meeting'] = df['meeting'].replace({
+        if 'ordonnace' in df.columns:
+            df['ordonnance'] = df['ordonnance'].replace({
+                '': 'Non specifié',
+            })
+        if 'meeting' in df.columns:
+            df['meeting'] = df['meeting'].replace({
             '': 'non',
             'Oui': 'oui',
             'Oui.': 'oui',
             'Randez vous': 'oui',
             'Rendez vous': 'oui'
-        })
+            })
     # 2. Normaliser la colonne signature (médecins)
     if 'signature' in df.columns:
         df['signature'] = df['signature'].astype(str).str.strip().str.title()
@@ -1998,7 +2010,7 @@ def rapport():
         'Patients frequents' : patients_frequents_mensuel
     }).fillna(0)
     
-    fig7, ax7 = plt.subplots(figsize=(9,5))
+    fig7, ax7 = plt.subplots(figsize=(6, 5))
     ax7.plot(
         evolutions_patients.index.astype(str),
         evolutions_patients['Nouveaux patients'],
@@ -2041,7 +2053,7 @@ def rapport():
         data = df[column].dropna()
     
     if data is not None and len(data) > 0:  # Si la colonne a des données
-        fig8, ax8 = plt.subplots(figsize=(9,5))
+        fig8, ax8 = plt.subplots(figsize=(8,4))
         if pd.api.types.is_numeric_dtype(data):
             ax8.hist(data, bins=30, color='skyblue', edgecolor='black', alpha=0.7)
             ax8.set_title(f'Distribution de {column}')
@@ -2052,7 +2064,7 @@ def rapport():
         else:
             # Pour les données qui ne sont pas numeriques
             value_counts = data.value_counts().head(20) 
-            fig8, ax8 = plt.subplots(figsize=(9,5)) 
+            fig8, ax8 = plt.subplots(figsize=(8,4)) 
             ax8.barh(range(len(value_counts)), value_counts.values, color='coral')
             ax8.set_yticks(range(len(value_counts)))
             ax8.set_yticklabels(value_counts.index)
@@ -2065,7 +2077,7 @@ def rapport():
                         va='center', fontweight='bold')
     else:
         # Cas du premier affichage : aucune colonne encore choisie
-        fig8, ax8 = plt.subplots(figsize=(9,5))
+        fig8, ax8 = plt.subplots(figsize=(8,4))
         ax8.text(0.5, 0.5, "Sélectionnez une colonne pour afficher la distribution",
                 ha='center', va='center', fontsize=12, style='italic')
         ax8.axis('off')

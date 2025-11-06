@@ -1,216 +1,133 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistiques d'activités</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-            text-decoration: none;
-            list-style: none;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord — Statistiques</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
+      min-height: 100vh;
+    }
 
-        body {
-            padding: 15px;
-            text-align: center;
-            background-color: #fafafa;
-        }
+    .chart-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        h1 {
-            font-size: 1.6rem;
-        }
+    .chart-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
 
-        h2 {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-        }
+    img {
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
 
-        h3 {
-            margin: 10px 0;
-            font-size: 1.1rem;
-        }
-
-        .header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 25px;
-        }
-
-        .header a {
-            font-size: 0.95rem;
-        }
-
-        .chart {
-            margin-bottom: 30px;
-            padding: 10px;
-        }
-
-        .chart img {
-            display: block;
-            margin: 0 auto;
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .back-link {
-            display: inline-block;
-            color: #8000FF;
-            font-weight: 600;
-            transition: color 0.2s ease;
-        }
-
-        .back-link:hover {
-            color: #00CED1;
-        }
-
-        select {
-            padding: 8px;
-            font-size: 1rem;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-
-        @media (min-width: 768px) {
-            h1 { font-size: 2rem; }
-            h2 { font-size: 1.6rem; }
-            h3 { font-size: 1.2rem; }
-
-            .header {
-                flex-direction: row;
-                gap: 20px;
-            }
-        }
-    </style>
+    img:hover {
+      transform: scale(1.02);
+    }
+  </style>
 </head>
-<body>
-    <div class="header"> 
-        <a href="/" class="back-link">← Retour menu</a>
-        <h1>Statistiques sur les Patients</h1>
-    </div>
+<body class="text-gray-800">
 
-    <div class="chart">
-        {% if img1 %}
-        <h3>Estimations des revenus journaliers</h3>
-        <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier">
-        {% endif %}
+  <!-- Header -->
+  <header class="flex flex-col md:flex-row items-center justify-between bg-white/60 backdrop-blur-md shadow-sm px-6 py-4 mb-8 rounded-xl">
+    <div class="flex items-center gap-3">
+      <a href="/" class="text-cyan-600 hover:text-cyan-800 font-semibold text-lg">← Retour au menu</a>
+      <h1 class="text-2xl font-bold text-gray-700">Tableau de bord — Statistiques</h1>
     </div>
+    <p class="text-gray-500 text-sm mt-2 md:mt-0 italic">Suivi et analyse des activités des patients</p>
+  </header>
 
-    <div class="chart">
-        {% if img2 %}
-        <h3>Estimations des revenus mensuels</h3>
-        <img src="data:image/png;base64,{{ img2 }}" alt="Revenu mensuel">
-        {% endif %}
+  <!-- Content Grid -->
+  <main class="max-w-7xl mx-auto px-4 pb-10 grid gap-8 md:grid-cols-2">
+
+    {% if img1 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">📆 Estimation des revenus journaliers</h3>
+      <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier" class="w-full">
     </div>
+    {% endif %}
 
-    <div class="chart">
-        {% if img3 %}
-        <h3>Patients récurrents</h3>
-        <img src="data:image/png;base64,{{ img3 }}" alt="Fréquences patients">
-        {% endif %}
+    {% if img2 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">📈 Estimation des revenus mensuels</h3>
+      <img src="data:image/png;base64,{{ img2 }}" alt="Revenu mensuel" class="w-full">
     </div>
+    {% endif %}
 
-    <div class="chart">
-        {% if img4 %}
-        <h3>Distribution des personnes par quartier</h3>
-        <img src="data:image/png;base64,{{ img4 }}" alt="Répartition des quartiers">
-        {% endif %}
+    {% if img3 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">🧍 Patients récurrents</h3>
+      <img src="data:image/png;base64,{{ img3 }}" alt="Fréquences patients" class="w-full">
     </div>
+    {% endif %}
 
-    <div class="chart">
-        {% if img5 %}
-        <h3>Nombre de nouveaux patients par mois</h3>
-        <img src="data:image/png;base64,{{ img5 }}" alt="Nouveaux patients par mois">
-        {% endif %}
+    {% if img4 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">🏘️ Distribution par quartier</h3>
+      <img src="data:image/png;base64,{{ img4 }}" alt="Répartition quartiers" class="w-full">
     </div>
+    {% endif %}
 
-    <div class="chart">
-        {% if img6 %}
-        <h2>Nombre de patients par médecins</h2>
-        <h3>Sélection du mois</h3>
-        <form action="/stat" method="get">
-            <select name="mois" onchange="this.form.submit()">
-                {% for m in list_mois %}
-                <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{ m }}</option>
-                {% endfor %}
-            </select>
-        </form>
-        <h3>Nombre de patients par médecins</h3>
-        <img src="data:image/png;base64,{{ img6 }}" alt="Nombre de patients par médecins">
-        {% endif %}
+    {% if img5 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">🩺 Nouveaux patients par mois</h3>
+      <img src="data:image/png;base64,{{ img5 }}" alt="Nouveaux patients par mois" class="w-full">
     </div>
+    {% endif %}
 
-    <div class="chart">
-        {% if img7 %}
-        <h3>Evolution des patients par mois</h3>
-        <img src="data:image/png;base64,{{ img7 }}" alt="Evolution des patients" height="400px">
-        {% endif %}
+    {% if img6 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
+    <h3 class="text-lg font-semibold text-cyan-600 mb-3">👨‍⚕️ Nombre de patients par médecin</h3>
+    <form action="/stat" method="get" class="flex items-center gap-3 mb-4">
+        <label class="text-gray-600 font-medium">Sélection du mois :</label>
+        <select name="mois" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">
+        {% for m in list_mois %}
+        <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{ m }}</option>
+        {% endfor %}
+        </select>
+    </form>
+    <img src="data:image/png;base64,{{ img6 }}" alt="Patients par médecin" class="small-img">
     </div>
+    {% endif %}
 
-    <div class="chart">
+    {% if img7 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
+    <h3 class="text-lg font-semibold text-cyan-600 mb-3">📊 Evolution des patients par mois</h3>
+    <img src="data:image/png;base64,{{ img7 }}" alt="Evolution des patients" class="small-img">
+    </div>
+    {% endif %}
+
     {% if img8 %}
-        <style>
-            .info {
-            background: #62bdf263;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
+    <h3 class="text-lg font-semibold text-cyan-600 mb-4">📈 Distribution des données (Ce graphe est expérimental)</h3>
+        <p class="text-gray-600 mb-4">Sélectionnez une colonne pour visualiser sa distribution.</p>
+        <form method="POST" action="/stat" class="flex flex-wrap items-center gap-3 mb-4">
+        <select name="column" required class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">
+          <option value="">-- Sélectionner une colonne --</option>
+          {% for col in columns %}
+          <option value="{{ col }}">{{ col }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded-lg transition">Générer</button>
+      </form>
 
-        .container{
-            margin-top: 50px;
-        }
+      {% if column_name %}
+      <div class="bg-cyan-50 text-cyan-800 font-medium px-4 py-2 rounded-lg mb-3">
+        Distribution actuelle : {{ column_name }}
+      </div>
+      {% endif %}
 
-        h2 { color: #333; }
-        form { margin: 30px 0; }
-        select, button { 
-            padding: 12px 20px; 
-            margin: 10px; 
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        button {
-            background: #4CAF50;
-            color: white;
-            cursor: pointer;
-            border: none;
-        }
-        button:hover { background: #45a049; }
-        </style>
-        <div class="container">
-            <h3>Distribution des données</h3>
-            <p>Selectionnez une colonne pour voir sa distribution </p>
-
-            <form method="POST" action="/stat">
-                <label><strong>📊 Choisir la colonne :</strong></label><br>
-                <select name="column" required>
-                    <option value="">--Selectionner--</option>
-                    {% for col in columns %}
-                    <option value="{{col}}">{{col}}</option>
-                    {% endfor %}
-                </select><br>
-                <button type="submit">📈 Générer la distribution</button>
-            </form>
-            <div class="info">
-                <strong>{{ column_name }}</strong><br>
-            </div>
-            <img src="data:image/png;base64,{{ img8 }}" alt="Evolution des patients" width="800">
+       <img src="data:image/png;base64,{{ img8 }}" alt="Distribution" class="small-img">
         </div>
     {% endif %}
-    </div>
+  </main>
+
+  <footer class="text-center text-gray-500 py-6 text-sm">
+    © 2025 Asamaan | Statistiques générées automatiquement
+  </footer>
 </body>
 </html>

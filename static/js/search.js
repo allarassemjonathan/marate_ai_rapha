@@ -380,16 +380,16 @@ function loadPatients(q = '') {
             console.log(years);
             console.log(months);
             p[k] = '' 
-            if (p['age_days']!==0){
-              p[k] = p['age_days'] + " jours "
+            if (days!==0){
+              p[k] = days + " jours "
             }
-            if (p['age_months'] !== 0){
-              p[k] = p['age_months'] + " mois " + p[k]
+            if (months !== 0){
+              p[k] = months + " mois " + p[k]
             }
-            if (p['age_years'] !== 0){
-              p[k] =p['age_years'] + " ans " + p[k]
+            if (years !== 0){
+              p[k] = years + " ans " + p[k]
             }
-            
+            console.log(p[k]);
           }
           if (k == 'poids' && p[k]) p[k] += ' kg';
           if (k == 'taille' && p[k]) p[k] += ' cm';
