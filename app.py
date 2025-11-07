@@ -108,6 +108,7 @@ def init_db():
         'receptionistes': ['created_at', 'name','adresse','phone_number','meeting', 'new_cases','age', 'meeting']
     }
     with get_db_connection() as conn:
+        conn.autocommit = True
         with conn.cursor() as cur:
             # setting up the regular tables
             cur.execute('''
@@ -225,6 +226,7 @@ def get_visible_columns():
     """Get list of visible columns in display order"""
     print('get_vis_col_py')
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute('''
         SELECT column_name, display_name, data_type 
@@ -239,6 +241,7 @@ def get_visible_columns():
 def get_all_columns():
     """Get all columns with their metadata"""
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute('''
         SELECT column_name, display_name, data_type, is_visible, is_required, display_order
@@ -252,6 +255,7 @@ def get_all_columns():
 def add_column_to_patients(column_name, data_type):
     """Add a new column to the patients table"""
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     
     # Map data types to PostgreSQL types
@@ -283,6 +287,7 @@ def remove_column_from_patients(column_name):
         return False
     
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     
     try:
@@ -298,6 +303,7 @@ def remove_column_from_patients(column_name):
 def update_column_visibility(column_name, is_visible):
     """Update column visibility"""
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute('''
         UPDATE patient_columns_meta 
@@ -724,37 +730,52 @@ def index():
 @app.route('/search')
 @login_required
 def search():
-    q = request.args.get('q', '')
-    conn = get_db_connection()
-    cur = conn.cursor()
-    
-    # Get visible columns for dynamic query
-    visible_columns = get_visible_columns()
-    column_names = [col['column_name'] for col in visible_columns]
-    
-    if not column_names:
-        return jsonify([])
-    
-    # Build dynamic SELECT query
-    select_columns = ', '.join(column_names)
-    cur.execute(
-    f"SELECT {select_columns} FROM patients WHERE name ILIKE %s;",
-    (f'%{q}%',)  # one-element tuple
-    )
+    try:
+        print('here in search 1 ')
+        q = request.args.get('q', '')
+        conn = get_db_connection()
+        conn.autocommit = True
+        cur = conn.cursor()
+        
+        # Get visible columns for dynamic query
+        visible_columns = get_visible_columns()
 
-    results = cur.fetchall()
-    conn.close()
-    
-    # Convert RealDictRow to regular dict for JSON serialization
-    formatted_results = []
-    for row in results:
-        formatted_results.append(dict(row))
-    
+        column_names = [col['column_name'] for col in visible_columns]
+        print('here is search 2 ', column_names)
+
+        if not column_names:
+            return jsonify([])
+        
+        # Build dynamic SELECT query
+        select_columns = ', '.join(column_names)
+        print('here is search 3 ', select_columns)
+        try:
+            print('right before')
+            cur.execute(
+            f"SELECT * FROM patients WHERE name ILIKE %s;",
+            (f'%{q}%',)  # one-element tuple
+            )
+            print('right after')
+        except Exception as e:
+            print(e)
+
+        results = cur.fetchall()
+        print('here is search 4 ', results)
+        conn.close()
+        
+        # Convert RealDictRow to regular dict for JSON serialization
+        formatted_results = []
+        for row in results:
+            formatted_results.append(dict(row))
+    except Exception as e:
+        print(e)
+        return jsonify(e)
     return jsonify(formatted_results)
 
 @app.route('/distribution')
 def show_distribution():
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
 
     columns = ['adresse', 'sexe', 'groupe_sanguin']
@@ -795,6 +816,7 @@ def ipm_page():
 
     # --- Fetch patients ---
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("""
         SELECT name, created_at
@@ -879,6 +901,7 @@ def add():
 
     # get all the data on columns 
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
 
     cur.execute("select * from patient_columns_meta")
@@ -1008,6 +1031,7 @@ def add():
         query = f'INSERT INTO patients ({col_names}) VALUES ({placeholders})'
 
         conn = get_db_connection()
+        conn.autocommit = True
         cur = conn.cursor()
         print(query, values)
         cur.execute(query, values)
@@ -1029,6 +1053,7 @@ def add():
 def delete(rowid):
     user_type = session.get('user_type')
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute('SELECT * FROM patients WHERE id = %s', (rowid, ))
     row = cur.fetchall()
@@ -1045,6 +1070,7 @@ def patient_detail(patient_id):
     log_file(user_type, 'Détails des patients', f"Les détails du patient avec l'identifiant {patient_id} ont été consulté.")
 
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute('SELECT * FROM patients WHERE id = %s', (patient_id,))
     patients = cur.fetchall()
@@ -1070,6 +1096,7 @@ def get_patient(patient_id):
     log_file(user_type, 'Patient sélectionné', f"Patient avec ID {patient_id} selectionné.")
 
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute('SELECT * FROM patients WHERE id = %s', (patient_id,))
     row = cur.fetchone()
@@ -1106,6 +1133,7 @@ def update_patient(patient_id):
 
     # get all the data on columns 
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
 
     cur.execute("select * from patient_columns_meta")
@@ -1128,6 +1156,7 @@ def update_patient(patient_id):
     values.append(patient_id)
 
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute(f'UPDATE patients SET {set_clause} WHERE id = %s', values)
     conn.commit()
@@ -1221,6 +1250,7 @@ def login():
         print(username_input, password)
         try:
             conn = get_db_connection()
+            conn.autocommit = True
             cur = conn.cursor()
             cur.execute("SELECT password, role, numero, last_sms_verification FROM users WHERE username = %s", (username_input,))
             user = cur.fetchone()
@@ -1256,6 +1286,7 @@ def login():
                 # Store the code in the db
                 try:
                     conn = get_db_connection()
+                    conn.autocommit = True
                     cur = conn.cursor()
                     cur.execute(
                         "UPDATE users SET pending_code = %s WHERE username = %s",
@@ -1303,6 +1334,7 @@ def verify_sms():
 
         try:
             conn = get_db_connection()
+            conn.autocommit = True
             cur = conn.cursor()
             cur.execute(
                 "SELECT pending_code FROM users WHERE username = %s",
@@ -1387,6 +1419,7 @@ def generate_daily_report(date_of_report=None):
 
     next_day = date_of_report + timedelta(days=1)
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute(
         """
@@ -1461,6 +1494,7 @@ def load_df_cached(ttl=60):
 
 def load_df():
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("SELECT * FROM patients")
     rows = cur.fetchall()
@@ -2105,6 +2139,7 @@ def visibility_page():
     print("names", ColsNames)
     allColumns = ColsNames
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
 
     # make sure all columns are in here first?
@@ -2117,6 +2152,7 @@ def visibility_page():
 def get_visibility(role):
     """API endpoint for frontend JS to fetch visible columns for a role."""
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute("SELECT columns FROM column_visibility WHERE role=%s;", (role,))
     row = cur.fetchone()
@@ -2129,6 +2165,7 @@ def get_visibility(role):
 def get_visibility_backend(role):
     """API endpoint for frontend JS to fetch visible columns for a role."""
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute("SELECT columns FROM column_visibility WHERE role=%s;", (role,))
     row = cur.fetchone()
@@ -2148,6 +2185,7 @@ def update_visibility():
     new_columns = data.get("columns", [])
     print("here")
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute(
         "UPDATE column_visibility SET columns=%s WHERE role=%s;",
@@ -2220,6 +2258,7 @@ def api_add_column():
     
     # Check if column already exists
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute('SELECT COUNT(*) FROM patient_columns_meta WHERE column_name = %s', (column_name,))
     result = cur.fetchone()
@@ -2295,6 +2334,7 @@ def api_remove_column(column_name):
     
     # Remove from metadata
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor()
     cur.execute('DELETE FROM patient_columns_meta WHERE column_name = %s', (column_name,))
     

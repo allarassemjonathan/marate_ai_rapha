@@ -345,10 +345,12 @@ if (pageSizeInput) {
 }
 
 function loadPatients(q = '') {
+  console.log('ran this');
   fetch(`/search?q=${encodeURIComponent(q)}`)
     .then(res => res.json())
     .then(data => {
-      
+      console.log('what is this');
+      console.log(data);
       data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       data = data.slice(0, pageSize);
 
@@ -357,7 +359,7 @@ function loadPatients(q = '') {
 
       const patientsList = document.getElementById('patientsList');
       patientsList.innerHTML = '';
-
+      console.log('trying to load');
       data.forEach(p => {
         if (p.age) {
           let ageFloat = parseFloat(p.age);
