@@ -1,22 +1,13 @@
-2025-11-05
-Nouvelle evenement: 22:03:14 manager, logout, L'utilisateur 'manager' s'est déconnecté
-Nouvelle evenement: 22:03:22 allarassemjj, login, L'utilisateur 'allarassemjj' s'est connecté avec succès
-Nouvelle evenement: 22:12:11 manager, Column Added, Added column: Nouveaux cas (new_cases)
-Nouvelle evenement: 23:03:55 manager, Ajout d'un patient, Le patient 'Etienne Piennard' a été ajouté
-Nouvelle evenement: 23:04:54 manager, Patient sélectionné, Patient avec ID 7 selectionné.
-Nouvelle evenement: 23:13:16 manager, Patient sélectionné, Patient avec ID 7 selectionné.
-Nouvelle evenement: 23:16:23 manager, Patient sélectionné, Patient avec ID 7 selectionné.
-Nouvelle evenement: 23:21:33 manager, Patient sélectionné, Patient avec ID 7 selectionné.
-Nouvelle evenement: 23:21:49 manager, modification patient, Patient avec ID 7 a été modifié
-Nouvelle evenement: 23:21:57 manager, modification patient, Patient avec ID 7 a été modifié
-Nouvelle evenement: 23:22:56 manager, logout, L'utilisateur 'manager' s'est déconnecté
-Nouvelle evenement: 23:23:58 erikt, sms_verification, L'utilisateur 'erikt' a confirmé son compte.
-Nouvelle evenement: 23:29:07 manager, Facture généré, Facture généré pour le patient Piennard Etienne
-Nouvelle evenement: 23:29:25 manager, Détails des patients, Les détails du patient avec l'identifiant 7 ont été consulté.
-Nouvelle evenement: 23:37:02 manager, logout, L'utilisateur 'manager' s'est déconnecté
-Nouvelle evenement: 23:37:18 erikt, login, L'utilisateur 'erikt' s'est connecté avec succès
-Nouvelle evenement: 23:38:28 manager, Patient sélectionné, Patient avec ID 7 selectionné.
-Nouvelle evenement: 23:38:42 manager, modification patient, Patient avec ID 7 a été modifié
-Nouvelle evenement: 23:39:17 manager, Facture généré, Facture généré pour le patient Piennard Etienne
-Nouvelle evenement: 23:39:36 manager, Suppression d'un patient, Le patient avec l'identifiant 4 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 4), ('name', 'Erik'), ('adresse', 'Dakar '), ('age', 0), ('date_of_birth', None), ('poids', None), ('taille', None), ('tension_arterielle', None), ('temperature', None), ('hypothese_de_diagnostique', None), ('bilan', None), ('resultat_bilan', None), ('signature', 'medecins'), ('renseignements_clinique', None), ('ordonnance', None), ('created_at', datetime.date(2025, 10, 23)), ('age_years', 24), ('age_months', 0), ('age_days', 0), ('ipm', ''), ('montant', None), ('testyy', None), ('new_cases', None)])]
-Nouvelle evenement: 23:39:48 manager, logout, L'utilisateur 'manager' s'est déconnecté
+2025-11-06
+Nouvelle evenement: 21:47:16 allarassemjj, login, L'utilisateur 'allarassemjj' s'est connecté avec succès
+Nouvelle evenement: 21:48:31 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 21:48:39 allarassemjj, login, L'utilisateur 'allarassemjj' s'est connecté avec succès
+Nouvelle evenement: 21:52:05 manager, Patient sélectionné, Patient avec ID 7 selectionné.
+Nouvelle evenement: 21:52:49 manager, Détails des patients, Les détails du patient avec l'identifiant 9 ont été consulté.
+Nouvelle evenement: 22:08:43 manager, Patient sélectionné, Patient avec ID 1968 selectionné.
+Nouvelle evenement: 22:09:01 manager, Détails des patients, Les détails du patient avec l'identifiant 1968 ont été consulté.
+Nouvelle evenement: 22:10:36 manager, Patient sélectionné, Patient avec ID 7 selectionné.
+Nouvelle evenement: 22:10:45 manager, modification patient, Patient avec ID 7 a été modifié
+Nouvelle evenement: 22:10:51 manager, Détails des patients, Les détails du patient avec l'identifiant 8 ont été consulté.
+Nouvelle evenement: 22:15:37 manager, Patient sélectionné, Patient avec ID 8 selectionné.
+Nouvelle evenement: 22:15:43 manager, Détails des patients, Les détails du patient avec l'identifiant 8 ont été consulté.

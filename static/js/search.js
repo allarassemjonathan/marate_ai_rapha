@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('addForm');
-  const resultsTable = document.getElementById('resultsTable');
+  // const resultsTable = document.getElementById('resultsTable');
   const searchBox = document.getElementById('searchBox');
   const editModalOverlay = document.getElementById('editModalOverlay');
   const editForm = document.getElementById('editForm');
@@ -348,128 +348,62 @@ function loadPatients(q = '') {
   fetch(`/search?q=${encodeURIComponent(q)}`)
     .then(res => res.json())
     .then(data => {
-      resultsTable.innerHTML = '';
+      
       data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       data = data.slice(0, pageSize);
 
       let currentActionRow = null;
       let currentHighlightedRow = null;
 
+      const patientsList = document.getElementById('patientsList');
+      patientsList.innerHTML = '';
+
       data.forEach(p => {
-        const tr = document.createElement('tr');
-        tr.className = "cursor-pointer hover:bg-blue-50 transition-colors duration-200";
-
-        visibleColumns.forEach(k => {
-          const td = document.createElement('td');
-          td.className = "p-2 border text-black";
-          
-          if (k == 'age' && p[k]){
-
-            let ageFloat = parseFloat(p[k]);
-            let years = Math.floor(ageFloat); // integer part -> full years
-
-            let remaining = ageFloat - years; // fractional part -> 0.75
-            let months = Math.floor(remaining * 12); // convert fraction to months
-
-            let remainingDaysFraction = (remaining * 12) - months; // leftover fraction of a month
-            let days = Math.floor(remainingDaysFraction * 30); // approximate days
-            
-            console.log(p['name']);
-            console.log(ageFloat);
-            console.log(p[k]);
-            console.log(years);
-            console.log(months);
-            p[k] = '' 
-            if (days!==0){
-              p[k] = days + " jours "
-            }
-            if (months !== 0){
-              p[k] = months + " mois " + p[k]
-            }
-            if (years !== 0){
-              p[k] = years + " ans " + p[k]
-            }
-            console.log(p[k]);
-          }
-          if (k == 'poids' && p[k]) p[k] += ' kg';
-          if (k == 'taille' && p[k]) p[k] += ' cm';
-          if (k == 'tension_arterielle' && p[k]) p[k] += ' mmHg';
-          if (k == 'temperature' && p[k]) p[k] += ' °C';
-          if (k == 'date_of_birth' && typeof p[k] === 'string') {
-            p[k] = new Date(p[k]).toISOString().split('T')[0];
-          }
-          if (k === 'created_at' && typeof p[k] === 'string') {
-            const date = new Date(p[k]);
-            p[k] = date.toISOString().replace('T', ' ').split('.')[0];
-          }
-
-          let content = p[k] || '';
-          if (content.length > 30) content = content.substring(0, 30) + '...';
-
-          td.textContent = content;
-          td.title = p[k] || '';
-          tr.appendChild(td);
-        });
-
-        // Action row (initially hidden)
-        const actionRow = document.createElement('tr');
-        actionRow.className = "hidden bg-gray-50";
-        const actionCell = document.createElement('td');
-        actionCell.colSpan = visibleColumns.length + 1;
-        let safeJson;
-        try {
-          safeJson = btoa(unescape(encodeURIComponent(JSON.stringify(p))));
-        } catch (err) {
-           console.error("❌ Encoding error for patient:", p.id);
-          console.error("Problematic patient data:", p);
-          console.error("First few fields:", {
-            name: p.name,
-            adresse: p.adresse,
-            telephone: p.telephone
-          });
-          safeJson = ""; // or handle differently
+        if (p.age) {
+          let ageFloat = parseFloat(p.age);
+          let years = Math.floor(ageFloat);
+          let months = Math.floor((ageFloat - years) * 12);
+          p.age = `${years ? years + ' ans ' : ''}${months ? months + ' mois' : ''}`;
         }
-        actionCell.innerHTML = `
-          <div class="flex space-x-4 items-center justify-center p-2 text-sm">
-            <button class="text-blue-500 hover:text-blue-700" onclick="editPatient(${p.id})">Modifier</button>
-            <button class="text-red-500 hover:text-red-700" onclick="deletePatient(${p.id})">Supprimer</button>
-            <button class="text-green-500 hover:text-green-700" onclick="window.location.href='/patient/${p.id}'">Détails</button>
-            <button
-              class="text-yellow-500 hover:text-yellow-600"
-              data-patient='${safeJson}'
-              onclick="openInvoiceFromButton(this)"
-            >Facture</button>
+        if (p.poids) p.poids += ' kg';
+        if (p.taille) p.taille += ' cm';
+        if (p.temperature) p.temperature += ' °C';
+        if (p.created_at) {
+          const date = new Date(p.created_at);
+          p.created_at = date.toISOString().replace('T', ' ').split('.')[0];
+        }
+
+        const card = document.createElement('div');
+        card.className = "flex items-center justify-between bg-white rounded-2xl shadow-md px-5 py-4 hover:shadow-lg transition-shadow duration-200";
+
+        card.innerHTML = `
+          <div class="flex items-center gap-4">
+            <!-- Profile Icon -->
+            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+              <i class="fa-solid fa-user text-xl"></i>
+            </div>
+
+            <!-- Patient Info -->
+            <div>
+              <h2 class="text-base font-semibold text-gray-800">${p.name || 'Sans nom'}</h2>
+              <p class="text-sm text-gray-500">${p.age || ''} ${p.poids ? '· ' + p.poids : ''} ${p.temperature ? '· ' + p.temperature : ''}</p>
+              <p class="text-xs text-gray-400 mt-0.5">${p.phone_number || ''}</p>
+            </div>
+          </div>
+
+          <!-- Action icons -->
+          <div class="flex gap-4 text-gray-500">
+            <button title="Modifier" onclick="editPatient(${p.id})"><i class="fa-solid fa-pen hover:text-blue-600"></i></button>
+            <button title="Supprimer" onclick="deletePatient(${p.id})"><i class="fa-solid fa-trash hover:text-red-600"></i></button>
+            <button title="Détails" onclick="window.location.href='/patient/${p.id}'"><i class="fa-solid fa-eye hover:text-green-600"></i></button>
+            <button title="Facture" data-patient='${btoa(unescape(encodeURIComponent(JSON.stringify(p))))}' onclick="openInvoiceFromButton(this)"><i class="fa-solid fa-file-invoice hover:text-yellow-600"></i></button>
           </div>
         `;
 
-        actionRow.appendChild(actionCell);
-
-        // Toggle behavior
-        tr.onclick = () => {
-          const isSameRow = currentActionRow === actionRow;
-
-          // If same row clicked again → hide it
-          if (isSameRow) {
-            actionRow.classList.add('hidden');
-            tr.classList.remove('bg-blue-100');
-            currentActionRow = null;
-            currentHighlightedRow = null;
-          } else {
-            // Hide previous, show current
-            if (currentActionRow) currentActionRow.classList.add('hidden');
-            if (currentHighlightedRow) currentHighlightedRow.classList.remove('bg-blue-100');
-
-            actionRow.classList.remove('hidden');
-            tr.classList.add('bg-blue-100');
-
-            currentActionRow = actionRow;
-            currentHighlightedRow = tr;
-          }
-        };
-
-        resultsTable.appendChild(tr);
-        resultsTable.appendChild(actionRow);
+        patientsList.appendChild(card);
       });
+
+
     });
 }
 
@@ -661,7 +595,7 @@ editForm.addEventListener('submit', (e) => {
 
   // Initial load - load columns first, then setup table and load patients
   loadColumnConfiguration().then(() => {
-    createTableHeaders();
+    // createTableHeaders();
     //createDynamicFormFields();
     loadPatients();
   });

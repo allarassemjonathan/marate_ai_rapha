@@ -6,6 +6,7 @@
   <title> Marate AI </title>
  <link rel="icon" href="static/marate_ai_logo_white.ico" type="image/x-icon">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
   <style>
     body {
@@ -312,6 +313,12 @@ td, th {
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+button i {
+  transition: transform 0.15s ease;
+}
+button:hover i {
+  transform: scale(1.15);
+}
 
 @keyframes spin {
   to { transform: rotate(360deg); }
@@ -319,6 +326,7 @@ td, th {
 
   </style>
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <script>
     // Custom Tailwind config with 1064px breakpoint
     tailwind.config = {
@@ -455,36 +463,59 @@ td, th {
     </button>
 
     <!-- Dropdown Menu -->
-    <div id="settingsMenu" 
-         class="hidden absolute right-0 top-14 bg-white border border-gray-200 rounded-lg shadow-lg w-64 z-50">
-         <div class="p-4 space-y-4">
-        <!-- Nombre de patients -->
-        <div class="flex items-center space-x-2">
-          <label for="pageSizeInput" class="text-gray-700 text-sm whitespace-nowrap">Nombre de patients :</label>
-          <input type="number" id="pageSizeInput" 
-                 class="p-2 rounded border border-gray-300 text-gray-800 w-20 bg-white" 
-                 value="20" min="1" />
-        </div>
-        {% if user_type == "manager" %}
-        <br><br>
-        <!-- Gérer les Colonnes -->
-        <button onclick="openColumnManagementModal(); toggleSettingsMenu();" 
-                class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm">
-          Gérer les Colonnes
-        </button>
-        {%endif%}
-        {% if cabinet == 'solidarite'%}
-        <!-- IPM  patients-->
-          <br><br>
-           <form action="/ipm" method="POST">
-            <label for="month">Sélectionnez le mois :</label><br><br>
-            <input type="month" id="month" name="month" required>
-            <br><br>
-            <button class="flex items-center justify-center w-full bg-white text-black font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition duration-200 shadow-sm" type="submit">Télécharger la liste des patients IPM</button>
-          </form>
-        {%endif%}
-      </div>
+<div id="settingsMenu" 
+     class="hidden absolute right-0 top-14 bg-white border border-gray-200 rounded-2xl shadow-2xl w-80 z-50">
+  <div class="p-5 space-y-6 text-gray-800">
+
+    <!-- Title -->
+    <div class="flex items-center gap-2 border-b pb-3">
+      <i class="fa-solid fa-gear text-blue-500"></i>
+      <h3 class="text-base font-semibold text-gray-700">Paramètres</h3>
     </div>
+
+    <!-- Nombre de patients -->
+    <div class="space-y-2">
+      <label for="pageSizeInput" class="flex items-center gap-2 text-sm font-medium text-gray-600">
+        <i class="fa-solid fa-users text-gray-400"></i>
+        Nombre de patients
+      </label>
+      <input type="number" id="pageSizeInput"
+             class="w-full p-2.5 rounded-lg border border-gray-300 text-gray-800 bg-gray-50 focus:border-blue-500 focus:ring focus:ring-blue-100 transition"
+             value="20" min="1" />
+    </div>
+
+    {% if user_type == "manager" %}
+    <!-- Gérer les Colonnes -->
+    <div class="border-t border-gray-200 pt-4">
+      <button onclick="openColumnManagementModal(); toggleSettingsMenu();" 
+              class="flex items-center justify-center gap-2 w-full bg-blue-50 text-blue-700 font-medium px-4 py-2.5 rounded-lg border border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition duration-200 shadow-sm">
+        <i class="fa-solid fa-table-columns"></i>
+        Gérer les Colonnes
+      </button>
+    </div>
+    {% endif %}
+
+    {% if cabinet == 'solidarite' %}
+    <!-- IPM Patients -->
+    <div class="border-t border-gray-200 pt-4">
+      <form action="/ipm" method="POST" class="space-y-3">
+        <label for="month" class="flex items-center gap-2 text-sm font-medium text-gray-600">
+          <i class="fa-solid fa-calendar-days text-gray-400"></i>
+          Sélectionnez le mois
+        </label>
+        <input type="month" id="month" name="month" required
+               class="w-full p-2.5 rounded-lg border border-gray-300 bg-gray-50 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-100 transition" />
+        <button type="submit"
+                class="flex items-center justify-center gap-2 w-full bg-green-50 text-green-700 font-medium px-4 py-2.5 rounded-lg border border-green-200 hover:bg-green-100 hover:border-green-300 transition duration-200 shadow-sm">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          Télécharger la liste IPM
+        </button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
     
   </div>
 </div>
@@ -503,14 +534,7 @@ window.addEventListener('click', function(e) {
   }
 });
 </script>
-    <div class="overflow-x-auto rounded-xl mb-10">
-      <table class="min-w-full text-sm">
-        <thead class="table-header">
-          <tr id="tableHeader"></tr>
-        </thead>
-        <tbody id="resultsTable" class="text-gray-800 text-sm"></tbody>
-      </table>
-    </div>
+    <div id="patientsList" class="space-y-4 mb-10"></div>
       
       <div class="border-t border-gray-700 mt-10 pt-8">
         <h2 class="text-2xl font-bold text-black bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-6">Ajouter un patient</h2>
