@@ -1,4 +1,16 @@
-2025-11-07
-Nouvelle evenement: 23:50:29 manager, Patient sélectionné, Patient avec ID 5 selectionné.
-Nouvelle evenement: 23:50:32 manager, Patient sélectionné, Patient avec ID 20 selectionné.
-Nouvelle evenement: 23:50:35 manager, Patient sélectionné, Patient avec ID 8 selectionné.
+2025-11-16
+Nouvelle evenement: 15:45:23 manager, login, L'utilisateur 'manager' s'est connecté avec succès
+Nouvelle evenement: 15:51:23 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 15:51:55 infirmier, login, L'utilisateur 'infirmier' s'est connecté avec succès
+Nouvelle evenement: 15:52:05 infirmiers, logout, L'utilisateur 'infirmiers' s'est déconnecté
+Nouvelle evenement: 15:52:22 receptioniste, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 15:52:58 receptioniste, sms_verification, L'utilisateur 'receptioniste' a confirmé son compte.
+Nouvelle evenement: 15:53:31 receptionistes, logout, L'utilisateur 'receptionistes' s'est déconnecté
+Nouvelle evenement: 15:53:42 manager, login, L'utilisateur 'manager' s'est connecté avec succès
+Nouvelle evenement: 16:12:07 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 16:12:15 infirmier, login, L'utilisateur 'infirmier' s'est connecté avec succès
+Nouvelle evenement: 16:12:25 infirmiers, Patient sélectionné, Patient avec ID 2101 selectionné.
+Nouvelle evenement: 16:12:34 infirmiers, logout, L'utilisateur 'infirmiers' s'est déconnecté
+Nouvelle evenement: 16:12:48 receptioniste, login, L'utilisateur 'receptioniste' s'est connecté avec succès
+Nouvelle evenement: 16:12:55 receptionistes, Patient sélectionné, Patient avec ID 2103 selectionné.
+Nouvelle evenement: 16:13:18 receptionistes, logout, L'utilisateur 'receptionistes' s'est déconnecté

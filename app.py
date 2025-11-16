@@ -134,6 +134,17 @@ def init_db():
                 )
             ''')
             cur.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    username TEXT NOT NULL,
+                    password TEXT,
+                    role TEXT,
+                    numero TEXT,
+                    last_sms_verification DATE,
+                    pending_code TEXT
+                )
+            ''')
+            cur.execute('''
             CREATE TABLE IF NOT EXISTS column_visibility ( id SERIAL PRIMARY KEY, role VARCHAR(50) UNIQUE NOT NULL, columns JSONB NOT NULL);
             ''')
             cur.execute('''
@@ -1224,7 +1235,7 @@ def logout():
 from twilio.rest import Client
 
 def sms(name, phone, date, time, place, message, code): 
-    message = message + f"\nHere is the code {code}" 
+    message = message + f"\nVoila le code: {code}" 
     try: 
         account_sid = os.getenv('account_sid') 
         auth_token = os.getenv('auth_token') 
