@@ -719,6 +719,8 @@ def index():
 
     user_type = session.get('user_type')
 
+    print(user_type)
+    
     if user_type in ['receptionistes', 'infirmiers']:
         username = user_type[:-1]
     else:
@@ -1122,7 +1124,7 @@ def get_patient(patient_id):
         return jsonify(row)
     if row['signature'] is None:
         return jsonify(row)
-    if session['username'] == 'Dr_Mommar_Gueye' or session['username'] == 'Erik_Toralta':
+    if session['username'] == 'manager':
         print('ot here?')
         return jsonify(row)
     if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
