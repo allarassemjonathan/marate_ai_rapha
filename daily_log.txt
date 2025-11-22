@@ -1,4 +1,2 @@
-2025-11-07
-Nouvelle evenement: 23:50:29 manager, Patient sélectionné, Patient avec ID 5 selectionné.
-Nouvelle evenement: 23:50:32 manager, Patient sélectionné, Patient avec ID 20 selectionné.
-Nouvelle evenement: 23:50:35 manager, Patient sélectionné, Patient avec ID 8 selectionné.
+2025-11-22
+Nouvelle evenement: 00:00:27 manager, Détails des patients, Les détails du patient avec l'identifiant 2144 ont été consulté.

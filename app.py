@@ -134,6 +134,17 @@ def init_db():
                 )
             ''')
             cur.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    username TEXT NOT NULL,
+                    password TEXT,
+                    role TEXT,
+                    numero TEXT,
+                    last_sms_verification DATE,
+                    pending_code TEXT
+                )
+            ''')
+            cur.execute('''
             CREATE TABLE IF NOT EXISTS column_visibility ( id SERIAL PRIMARY KEY, role VARCHAR(50) UNIQUE NOT NULL, columns JSONB NOT NULL);
             ''')
             cur.execute('''
