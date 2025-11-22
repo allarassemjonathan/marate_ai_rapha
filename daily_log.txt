@@ -1,2 +1,8 @@
 2025-11-22
-Nouvelle evenement: 00:00:27 manager, Détails des patients, Les détails du patient avec l'identifiant 2144 ont été consulté.
+Nouvelle evenement: 00:00:27 manager, Dï¿½tails des patients, Les dï¿½tails du patient avec l'identifiant 2144 ont ï¿½tï¿½ consultï¿½.
+2025-11-18
+Nouvelle evenement: 17:52:38 josephinegt, login, L'utilisateur 'josephinegt' s'est connectï¿½ avec succï¿½s
+Nouvelle evenement: 18:26:02 josephinegt, login, L'utilisateur 'josephinegt' s'est connectï¿½ avec succï¿½s
+
+Nouvelle evenement: 00:16:10 manager, Détails des patients, Les détails du patient avec l'identifiant 2144 ont été consulté.
+Nouvelle evenement: 00:19:20 manager, Détails des patients, Les détails du patient avec l'identifiant 2129 ont été consulté.

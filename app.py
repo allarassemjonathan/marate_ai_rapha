@@ -719,6 +719,8 @@ def index():
 
     user_type = session.get('user_type')
 
+    print(user_type)
+    
     if user_type in ['receptionistes', 'infirmiers']:
         username = user_type[:-1]
     else:
@@ -1122,7 +1124,7 @@ def get_patient(patient_id):
         return jsonify(row)
     if row['signature'] is None:
         return jsonify(row)
-    if session['username'] == 'Dr_Mommar_Gueye' or session['username'] == 'Erik_Toralta':
+    if session['username'] == 'manager':
         print('ot here?')
         return jsonify(row)
     if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
@@ -1235,7 +1237,7 @@ def logout():
 from twilio.rest import Client
 
 def sms(name, phone, date, time, place, message, code): 
-    message = message + f"\nHere is the code {code}" 
+    message = message + f"\nVoila le code: {code}" 
     try: 
         account_sid = os.getenv('account_sid') 
         auth_token = os.getenv('auth_token') 

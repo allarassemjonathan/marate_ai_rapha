@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tableau de bord — Statistiques</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
   <style>
     body {
       background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
@@ -35,7 +36,7 @@
   <!-- Header -->
   <header class="flex flex-col md:flex-row items-center justify-between bg-white/60 backdrop-blur-md shadow-sm px-6 py-4 mb-8 rounded-xl">
     <div class="flex items-center gap-3">
-      <a href="/" class="text-cyan-600 hover:text-cyan-800 font-semibold text-lg">← Retour au menu</a>
+      <a href="/" class="text-cyan-600 hover:text-cyan-800 font-semibold text-lg"><i class="fa-solid fa-arrow-left"></i> Retour au menu</a>
       <h1 class="text-2xl font-bold text-gray-700">Tableau de bord — Statistiques</h1>
     </div>
     <p class="text-gray-500 text-sm mt-2 md:mt-0 italic">Suivi et analyse des activités des patients</p>
@@ -46,42 +47,42 @@
 
     {% if img1 %}
     <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3">📆 Estimation des revenus journaliers</h3>
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-calendar"></i> Estimation des revenus journaliers</h3>
       <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier" class="w-full">
     </div>
     {% endif %}
 
     {% if img2 %}
     <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3">📈 Estimation des revenus mensuels</h3>
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-chart-line"></i> Estimation des revenus mensuels</h3>
       <img src="data:image/png;base64,{{ img2 }}" alt="Revenu mensuel" class="w-full">
     </div>
     {% endif %}
 
     {% if img3 %}
     <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3">🧍 Patients récurrents</h3>
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-person"></i> Patients récurrents</h3>
       <img src="data:image/png;base64,{{ img3 }}" alt="Fréquences patients" class="w-full">
     </div>
     {% endif %}
 
     {% if img4 %}
     <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3">🏘️ Distribution par quartier</h3>
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-location-dot"></i> Distribution par quartier</h3>
       <img src="data:image/png;base64,{{ img4 }}" alt="Répartition quartiers" class="w-full">
     </div>
     {% endif %}
 
     {% if img5 %}
     <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3">🩺 Nouveaux patients par mois</h3>
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-stethoscope"></i> Nouveaux patients par mois</h3>
       <img src="data:image/png;base64,{{ img5 }}" alt="Nouveaux patients par mois" class="w-full">
     </div>
     {% endif %}
 
     {% if img6 %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
-    <h3 class="text-lg font-semibold text-cyan-600 mb-3">👨‍⚕️ Nombre de patients par médecin</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+    <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-user-doctor"></i> Nombre de patients par médecin</h3>
     <form action="/stat" method="get" class="flex items-center gap-3 mb-4">
         <label class="text-gray-600 font-medium">Sélection du mois :</label>
         <select name="mois" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">
@@ -96,14 +97,14 @@
 
     {% if img7 %}
     <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
-    <h3 class="text-lg font-semibold text-cyan-600 mb-3">📊 Evolution des patients par mois</h3>
+    <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-chart-column"></i> Evolution des patients par mois</h3>
     <img src="data:image/png;base64,{{ img7 }}" alt="Evolution des patients" class="small-img">
     </div>
     {% endif %}
 
     {% if img8 %}
     <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
-    <h3 class="text-lg font-semibold text-cyan-600 mb-4">📈 Distribution des données (Ce graphe est expérimental)</h3>
+    <h3 class="text-lg font-semibold text-cyan-600 mb-4"><i class="fa-solid fa-chart-line"></i> Distribution des données (Ce graphe est expérimental)</h3>
         <p class="text-gray-600 mb-4">Sélectionnez une colonne pour visualiser sa distribution.</p>
         <form method="POST" action="/stat" class="flex flex-wrap items-center gap-3 mb-4">
         <select name="column" required class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">

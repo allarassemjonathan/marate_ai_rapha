@@ -378,6 +378,16 @@ function loadPatients(q = '') {
         const card = document.createElement('div');
         card.className = "flex items-center justify-between bg-white rounded-2xl shadow-md px-5 py-4 hover:shadow-lg transition-shadow duration-200";
 
+        const raw = p.created_at;
+        const date = new Date(raw.replace(" ", "T"));
+        const formatted = date.toLocaleString("fr-TD", {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: false,  // Chad uses 24-hour time
+        })
+
         card.innerHTML = `
           <div class="flex items-center gap-4">
             <!-- Profile Icon -->
@@ -388,8 +398,8 @@ function loadPatients(q = '') {
             <!-- Patient Info -->
             <div>
               <h2 class="text-base font-semibold text-gray-800">${p.name || 'Sans nom'}</h2>
-              <p class="text-sm text-gray-500">${p.age || ''} ${p.poids ? '· ' + p.poids : ''} ${p.temperature ? '· ' + p.temperature : ''}</p>
-              <p class="text-xs text-gray-400 mt-0.5">${p.phone_number || ''}</p>
+              <p class="text-sm text-gray-500">${formatted + '· '  || ''} ${p.age || ''} ${p.poids ? '· ' + p.poids : ''} ${p.temperature ? '· ' + p.temperature : ''}</p>
+              <p class="text-xs text-gray-400 mt-0.5"> 🕿 ${p.phone_number || ''}</p>
             </div>
           </div>
 
