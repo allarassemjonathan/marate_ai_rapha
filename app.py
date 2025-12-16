@@ -898,6 +898,7 @@ def load_df_cached(ttl=60):
 
 def load_df():
     conn = get_db_connection()
+    conn.autocommit = True
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("SELECT * FROM patients")
     rows = cur.fetchall()
@@ -912,6 +913,67 @@ def load_df():
 
     return df
 
+
+def nettoyer_donnees(df):
+    """Nettoie et normalise les données du DataFrame"""
+    
+    # 1. Normaliser new_cases
+    if 'new_cases' in df.columns:
+        df['new_cases'] = df['new_cases'].astype(str).str.lower().str.strip()
+        
+        # Remplacer toutes les variantes par "oui" ou "non"
+        df['new_cases'] = df['new_cases'].replace({
+            'ouï': 'oui',
+            'Oui ': 'oui',
+            'Oui': 'oui',
+            'nouveaux': 'oui',
+            'nouveau': 'oui',
+            'nouveaux cas': 'oui',
+            'nouveau cas': 'oui',
+            'nouvo': 'oui',
+            'yes': 'oui',
+            'o': 'oui',
+            '': 'Non specifié',
+            
+            'non': 'non',
+            'no': 'non',
+            'nn': 'non',
+            'ancien': 'non',
+            'ancienne': 'non'
+        })
+
+        if 'phone_number' in df.columns:
+            df['phone_number'] = df['phone_number'].replace({
+            '': 'Non specifié',
+        })
+        if 'ordonnace' in df.columns:
+            df['ordonnance'] = df['ordonnance'].replace({
+                '': 'Non specifié',
+            })
+        if 'meeting' in df.columns:
+            df['meeting'] = df['meeting'].replace({
+            '': 'non',
+            'Oui': 'oui',
+            'Oui.': 'oui',
+            'Randez vous': 'oui',
+            'Rendez vous': 'oui'
+            })
+    # 2. Normaliser la colonne signature (médecins)
+    if 'signature' in df.columns:
+        df['signature'] = df['signature'].astype(str).str.strip().str.title()
+        df['signature'] = df['signature'].replace('', 'Non spécifié')
+    
+    # 3. Normaliser les adresses
+    if 'adresse' in df.columns:
+        df['adresse'] = df['adresse'].astype(str).str.split('/').str[0]
+        df['adresse'] = df['adresse'].str.replace(r'\d+', '', regex=True)
+        df['adresse'] = df['adresse'].str.strip().str.title()
+    
+    # 4. Conversion des dates
+    if 'created_at' in df.columns:
+        df['created_at'] = pd.to_datetime(df['created_at'], errors='coerce')
+    
+    return df
 
 #Convertir une figure en image web ici on sauvagarde le graphe en memoire pas sur disque et flask l'envoie au navigateur en tant qu'image PNG
 
@@ -928,31 +990,40 @@ def fig_to_png_response():
     #le navigateur affiche l'iamge générée directement sans jamais l'avoir enregistrée sur disque
     return send_file(buf ,mimetype="image/png")
 
-
+#transforme un graphique matplotlib en une chaine de texte base64 pour l'afficher dans une page HTML
 def fig_to_base64(fig):
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight")
-    buf.seek(0)
-    return base64.b64encode(buf.getvalue()).decode("utf-8")
+    buf = io.BytesIO() #cree un fichier temporaire en memoire(dans la RAM)
+    fig.savefig(buf, format="png", bbox_inches="tight") #sauvegarde la figure dans "ce format"
+    buf.seek(0) #remet le curseur au debut du fichier(sinon la lecture commence a la fin)
+    return base64.b64encode(buf.getvalue()).decode("utf-8") #transforme l'image en texte encode
 
-_chart_cache = {}
+#un dictionnaire vide au depart qui va permettre de stocker les images générées pour eviter de les recréer a chaque appel
+_chart_cache = {} 
 
+
+#verifie si le graphique existe deja dans _chart_cache
+#Si non ou si le cache est trop vieux il regenere le graphique avec generator_func
+#Ensuite il retourne l'image en memoire pour que Flask puisse l'envoyer
 def get_chart(key, generator_func, ttl=60):
     """Return a cached chart image or regenerate it"""
     now = time.time()
     if key not in _chart_cache or (now - _chart_cache[key]["time"]) > ttl:
         buf = io.BytesIO()
-        generator_func(buf)
-        _chart_cache[key] = {"img": buf.getvalue(), "time": now}
-    return io.BytesIO(_chart_cache[key]["img"])
+        generator_func(buf) #appelle la fonction qui construit le graphe
+        _chart_cache[key] = {"img": buf.getvalue(), "time": now} #stocke l'image + l'heure
+    return io.BytesIO(_chart_cache[key]["img"]) #renvoie l'image en memoire
 
+
+#Ces fonctions utilisent matplotlib + pandas pour creer des graphiques et les sauvegarder dans un buf(memoire)
 
 def build_revenu_journalier_chart(buf):
-    df = load_df_cached()
+    df = load_df_cached() #recupere la dataframe(mes donnees)
     visites_par_jour = df.groupby(df['created_at'].dt.date).size()
     toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
     visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
     revenu_par_jour = visites_par_jour * 10000
+    plt.rcParams['axes.formatter.useoffset'] = False
+    plt.rcParams['axes.formatter.use_mathtext'] = False
 
     plt.figure(figsize=(10,6))
     revenu_par_jour.plot(kind='line', color='blue', marker='o')
@@ -969,6 +1040,8 @@ def build_revenu_mensuel_chart(buf):
     revenu_par_mois = consultations_par_mois * 10000
     toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
     revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
+    plt.rcParams['axes.formatter.useoffset'] = False
+    plt.rcParams['axes.formatter.use_mathtext'] = False
 
     plt.figure(figsize=(10,6))
     revenu_par_mois.plot(kind='line', color='blue', marker='o')
@@ -979,10 +1052,13 @@ def build_revenu_mensuel_chart(buf):
     plt.savefig(buf, format="png", bbox_inches="tight")
     plt.close()
 
+
 def build_frequences_patients_chart(buf):
     df = load_df_cached()
     patients_count = df['name'].str.lower().value_counts()[0:8]
     patients_count.index = patients_count.index.str.title()
+    plt.rcParams['axes.formatter.useoffset'] = False
+    plt.rcParams['axes.formatter.use_mathtext'] = False
 
     plt.figure(figsize=(10,6))
     patients_count.plot(kind='bar', color='blue')
@@ -992,6 +1068,190 @@ def build_frequences_patients_chart(buf):
     plt.savefig(buf, format="png", bbox_inches="tight")
     plt.close()
 
+
+def build_repartition_quartier_chart(buf):
+    df = load_df_cached()
+    df['adresse'] = df['adresse'].str.split('/').str[0] 
+    df['adresse'] = df['adresse'].str.replace('\d+', '', regex=True)  
+    df['adresse'] = df['adresse'].str.strip()  
+    df['adresse'] = df['adresse'].str.title()  
+
+    adresse_counts = df['adresse'].value_counts()[0:10]
+
+    plt.figure(figsize=(10,6))
+    colors=plt.cm.Set3(range(len(adresse_counts)))
+
+    wedges, texts, autotexts = plt.pie(adresse_counts.values, 
+                                    labels=adresse_counts.index, 
+                                    autopct='%1.1f%%',
+                                    colors=colors,
+                                    startangle=90)
+
+    plt.title("Nombre de patients par adresse")
+    plt.ylabel('')
+    plt.xticks(rotation=45 ,ha="right")
+    for autotext in autotexts:
+        autotext.set_color('black')  # Changement de la couleur du texte
+        autotext.set_fontweight('bold')  # Mise en gras du texte
+
+    plt.tight_layout()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+
+
+def build_nouveaux_patients_chart(buf):
+    df = load_df_cached()
+    df['created_at'] = pd.to_datetime(df['created_at'])
+
+    nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+
+    nouveaux_patients = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+
+    plt.figure(figsize=(10,6))
+    nouveaux_patients.plot(kind='bar', color='darkblue', width=0.2) # width contrôle l'épaisseur des barres
+    plt.title("Nombre de nouveaux patients par mois")
+    plt.xlabel("Mois")
+    plt.xticks(rotation=45)
+    plt.ylabel("Nombre de nouveaux patients")
+
+    for i, value in enumerate(nouveaux_patients):
+        plt.text(i, value + 0.1, str(value), ha='center', va='bottom', fontweight='bold')
+
+    plt.tight_layout()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+
+def build_medecins_chart(buf):
+    df = load_df_cached()
+
+    df['signature'] = df['signature'].str.strip().str.title()
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    medecins = df.groupby([df['created_at'].dt.to_period('M'), 'signature']).size().reset_index(name="patients")
+
+    medecins['mois'] = medecins['created_at'].str.astype(str)
+    liste_mois = sorted(medecins['mois'].unique())
+    mois = request.args.get("mois", default=liste_mois[0])
+
+    df_medecins = medecins[medecins['mois'] == mois].set_index("signature")['patients']
+    plt.figure(figsize=(10,6))
+    df_medecins.plot(kind='bar', color='blue')
+    plt.title("Nombre de patients par malades")
+    plt.xlabel("Mois")
+    plt.ylabel("Nombre de patients")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+
+def build_evolution_patients_chart(buf):
+    df = load_df_cached()
+
+    # Conversion des dates
+    df['created_at'] = pd.to_datetime(df['created_at'])
+
+    # Séparation des deux types de patients
+    nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+    patients_frequents = df[df['new_cases'].str.lower() != 'oui']
+
+    # Comptage mensuel
+    nouveaux_patients_mensuel = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+    patients_frequents_mensuel = patients_frequents.groupby(patients_frequents['created_at'].dt.to_period('M')).size()
+
+    # Fusion dans un DataFrame
+    evolution_patients = pd.DataFrame({
+        'Nouveaux patients': nouveaux_patients_mensuel,
+        'Patients fréquents': patients_frequents_mensuel
+    }).fillna(0)
+
+    # Création du graphique
+    plt.figure(figsize=(10, 6))
+    plt.plot(
+        evolution_patients.index.astype(str),
+        evolution_patients['Nouveaux patients'],
+        marker='o', color='blue', label='Nouveaux patients'
+    )
+    plt.plot(
+        evolution_patients.index.astype(str),
+        evolution_patients['Patients fréquents'],
+        marker='o', color='orange', label='Patients fréquents'
+    )
+
+    # ➕ Ajout des valeurs au-dessus des points
+    for i, (np_val, pf_val) in enumerate(
+        zip(evolution_patients['Nouveaux patients'], evolution_patients['Patients fréquents'])
+    ):
+        plt.text(i, np_val + 0.2, str(int(np_val)), ha='center', va='bottom',
+                 color='blue', fontweight='bold', fontsize=9)
+        plt.text(i, pf_val + 0.2, str(int(pf_val)), ha='center', va='bottom',
+                 color='orange', fontweight='bold', fontsize=9)
+
+    # Mise en forme
+    plt.title("Évolution mensuelle des patients")
+    plt.xlabel("Mois")
+    plt.ylabel("Nombre de patients")
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout() 
+    plt.subplots_adjust(top=0.9)   
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+
+
+def build_graph_automatique_chart(buf):
+    df = load_df_cached()
+    df = nettoyer_donnees(df)
+    
+    if 'created_at' in df.columns:
+        df['created_at'] = pd.to_datetime(df['created_at'])
+
+    column = request.form.get("column")
+
+    if column not in df.columns:
+        return "Erreur : colonne invalide", 400
+    
+    data = df[column].dropna()
+    
+    if len(data) == 0:
+        return "Erreur : aucune donnée dans cette colonne", 400
+    
+    plt.figure(figsize=(12, 6))
+    
+    if pd.api.types.is_numeric_dtype(data):
+
+        plt.hist(data, bins=30, color='skyblue', edgecolor='black', alpha=0.7)
+        plt.title(f'Distribution de {column}')
+        plt.xlabel(column)
+        plt.ylabel('Fréquence')
+        plt.grid(axis='y', alpha=0.3)
+        
+        
+    else:
+        # Pour les données qui ne sont pas numeriques
+
+        value_counts = data.value_counts().head(20)  
+        
+        plt.barh(range(len(value_counts)), value_counts.values, color='coral')
+        plt.yticks(range(len(value_counts)), value_counts.index)
+        plt.xlabel('Nombre d\'occurrences')
+        plt.title(f'Distribution de {column} (Top 20)')
+        plt.gca().invert_yaxis()
+    
+        for i, v in enumerate(value_counts.values):
+            plt.text(v + max(value_counts.values)*0.01, i, str(v), 
+                    va='center', fontweight='bold')
+    
+    plt.tight_layout()
+    plt.savefig(buf, format="png", bbox_inches="tight")
+    plt.close()
+    
+
+
+#routes flask pour afficher les graphiques seules
+#quand tu vas dans l'une des fonctions flask renvoie l'image PNG du graphique(avec cache)
 @app.route("/revenu_journalier")
 @login_required
 def revenu_journalier():
@@ -1000,6 +1260,7 @@ def revenu_journalier():
         mimetype="image/png"
     )
 
+
 @app.route("/revenu_mensuel")
 @login_required
 def revenu_mensuel():
@@ -1007,6 +1268,7 @@ def revenu_mensuel():
         get_chart("revenu_mensuel", build_revenu_mensuel_chart),
         mimetype="image/png"
     )
+
 
 @app.route("/frequences_patients")
 @login_required
@@ -1017,57 +1279,259 @@ def frequences_patients():
     )
 
 
-@app.route("/stat")
+@app.route("/repartition_quartier")
+@login_required
+def repartition_quartier():
+    return send_file(
+        get_chart("repartition_quartier",build_repartition_quartier_chart),
+        mimetype="image/png"
+    )
+
+
+@app.route("/nouveaux_patients")
+@login_required
+def nouveaux_patients():
+    return send_file(
+        get_chart("nouveaux_patients",build_nouveaux_patients_chart),
+        mimetype="img/png"
+    )
+
+@app.route("/medecins")
+@login_required
+def medecins():
+    return send_file(
+        get_chart("medecins",build_medecins_chart),
+        mimetype="img/png"
+    )
+
+@app.route("/evolution_patients")
+@login_required
+def evolution_patients():
+    return send_file(
+        get_chart("evolution_patients",build_evolution_patients_chart),
+        mimetype="img/png"
+    )
+
+@app.route("/graph_automatique")
+@login_required
+def graph_automatique():
+    return send_file(
+        get_chart("graph_automatique",build_graph_automatique_chart),
+        mimetype="img/png"
+    )
+
+@app.route("/stat", methods=['GET','POST'])
 @login_required
 def rapport():
-    df = load_df()
-    
-    # --- 1. Revenu journalier ---
-    visites_par_jour = df.groupby(df['created_at'].dt.date).size()
-    toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
-    visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
-    revenu_par_jour = visites_par_jour * 10000
+    df = load_df()  # charge les donnees
+    df['created_at'] = pd.to_datetime(df['created_at'])
 
-    fig1, ax1 = plt.subplots(figsize=(8, 4))
-    revenu_par_jour.plot(kind="line", marker="o", color="blue", ax=ax1)
-    ax1.set_title("Evolution des revenus journaliers")
-    ax1.set_ylabel("Revenu (FCFA)")
-    ax1.set_xlabel("Date")
-    img1 = fig_to_base64(fig1)
-    plt.close(fig1)
+    img1 = img2 = img3 = img4 = img5 = img6 = img7 = img8 = None
+    list_mois = []
+    mois = None
+
+    # --- 1. Revenu journalier ---
+    if 'created_at' in df.columns:
+        visites_par_jour = df.groupby(df['created_at'].dt.date).size()
+        toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
+        visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
+        revenu_par_jour = visites_par_jour * 10000
+
+        fig1, ax1 = plt.subplots(figsize=(8, 4))
+        revenu_par_jour.plot(kind="line", marker="o", color="blue", ax=ax1)
+        ax1.set_title("Evolution des revenus journaliers")
+        ax1.set_ylabel("Revenu (FCFA)")
+        ax1.set_xlabel("Date")
+        img1 = fig_to_base64(fig1)
+        plt.close(fig1)
 
     # --- 2. Revenu mensuel ---
-    consultations_par_mois = df.groupby(df['created_at'].dt.to_period('M')).size()
-    revenu_par_mois = consultations_par_mois * 10000
-    toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
-    revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
+    if 'created_at' in df.columns:
+        consultations_par_mois = df.groupby(df['created_at'].dt.to_period('M')).size()
+        revenu_par_mois = consultations_par_mois * 10000
+        toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
+        revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
 
-    fig2, ax2 = plt.subplots(figsize=(8, 4))
-    revenu_par_mois.plot(kind="line", marker="o", color="blue", ax=ax2)
-    ax2.set_title("Evolution des revenus mensuels")
-    ax2.set_ylabel("Revenu (FCFA)")
-    ax2.set_xlabel("Mois")
-    img2 = fig_to_base64(fig2)
-    plt.close(fig2)
+        fig2, ax2 = plt.subplots(figsize=(8, 4))
+        revenu_par_mois.plot(kind="line", marker="o", color="blue", ax=ax2)
+        ax2.set_title("Evolution des revenus mensuels")
+        ax2.set_ylabel("Revenu (FCFA)")
+        ax2.set_xlabel("Mois")
+        ax2.yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
+        img2 = fig_to_base64(fig2)
+        plt.close(fig2)
 
     # --- 3. Fréquences patients ---
-    patients_count = df['name'].str.lower().value_counts()[0:8]
-    patients_count.index = patients_count.index.str.title()
+    if 'name' in df.columns:
+        patients_count = df['name'].str.lower().value_counts()[0:8]
+        patients_count.index = patients_count.index.str.title()
 
-    fig3, ax3 = plt.subplots(figsize=(8, 4))
-    patients_count.plot(kind="bar", color="blue", ax=ax3)
-    ax3.set_title("Fréquences des patients")
-    ax3.set_xlabel("Nom")
-    ax3.set_ylabel("Fréquences de visites")
-    img3 = fig_to_base64(fig3)
-    plt.close(fig3)
+        fig3, ax3 = plt.subplots(figsize=(8, 4))
+        patients_count.plot(kind="bar", color="blue", ax=ax3)
+        ax3.set_title("Fréquences des patients")
+        ax3.set_xlabel("Nom")
+        ax3.set_ylabel("Fréquences de visites")
+        img3 = fig_to_base64(fig3)
+        plt.close(fig3)
 
-    # --- render all charts in one page ---
+    # --- 4. Distribution par quartier ---
+    if 'adresse' in df.columns:
+        df['adresse'] = df['adresse'].str.split('/').str[0] 
+        df['adresse'] = df['adresse'].str.replace('\d+', '', regex=True)  
+        df['adresse'] = df['adresse'].str.strip()  
+        df['adresse'] = df['adresse'].str.title()  
+        adresse_counts = df['adresse'].value_counts()[0:10]
+
+        if not adresse_counts.empty:
+            fig4, ax4 = plt.subplots(figsize=(8, 4))
+            colors = plt.cm.Set3(range(len(adresse_counts)))
+            ax4.pie(adresse_counts.values,
+                    labels=adresse_counts.index,
+                    autopct='%1.1f%%',
+                    colors=colors,
+                    startangle=90,
+                    labeldistance=1.15,
+                    pctdistance=0.87)
+            ax4.set_title("Nombre de patients par adresse")
+            img4 = fig_to_base64(fig4)
+            plt.close(fig4)
+
+    # --- 5. Nouveaux patients ---
+    if 'new_cases' in df.columns:
+        nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+        nouveaux_patients = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+        if not nouveaux_patients.empty:
+            fig5, ax5 = plt.subplots(figsize=(8, 4))
+            nouveaux_patients.plot(kind='bar', color='darkblue', width=0.2, ax=ax5)
+            ax5.set_title("Nombre de nouveaux patients par mois")
+            ax5.set_xlabel("Mois")
+            ax5.set_ylabel("Nombre de nouveaux patients")
+            ax5.set_xticks(ax5.get_xticks(), ax5.get_xticklabels(), rotation=45, ha="right")
+            for i, value in enumerate(nouveaux_patients):
+                ax5.text(i, value + 0.1, str(value), ha='center', va='bottom', fontweight='bold')
+            img5 = fig_to_base64(fig5)
+            plt.close(fig5)
+
+    # --- 6. Patients par médecins ---
+    if 'signature' in df.columns:
+        df['signature'] = df['signature'].str.lower().str.title()
+        df = df.dropna(subset=['signature'])
+        df = df[df['signature'].str.strip() != ""]
+        medecins = df.groupby([df['created_at'].dt.to_period('M'), 'signature']).size().reset_index(name="patients")
+        if not medecins.empty:
+            medecins['mois'] = medecins['created_at'].astype(str)
+            list_mois = sorted(medecins['mois'].unique())
+            mois = request.args.get("mois", default=list_mois[0])
+            df_medecins = medecins[medecins['mois'] == mois].set_index("signature")['patients']
+            df_medecins = df_medecins.sort_values(ascending=True)
+
+            fig6, ax6 = plt.subplots(figsize=(8, 4))
+            df_medecins.plot(kind='bar', color='blue', ax=ax6)
+            ax6.set_title(f"Nombre de patients par medecins pour {mois}")
+            ax6.set_xlabel("Médecins")
+            ax6.set_ylabel("Nombre de patients")
+            img6 = fig_to_base64(fig6)
+            plt.close(fig6)
+            
+
+    # --- 7. Evolution des patients ---
+    df['created_at'] = pd.to_datetime(df['created_at'])
+
+    nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
+    patients_frequents = df[df['new_cases'].str.lower() != 'oui']
+
+    nouveaux_patients_mensuel = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+    patients_frequents_mensuel = patients_frequents.groupby(patients_frequents['created_at'].dt.to_period('M')).size()
+
+    evolutions_patients = pd.DataFrame({
+        'Nouveaux patients' : nouveaux_patients_mensuel,
+        'Patients frequents' : patients_frequents_mensuel
+    }).fillna(0)
+    
+    fig7, ax7 = plt.subplots(figsize=(6, 5))
+    ax7.plot(
+        evolutions_patients.index.astype(str),
+        evolutions_patients['Nouveaux patients'],
+        marker='o',color='blue',label='Nouveaux patients'
+    )
+    ax7.plot(
+        evolutions_patients.index.astype(str),
+        evolutions_patients['Patients frequents'],
+        marker='o',color='orange',label='Patients frequents'
+    )
+
+    for i, (np_val, pf_val) in enumerate(zip(evolutions_patients['Nouveaux patients'],
+                                             evolutions_patients['Patients frequents'])):
+        ax7.text(i, np_val + 0.2, str(int(np_val)), ha='center', va='bottom',
+                color='blue', fontweight='bold', fontsize=9)
+        ax7.text(i, pf_val + 0.2, str(int(pf_val)), ha='center', va='bottom',
+                color='orange', fontweight='bold', fontsize=9)
+                
+    ax7.set_title("Evolution mensuelle des patients")
+    ax7.set_xlabel("Mois")
+    ax7.set_ylabel("Nombre de patients")
+    ax7.legend()
+    ax7.grid(True, linestyle='--', alpha=0.6)
+    plt.xticks(rotation=45,ha='right')
+    plt.tight_layout()
+
+    img7 = fig_to_base64(fig7)
+    plt.close(fig7)
+
+    # --- 8. Evolution des patients ---
+    df = nettoyer_donnees(df)
+    
+    if 'created_at' in df.columns:
+        df['created_at'] = pd.to_datetime(df['created_at'])
+
+    data = None
+    column = request.form.get("column")
+
+    if column and column in df.columns:  # ← Vérifier que column existe
+        data = df[column].dropna()
+    
+    if data is not None and len(data) > 0:  # Si la colonne a des données
+        fig8, ax8 = plt.subplots(figsize=(8,4))
+        if pd.api.types.is_numeric_dtype(data):
+            ax8.hist(data, bins=30, color='skyblue', edgecolor='black', alpha=0.7)
+            ax8.set_title(f'Distribution de {column}')
+            ax8.set_xlabel(column)
+            ax8.set_ylabel('Fréquence')
+            ax8.grid(axis='y', alpha=0.3)
+        
+        else:
+            # Pour les données qui ne sont pas numeriques
+            value_counts = data.value_counts().head(20) 
+            fig8, ax8 = plt.subplots(figsize=(8,4)) 
+            ax8.barh(range(len(value_counts)), value_counts.values, color='coral')
+            ax8.set_yticks(range(len(value_counts)))
+            ax8.set_yticklabels(value_counts.index)
+            ax8.set_xlabel('Nombre d\'occurrences')
+            ax8.set_title(f'Distribution de {column} (Top 20)')
+            ax8.invert_yaxis()
+
+            for i, v in enumerate(value_counts.values):
+                ax8.text(v + max(value_counts.values)*0.01, i, str(v), 
+                        va='center', fontweight='bold')
+    else:
+        # Cas du premier affichage : aucune colonne encore choisie
+        fig8, ax8 = plt.subplots(figsize=(8,4))
+        ax8.text(0.5, 0.5, "Sélectionnez une colonne pour afficher la distribution",
+                ha='center', va='center', fontsize=12, style='italic')
+        ax8.axis('off')
+        
+    plt.tight_layout()
+    img8 = fig_to_base64(fig8)
+    plt.close(fig8)
+    column_name = column
+    
     return render_template("stats.html",
-                           img1=img1,
-                           img2=img2,
-                           img3=img3)
-
+                           img1=img1, img2=img2, img3=img3,
+                           img4=img4, img5=img5, img6=img6,
+                           img7=img7,img8=img8,
+                           mois=mois, list_mois=list_mois,
+                           columns=df.columns,
+                           column_name = column_name)
 
 
 

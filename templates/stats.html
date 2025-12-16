@@ -1,83 +1,133 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistiques d'activités</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-            text-decoration: none;
-            list-style: none;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord — Statistiques</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
+      min-height: 100vh;
+    }
 
-        body {
-            padding: 20px;
-            text-align: center; /* ensures inline content like images center */
-        }
+    .chart-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        h2 {
-            margin-top: 20px;
-            margin-bottom: 40px;
-        }
+    .chart-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
 
-        h3 {
-            margin-bottom: 10px;
-        }
+    img {
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
 
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: center; /* centers logo + text */
-            gap: 15px;
-            margin-bottom: 30px;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        .header img {
-            height: 50px;
-            width: auto;
-        }
-
-        .chart {
-            margin-bottom: 40px;
-        }
-
-        .chart img {
-            display: block;
-            margin: 0 auto; /* centers the image */
-            max-width: 80%; /* makes sure it’s not too wide */
-            height: auto;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-    </style>
+    img:hover {
+      transform: scale(1.02);
+    }
+  </style>
 </head>
-<body>
-    <div class="header"> 
-        <a href="/">Retour menu </a>
-        <img src="https://allarassemjonathan.github.io/marate_white.png" alt="Logo">
-        <h1>Statistiques sur les Patients</h1>
-    </div>
+<body class="text-gray-800">
 
-    <div class="chart">
-        <h3>Estimations des revenus journaliers</h3>
-        <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier">
+  <!-- Header -->
+  <header class="flex flex-col md:flex-row items-center justify-between bg-white/60 backdrop-blur-md shadow-sm px-6 py-4 mb-8 rounded-xl">
+    <div class="flex items-center gap-3">
+      <a href="/" class="text-cyan-600 hover:text-cyan-800 font-semibold text-lg">← Retour au menu</a>
+      <h1 class="text-2xl font-bold text-gray-700">Tableau de bord — Statistiques</h1>
     </div>
+    <p class="text-gray-500 text-sm mt-2 md:mt-0 italic">Suivi et analyse des activités des patients</p>
+  </header>
 
-    <div class="chart">
-        <h3>Estimations des revenus mensuels</h3>
-        <img src="data:image/png;base64,{{ img2 }}" alt="Revenu mensuel">
-    </div>
+  <!-- Content Grid -->
+  <main class="max-w-7xl mx-auto px-4 pb-10 grid gap-8 md:grid-cols-2">
 
-    <div class="chart">
-        <h3>Patients récurrents</h3>
-        <img src="data:image/png;base64,{{ img3 }}" alt="Fréquences patients">
+    {% if img1 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">📆 Estimation des revenus journaliers</h3>
+      <img src="data:image/png;base64,{{ img1 }}" alt="Revenu journalier" class="w-full">
     </div>
+    {% endif %}
+
+    {% if img2 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">📈 Estimation des revenus mensuels</h3>
+      <img src="data:image/png;base64,{{ img2 }}" alt="Revenu mensuel" class="w-full">
+    </div>
+    {% endif %}
+
+    {% if img3 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">🧍 Patients récurrents</h3>
+      <img src="data:image/png;base64,{{ img3 }}" alt="Fréquences patients" class="w-full">
+    </div>
+    {% endif %}
+
+    {% if img4 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">🏘️ Distribution par quartier</h3>
+      <img src="data:image/png;base64,{{ img4 }}" alt="Répartition quartiers" class="w-full">
+    </div>
+    {% endif %}
+
+    {% if img5 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3">🩺 Nouveaux patients par mois</h3>
+      <img src="data:image/png;base64,{{ img5 }}" alt="Nouveaux patients par mois" class="w-full">
+    </div>
+    {% endif %}
+
+    {% if img6 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
+    <h3 class="text-lg font-semibold text-cyan-600 mb-3">👨‍⚕️ Nombre de patients par médecin</h3>
+    <form action="/stat" method="get" class="flex items-center gap-3 mb-4">
+        <label class="text-gray-600 font-medium">Sélection du mois :</label>
+        <select name="mois" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">
+        {% for m in list_mois %}
+        <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{ m }}</option>
+        {% endfor %}
+        </select>
+    </form>
+    <img src="data:image/png;base64,{{ img6 }}" alt="Patients par médecin" class="small-img">
+    </div>
+    {% endif %}
+
+    {% if img7 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
+    <h3 class="text-lg font-semibold text-cyan-600 mb-3">📊 Evolution des patients par mois</h3>
+    <img src="data:image/png;base64,{{ img7 }}" alt="Evolution des patients" class="small-img">
+    </div>
+    {% endif %}
+
+    {% if img8 %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
+    <h3 class="text-lg font-semibold text-cyan-600 mb-4">📈 Distribution des données (Ce graphe est expérimental)</h3>
+        <p class="text-gray-600 mb-4">Sélectionnez une colonne pour visualiser sa distribution.</p>
+        <form method="POST" action="/stat" class="flex flex-wrap items-center gap-3 mb-4">
+        <select name="column" required class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">
+          <option value="">-- Sélectionner une colonne --</option>
+          {% for col in columns %}
+          <option value="{{ col }}">{{ col }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded-lg transition">Générer</button>
+      </form>
+
+      {% if column_name %}
+      <div class="bg-cyan-50 text-cyan-800 font-medium px-4 py-2 rounded-lg mb-3">
+        Distribution actuelle : {{ column_name }}
+      </div>
+      {% endif %}
+
+       <img src="data:image/png;base64,{{ img8 }}" alt="Distribution" class="small-img">
+        </div>
+    {% endif %}
+  </main>
+
+  <footer class="text-center text-gray-500 py-6 text-sm">
+    © 2025 Asamaan | Statistiques générées automatiquement
+  </footer>
 </body>
 </html>
