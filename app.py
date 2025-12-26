@@ -153,6 +153,7 @@ CREDENTIALS = {
     'infirmiers': os.environ.get('infirmiers'), 
     'receptionistes': os.environ.get('receptionistes'),
     'Dr_Toralta_G_.Josephine':os.environ.get('Dr_Toralta_G_.Josephine'),
+    'Dr_Djaury_Dadji_-A':os.environ.get('Dr_Djaury_Dadji_-A'),
     'Dr_Abaye_Evelet':os.environ.get('Dr_Abaye_Evelet'), 
     'Dr_Doumgo_Monna_Doni_Nelson':os.environ.get('Dr_Doumgo_Monna_Doni_Nelson'), 
     'Dr_Ngetigal_Hyacinte':os.environ.get('Dr_Ngetigal_Hyacinte'), 
