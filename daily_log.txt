@@ -1,4 +1,8 @@
-2025-09-16
-Nouvelle evenement: 19:06:23 Inf_Sassou, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 19:07:15 Inf_Sassou, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 19:08:19 Inf_Diarra, login, L'utilisateur 'Inf_Diarra' s'est connecté avec succès
+2026-02-21
+Nouvelle evenement: 11:33:04 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
+Nouvelle evenement: 12:07:36 Dr_Mbengue, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 12:07:53 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
+Nouvelle evenement: 12:39:57 medecins, Suppression d'un patient, Le patient avec l'identifiant 158 a été supprimé. Voici les infos du patient supprimé [RealDictRow([('id', 158), ('name', 'test'), ('adresse', 'test'), ('age', None), ('date_of_birth', None), ('poids', None), ('taille', None), ('tension_arterielle', None), ('temperature', ''), ('hypothese_de_diagnostique', ''), ('bilan', ''), ('resultat_bilan', ''), ('signature', 'Dr Mbengue'), ('renseignements_clinique', ''), ('ordonnance', ''), ('created_at', datetime.date(2026, 2, 21)), ('phone_number', ''), ('meeting', None), ('new_cases', None), ('statut', 'waiting'), ('consultation', ''), ('echographie', '')])]
+Nouvelle evenement: 12:41:01 Dr_Mbengue, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 12:41:10 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
+Nouvelle evenement: 12:42:06 medecins, Ajout d'un patient, Le patient 'test nom' a été ajouté

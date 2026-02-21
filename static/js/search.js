@@ -182,12 +182,13 @@ const serviceItems = {
   const userType = window.USER_TYPE;
   console.log(userType);
   console.log("userType");
+
   // Define which columns each user type can see
   const columnVisibility = {
-    'manager': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
-    'medecins': ['created_at', 'date_of_birth', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
-    'infirmiers': ['created_at', 'phone_number', 'name','poids','taille','tension_arterielle','temperature'],
-    'receptionistes': ['created_at', 'date_of_birth', 'name','adresse','phone_number','meeting', 'new_cases','age']
+    'manager': ['name', 'consultation', 'echographie', 'signature'],
+    'medecins': ['name', 'consultation', 'echographie', 'signature'],
+    'infirmiers': ['name','consultation', 'echographie'],
+    'receptionistes': ['name', 'consultation', 'echographie']
   };
 
     const columnHeaders = {
@@ -204,6 +205,8 @@ const serviceItems = {
     'bilan': 'Bilan',
     'resultat_bilan': 'Conclusion du bilan',
     'ordonnance': 'Ordonnance',
+    'consultation':'consultation',
+    'echographie':'echographie', 
     'signature':'Signature', 
     'meeting':'Rendez-vous',
     'new_cases':'Nouveaux cas',

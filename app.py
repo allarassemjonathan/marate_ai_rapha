@@ -672,7 +672,7 @@ def update_patient(patient_id):
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
 
     # List of known date fields in the table
-    date_fields = {'name', 'adresse', 'age', 'date_of_birth', 'poids', 'taille', 'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 'bilan', 'resultat_bilan', 'signature', 'renseignements_clinique', 'ordonnance', 'created_at'}
+    date_fields = {'name', 'adresse', 'age', 'date_of_birth', 'poids', 'taille', 'tension_arterielle', 'temperature', 'hypothese_de_diagnostique', 'bilan', 'resultat_bilan', 'signature', 'renseignements_clinique', 'ordonnance', 'consultation', 'created_at'}
 
 
     # Replace empty strings with None for date fields

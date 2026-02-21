@@ -318,29 +318,23 @@
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
 
-           <div class="relative">
-            Tension arterielle
-            <input name="tension_arterielle" placeholder="Tension" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
-          
           <div class="relative">
-            Température
-            <input name="temperature" placeholder="Température" class="input-field w-full p-4 rounded-xl">
+            Consultation
+            <textarea name="consultation" placeholder="consultation" class="input-field w-full p-4 rounded-xl"></textarea>
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
 
           <div class="relative">
-            Poids
-            <input name="poids" type="number" step="0.001" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
+            Echographie
+            <textarea name="echographie" placeholder="echographie" class="input-field w-full p-4 rounded-xl"></textarea>
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
 
           <div class="relative">
-            Numéro
-            <input name="phone_number" placeholder="Numero" class="input-field w-full p-4 rounded-xl">
+            Date de visite
+            <input name="created_at" id="created_at" type="date" placeholder="Date de création" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
+        </div>
 
           {%else%}
           
@@ -349,7 +343,7 @@
             <input name="name" placeholder="Nom" required class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
-          
+<!--           
           <div class="relative">
             Addresse
             <input name="adresse" placeholder="Adresse" class="input-field w-full p-4 rounded-xl">
@@ -360,7 +354,7 @@
             Numéro
             <input name="phone_number" placeholder="Numero" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
-          </div>
+          </div> -->
 
           <!-- <div class="relative">
             Rendez-vous
@@ -380,7 +374,7 @@
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
            -->
-          <div class="relative">
+          <!-- <div class="relative">
             Age
             <input name="age" type="number" placeholder="Âge" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
@@ -433,10 +427,16 @@
             <input name="resultat_bilan" placeholder="Conclusion du bilan" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
-          
+           -->
           <div class="relative">
-            Ordonnance
-            <textarea name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
+            Consultation
+            <textarea name="consultation" placeholder="consultation" class="input-field w-full p-4 rounded-xl"></textarea>
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          </div>
+
+          <div class="relative">
+            Echographie
+            <textarea name="echographie" placeholder="echographie" class="input-field w-full p-4 rounded-xl"></textarea>
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
           </div>
 
@@ -445,6 +445,7 @@
             <input name="created_at" id="created_at" type="date" placeholder="Date de création" class="input-field w-full p-4 rounded-xl">
             <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
         </div>
+        
         {%endif%}
           <div class="md:col-span-2 mt-4">
             <button type="submit" class="glow-button w-full py-4 rounded-xl text-lg font-medium">Ajouter Patient</button>
@@ -606,6 +607,16 @@
         <div class="relative md:col-span-2">
           Ordonnance
           <textarea id="edit_ordonnance" name="ordonnance" placeholder="Ordonnance" class="input-field w-full p-4 rounded-xl"></textarea>
+        </div>
+        
+        <div class="relative">
+          Consultation
+          <textarea id="edit_consultation" name="consultation" placeholder="consultation" class="input-field w-full p-4 rounded-xl"></textarea>
+        </div>
+
+        <div class="relative">
+          Echographie
+          <textarea id="edit_echographie" name="echographie" placeholder="echographie" class="input-field w-full p-4 rounded-xl"></textarea>
         </div>
 
         <div class="relative">
@@ -778,7 +789,7 @@ window.addArticle = function(button) {
         // Add all patient data cells
         const fields = ['name', 'date_of_birth', 'adresse', 'age', 'poids', 'taille', 'phone_number', 'meeting','new_cases',
                         'tension_arterielle', 'temperature', 'renseignements_clinique', 'hypothese_de_diagnostique', 
-                        'bilan', 'resultat_bilan', 'ordonnance', 'signature'];
+                        'bilan', 'resultat_bilan', 'ordonnance', 'signature', 'echographie', 'consultation'];
         
         fields.forEach(field => {
           const cell = document.createElement('td');
@@ -867,6 +878,8 @@ window.addArticle = function(button) {
       document.getElementById('edit_renseignements_clinique').value = patient.renseignements_clinique || '';
       document.getElementById('edit_bilan').value = patient.bilan || '';
       document.getElementById('edit_ordonnance').value = patient.ordonnance || '';
+      document.getElementById('edit_consultation').value = patient.consultation || '';
+      document.getElementById('edit_echographie').value = patient.echographie || '';
       document.getElementById('edit_resultat_bilan').value = patient.resultat_bilan || '';
       document.getElementById('edit_created_at').value = patient.created_at || '';
       // Show modal
