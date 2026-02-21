@@ -6,3 +6,5 @@ Nouvelle evenement: 12:39:57 medecins, Suppression d'un patient, Le patient avec
 Nouvelle evenement: 12:41:01 Dr_Mbengue, La connexion a échoué, Failed login attempt
 Nouvelle evenement: 12:41:10 Dr_Mbengue, login, L'utilisateur 'Dr_Mbengue' s'est connecté avec succès
 Nouvelle evenement: 12:42:06 medecins, Ajout d'un patient, Le patient 'test nom' a été ajouté
+Nouvelle evenement: 13:03:08 medecins, Détails des patients, Les détails du patient avec l'identifiant 160 ont été consulté.
+Nouvelle evenement: 13:03:31 medecins, Détails des patients, Les détails du patient avec l'identifiant 160 ont été consulté.
