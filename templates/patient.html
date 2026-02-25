@@ -3,34 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Deétails du patient</title>
+  <title> Détails du patient</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center">
-  <div class="w-full max-w-7xl p-6 bg-white shadow-lg rounded-lg mt-10">
-    <h1 class="text-3xl font-bold text-center mb-6">Détails</h1>
-    <div class="space-y-2">
-      <p><strong>Nom:</strong> {{ patient['name'] }}</p>
-      <p><strong>Date de naissance:</strong>
-        {% if patient['date_of_birth'] %}
-          {{ patient['date_of_birth'] }}
-        {%else%}
-          Aucune
-        {%endif%}
-        </p>
-      <p><strong>Adresse:</strong> 
-        {% if patient['adresse']%}
-          {{ patient['adresse'] }}
-        {%else%}
-          Aucune
-        {%endif%}   
-      </p>
-      
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen p-5">
+  <a href="/" class="inline-flex gap-3 bg-gradient-to-r from-blue-400 to-blue-300 text-white px-5 py-2 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all mb-8">
+            <span><i class="fa-solid fa-arrow-left"></i> Retour à la page principale</span>
+  </a>
+  <!--<div class="w-full max-w-7xl p-6 bg-white shadow-lg rounded-lg mt-10">-->
+    <div class="max-w-7xl mx-auto"></div>
+    <div class="bg-gradient-to-r from-blue-300 to-blue-400 text-white p-8 rounded-t-2xl shadow-lg flex items-center gap-4">
+            <span class="text-4xl"><i class="fa-solid fa-clipboard-user"></i></span>
+            <h1 class="text-3xl font-semibold">Détails du Patient</h1>
     </div>
-    <h2 class="text-2xl font-bold mt-8 mb-4">Visits</h2>
+    <!--<h1 class="text-3xl font-bold text-center mb-6">Détails</h1>-->
+
+    <div class="space-y-2 bg-white p-8 rounded-b-2xl shadow-lg mb-8 border-l-4 border-blue-300">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="flex items-center gap-2 text-blue-700 font-semibold text-sm mb-2">
+                        <span><i class="fa-solid fa-user"></i></span>
+                        <span>Nom</span>
+                    </div>
+          <div class="text-gray-800 text-lg font-medium">{{ patient['name'] }}</div>
+        </div>
+
+        <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="flex items-center gap-2 text-blue-700 font-semibold text-sm mb-2">
+                        <span><i class="fa-solid fa-calendar"></i></span>
+                        <span>Date de naissance</span>
+                    </div>
+                    <div class="text-gray-800 text-lg font-medium">
+                      {% if patient['date_of_birth'] %}
+                      {{ patient['date_of_birth'] }}
+                      {%else%}
+                      Aucune
+                      {%endif%}
+                    </div>
+        </div>
+        <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="flex items-center gap-2 text-blue-700 font-semibold text-sm mb-2">
+                        <span><i class="fa-solid fa-location-dot"></i></span>
+                        <span>Adresse</span>
+                    </div>
+                    <div class="text-gray-800 text-lg font-medium">
+                      {% if patient['adresse']%}
+                      {{ patient['adresse'] }}
+                      {%else%}
+                        Aucune
+                      {%endif%}  
+                    </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="bg-white p-8 rounded-2xl shadow-lg mb-8 overflow-x-auto mt-6">
+    <h2 class="text-2xl text-blue-700 font-semibold mb-6 flex items-center gap-3 pb-4 border-b-4 border-blue-200">
+                <span><i class="fa-solid fa-stethoscope"></i></span>
+                <span>Historique des Visites</span>
+    </h2>
      {% if visits %}
-    <table class="min-w-full w-full table-auto border-collapse">
-        <thead class="table-header">
+    <table class="w-full border-collapse rounded-lg overflow-hidden">
+        <thead class="bg-gradient-to-r from-blue-300 to-blue-400 text-white">
           <tr id="tableHeader">
               <th  class="text-left p-2 border-b">Date</th>
               <th  class="text-left p-2 border-b">Age (annee)</th>
@@ -69,7 +107,7 @@
     {% else %}
       <p class="text-gray-500">No visits recorded yet.</p>
     {% endif %}
-    <a href="/" class="inline-block mt-8 text-blue-500 hover:underline">Retour page principale</a>
+  </div>
   </div>
 </body>
 </html>
