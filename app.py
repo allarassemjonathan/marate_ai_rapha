@@ -1280,6 +1280,8 @@ def login():
             return render_template('login.html')
         
         stored_hash = user['password']
+        print("here")
+        print(stored_hash, password)
         if verify_password(stored_hash, password):
             # store session info
             session['username'] = username_input
@@ -1928,6 +1930,27 @@ def graph_automatique():
         get_chart("graph_automatique",build_graph_automatique_chart),
         mimetype="img/png"
     )
+
+# @app.route("/laboratoire")
+# @login_required
+# def labo():
+#     df = load_df()
+#     df_bilan = df[df["bilan"]!=""]
+#     df_labo_month = df_bilan.groupby(df['created_at'].dt.to_period('M')).size()
+#     toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
+#     def_labo_month = def_labo_month.reindex(toutes_les_periodes, fill_value=0)
+    
+#     fig9, ax9 = plt.subplots(figsize=(8, 4))
+#     def_labo_month.plot(kind="line", marker="o", color="blue", ax=ax9)
+#     ax9.set_title("Evolution des revenus mensuels")
+#     ax9.set_ylabel("Revenu (FCFA)")
+#     ax9.set_xlabel("Mois")
+#     ax9.yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
+#     img9 = fig_to_base64(fig9)
+#     plt.close(fig9)
+
+    
+
 
 @app.route("/stat", methods=['GET','POST'])
 @login_required
