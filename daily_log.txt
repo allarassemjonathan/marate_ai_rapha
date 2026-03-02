@@ -2,3 +2,4 @@
 Nouvelle evenement: 19:57:06 AraneWade, login, L'utilisateur 'AraneWade' s'est connecté avec succès
 Nouvelle evenement: 19:58:11 manager, Facture généré, Facture généré pour le patient Mamadou test
 Nouvelle evenement: 20:03:28 manager, Facture généré, Facture généré pour le patient Mamadou 
+Nouvelle evenement: 20:12:19 manager, Facture généré, Facture généré pour le patient Mamadou 

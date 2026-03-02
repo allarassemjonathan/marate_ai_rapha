@@ -547,7 +547,7 @@ class InvoicePDF(FPDF):
         self.set_font('Arial', 'B', 14)
         self.set_text_color(0)
         self.cell(0, 10, f"Facture du mois de {mois_annee}", ln=1, align='C')
-        self.cell(0, 10, f"Société d'assurance : {assurance}", ln=1, align='C')
+        self.cell(0, 10, f"Société d'assurance :", ln=1, align='C')
         if envoye_a:
             self.cell(0, 10, f"{envoye_a}", ln=1, align='C')
         self.cell(0, 10, "doit au cabinet Solidarité", ln=1, align='C')
