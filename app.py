@@ -546,8 +546,8 @@ class InvoicePDF(FPDF):
         
         self.set_font('Arial', 'B', 14)
         self.set_text_color(0)
-        self.cell(0, 10, f"Société d'assurance : {assurance}", ln=1, align='C')
         self.cell(0, 10, f"Facture du mois de {mois_annee}", ln=1, align='C')
+        self.cell(0, 10, f"Société d'assurance : {assurance}", ln=1, align='C')
         if envoye_a:
             self.cell(0, 10, f"{envoye_a}", ln=1, align='C')
         self.cell(0, 10, "doit au cabinet Solidarité", ln=1, align='C')
@@ -557,7 +557,7 @@ class InvoicePDF(FPDF):
         self.set_font('Arial', '', 11)
         self.set_text_color(0)
         self.cell(95, 10, f"Nom: {meta.get('nom', '')}", ln=0)
-        self.cell(95, 10, f"N° Police: {meta.get('police', '')}", ln=1)
+        self.cell(95, 10, f"N° Immatriculation (Identifiant de l'assurance): {meta.get('Immatriculation', '')}", ln=1)
 
         self.cell(95, 10, f"Prénom: {meta.get('prenom', '')}", ln=0)
 
@@ -1015,7 +1015,7 @@ def add():
                         print(data[field])
                         data[field] = float(data[field])
                     except ValueError:
-                        print('issue is here 2 ')
+                        print('issue is here 2 ', field, data[field])
                         return jsonify({'status': 'error', 'message': f'{field} must be a number'}), 400
 
         # Notify reception if temperature is missing

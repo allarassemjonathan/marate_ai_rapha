@@ -1,0 +1,381 @@
+{
+  "proteinurie_24h": {
+    "label": "Protéinurie 24H",
+    "unitPrice": 10000,
+    "category": "Analyse médicale"
+  },
+  "albuminurie": {
+    "label": "Albuminurie",
+    "unitPrice": 4000,
+    "category": "Analyse médicale"
+  },
+  "uricemie": {
+    "label": "Uricémie",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "toxoplasme": {
+    "label": "Toxoplasme",
+    "unitPrice": 5000,
+    "category": "Analyse médicale"
+  },
+  "rubeole": {
+    "label": "Rubéole",
+    "unitPrice": 5000,
+    "category": "Analyse médicale"
+  },
+  "gsrh": {
+    "label": "GSRH",
+    "unitPrice": 3000,
+    "category": "Analyse médicale"
+  },
+  "nfs": {
+    "label": "NFS",
+    "unitPrice": 3000,
+    "category": "Analyse médicale"
+  },
+  "glycemie_cap": {
+    "label": "Glycémie capillaire",
+    "unitPrice": 1000,
+    "category": "Analyse médicale"
+  },
+  "glycemie_veineuse": {
+    "label": "Glycémie veineuse",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "bhcg": {
+    "label": "BHCG",
+    "unitPrice": 25000,
+    "category": "Analyse médicale"
+  },
+  "fcv": {
+    "label": "FCV",
+    "unitPrice": 25000,
+    "category": "Analyse médicale"
+  },
+  "ferritinemie": {
+    "label": "Ferritinémie",
+    "unitPrice": 20000,
+    "category": "Analyse médicale"
+  },
+  "fer_serique": {
+    "label": "Fer sérique",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "bw": {
+    "label": "BW",
+    "unitPrice": 3000,
+    "category": "Analyse médicale"
+  },
+  "ag_hbs": {
+    "label": "Ag HBs",
+    "unitPrice": 2500,
+    "category": "Analyse médicale"
+  },
+  "aslo": {
+    "label": "ASLO",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "creatininemie": {
+    "label": "Créatininémie",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "azotemie": {
+    "label": "Azotémie",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "magnesemie": {
+    "label": "Magnésémie",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "vs": {
+    "label": "VS",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "fr": {
+    "label": "FR",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "crp": {
+    "label": "CRP",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "ge": {
+    "label": "GE",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "te": {
+    "label": "TE",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "transaminases": {
+    "label": "Transaminases",
+    "unitPrice": 4000,
+    "category": "Analyse médicale"
+  },
+  "widal_felix": {
+    "label": "Widal et Félix",
+    "unitPrice": 5000,
+    "category": "Analyse médicale"
+  },
+  "calcemie": {
+    "label": "Calcémie",
+    "unitPrice": 5000,
+    "category": "Analyse médicale"
+  },
+  "hemoglobine_glyquee": {
+    "label": "Hémoglobine glyquée",
+    "unitPrice": 8000,
+    "category": "Analyse médicale"
+  },
+  "chlamydiae": {
+    "label": "Chlamydiae",
+    "unitPrice": 10000,
+    "category": "Analyse médicale"
+  },
+  "psa_total": {
+    "label": "PSA total",
+    "unitPrice": 20000,
+    "category": "Analyse médicale"
+  },   "ecbu": {
+    "label": "ECBU",
+    "unitPrice": 10000,
+    "category": "Analyse médicale"
+  },
+  "pv": {
+    "label": "PV",
+    "unitPrice": 10000,
+    "category": "Analyse médicale"
+  },
+  "ionnogramme_sanguin": {
+    "label": "IONNOGRAMME SANGUIN",
+    "unitPrice": 15000,
+    "category": "Analyse médicale"
+  },
+  "gamma_gt": {
+    "label": "GAMMA GT",
+    "unitPrice": 8000,
+    "category": "Analyse médicale"
+  },
+  "triglycerides": {
+    "label": "TRIGLYCERIDES",
+    "unitPrice": 4000,
+    "category": "Analyse médicale"
+  },
+  "cholesterol_total": {
+    "label": "CHOLESTEROL TOTAL",
+    "unitPrice": 3000,
+    "category": "Analyse médicale"
+  },
+  "hdl": {
+    "label": "HDL",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "ldl": {
+    "label": "LDL",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "psa_total": {
+    "label": "PSA TOTAL",
+    "unitPrice": 20000,
+    "category": "Analyse médicale"
+  },
+  "rac": {
+    "label": "RAC",
+    "unitPrice": 15000,
+    "category": "Analyse médicale"
+  },
+  "electrophorese": {
+    "label": "ELECTROPHORESE",
+    "unitPrice": 30000,
+    "category": "Analyse médicale"
+  },
+  "tpha": {
+    "label": "TPHA",
+    "unitPrice": 5000,
+    "category": "Analyse médicale"
+  },
+  "microalbumine": {
+    "label": "MICROALBUMINE",
+    "unitPrice": 10000,
+    "category": "Analyse médicale"
+  },
+  "lipide_totaux": {
+    "label": "LIPIDE TOTAUX",
+    "unitPrice": 2000,
+    "category": "Analyse médicale"
+  },
+  "culot_urinaire": {
+    "label": "CULOT URINAIRE",
+    "unitPrice": 4000,
+    "category": "Analyse médicale"
+  },
+  "tptck": {
+    "label": "TPTCK",
+    "unitPrice": 15000,
+    "category": "Analyse médicale"
+  }, 
+  "BANDELETTE": {
+    "label": "BANDELETTE",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "SPASFON": {
+    "label": "SPASFON",
+    "unitPrice": 600,
+    "category": "Stock médicaments"
+  },
+  "VOGALENE": {
+    "label": "VOGALENE",
+    "unitPrice": 500,
+    "category": "Stock médicaments"
+  },
+  "PERFUSEUR": {
+    "label": "PERFUSEUR",
+    "unitPrice": 500,
+    "category": "Stock médicaments"
+  },
+  "DISLEE": {
+    "label": "DISLEE",
+    "unitPrice": 1500,
+    "category": "Stock médicaments"
+  },
+  "SSI": {
+    "label": "SSI",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "RINGER": {
+    "label": "RINGER",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "SG": {
+    "label": "SG",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "METRO": {
+    "label": "METRO",
+    "unitPrice": 500,
+    "category": "Stock médicaments"
+  },
+  "TRABAR": {
+    "label": "TRABAR",
+    "unitPrice": 2000,
+    "category": "Stock médicaments"
+  },
+  "PERFALGAN": {
+    "label": "PERFALGAN",
+    "unitPrice": 500,
+    "category": "Stock médicaments"
+  },
+  "CATHETER": {
+    "label": "CATHETER",
+    "unitPrice": 2000,
+    "category": "Stock médicaments"
+  },
+  "FIL_DE_SUTURE": {
+    "label": "FIL DE SUTURE",
+    "unitPrice": 100,
+    "category": "Stock médicaments"
+  },
+  "COMPRESSE": {
+    "label": "COMPRESSE",
+    "unitPrice": 2000,
+    "category": "Stock médicaments"
+  },
+  "LOXEN": {
+    "label": "LOXEN",
+    "unitPrice": 1500,
+    "category": "Stock médicaments"
+  },
+  "ARTESUN": {
+    "label": "ARTESUN",
+    "unitPrice": 500,
+    "category": "Stock médicaments"
+  },
+  "DYNAPAR": {
+    "label": "DYNAPAR",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "XYLOCAIN": {
+    "label": "XYLOCAIN",
+    "unitPrice": 200,
+    "category": "Stock médicaments"
+  },
+  "VITAGEN": {
+    "label": "VITAGEN",
+    "unitPrice": 1500,
+    "category": "Stock médicaments"
+  },
+  "BANELEX": {
+    "label": "BANELEX",
+    "unitPrice": 2500,
+    "category": "Stock médicaments"
+  },
+  "AVAFAC": {
+    "label": "AVAFAC",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "CLAFRAN": {
+    "label": "CLAFRAN",
+    "unitPrice": 2000,
+    "category": "Stock médicaments"
+  },
+  "SALBUTAMOL": {
+    "label": "SALBUTAMOL",
+    "unitPrice": 1500,
+    "category": "Stock médicaments"
+  },
+  "CELESTENE": {
+    "label": "CELESTENE",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "TEST_DE_GROSSESSE": {
+    "label": "TEST DE GROSSESSE",
+    "unitPrice": 100,
+    "category": "Stock médicaments"
+  },
+  "SERINGUE_10CC": {
+    "label": "SERINGUE 10CC",
+    "unitPrice": 200,
+    "category": "Stock médicaments"
+  },
+  "SERINGUE_5CC": {
+    "label": "SERINGUE 5CC",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "SERINGUE_INSULINE": {
+    "label": "SERINGUE INSULINE",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "PENICILLIN": {
+    "label": "PENICILLIN",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  },
+  "VALIUM": {
+    "label": "VALIUM",
+    "unitPrice": 1000,
+    "category": "Stock médicaments"
+  }
+}

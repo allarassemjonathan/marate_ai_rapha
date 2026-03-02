@@ -614,7 +614,7 @@ window.addEventListener('click', function(e) {
              class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
       <input id="input_prenom" type="text" placeholder="Prénom du patient"
              class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
-      <input id="input_police" type="text" placeholder="Numéro de police"
+      <input id="input_police" type="text" placeholder="Numéro d'immatriculation"
              class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
       <input id="input_assurance" type="text" placeholder="Nom de l'assurance"
              class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
@@ -938,13 +938,30 @@ window.addEventListener('click', function(e) {
     row.className = 'article-row grid grid-cols-1 md:grid-cols-3 gap-4 items-center';
 
     row.innerHTML = `
-      <input type="text" class="item-libelle input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Libellé" required>
-      <input type="number" class="item-quantite input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Quantité" min="1" step="1" value="1" required>
-      <input type="number" class="item-montant input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Montant (Fcfa)" min="0" step="1" value="0" required>
-      <div class="col-span-1 md:col-span-3 text-right">
-        <button type="button" onclick="removeArticle(this)" class="text-red-500 hover:text-red-500 text-sm">Supprimer l'article</button>
-      </div>
+        <div class="dropdown-container relative">
+            <div class="relative">
+                <input type="text" 
+                       class="item-libelle input-field w-full p-3 rounded-xl border border-gray-600 pr-10" 
+                       placeholder="Libellé" 
+                       onclick="toggleDropdown(this)" 
+                       oninput="filterDropdown(this)"
+                       autocomplete="off"
+                       required>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg class="dropdown-arrow w-4 h-4 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="dropdown-list absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto" style="display: none;"></div>
+        </div>
+        <input type="number" class="item-quantite input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Quantité" min="1" step="1" value="1" required>
+        <input type="number" class="item-montant input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Montant (Fcfa)" min="0" step="1" value="0" required>
+        <div class="col-span-1 md:col-span-3 text-right">
+            <button type="button" onclick="removeArticle(this)" class="text-red-500 hover:text-red-500 text-sm">Supprimer l'article</button>
+        </div>
     `;
+
 
     articleList.appendChild(row);
 
@@ -1152,8 +1169,19 @@ window.addEventListener('click', function(e) {
       // Initialize any needed functionality
     });
 
-    
     let currentPatientId = null;
+
+    // Predefined service items with their unit prices
+    let serviceItems = {};
+    fetch('/static/js/services.json')
+    .then(response => response.json())
+    .then(data => {
+      serviceItems = data;
+      console.log(serviceItems.consultation_generale.unitPrice); // 150
+    })
+    .catch(error => console.error("Error loading JSON:", error));
+
+
 
     // Function to open invoice modal when table row is clicked
     function openInvoiceModal(patientId) {
