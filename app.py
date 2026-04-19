@@ -10,7 +10,7 @@ import matplotlib.ticker as mticker
 import pandas as pd
 import io
 from collections import defaultdict
-from flask import Flask, render_template, request, jsonify, send_file, session, flash, redirect, url_for
+from flask import Flask, render_template, request, jsonify, send_file, session, flash, redirect, url_for, after_this_request
 import sqlite3
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -472,203 +472,215 @@ def email_reception(firstname, lastname, body, plot, recipient_email):
 
 # PDF generation using fpdf==1.7.2
 class InvoicePDF(FPDF):
+    MOIS_FR = {
+        "January": "Janvier", "February": "Février", "March": "Mars",
+        "April": "Avril", "May": "Mai", "June": "Juin",
+        "July": "Juillet", "August": "Août", "September": "Septembre",
+        "October": "Octobre", "November": "Novembre", "December": "Décembre"
+    }
+
+    def _fmt_currency(self, value):
+        return f"{int(value):,} Fcfa".replace(",", " ")
+
     def header(self):
-        # Add logo if possible
+        # Cyan header band
+        self.set_fill_color(6, 182, 212)
+        self.rect(0, 0, 210, 36, 'F')
+
+        # Logos via BytesIO (no temp files)
         try:
-            logo_solidarite = "https://allarassemjonathan.github.io/solidarite_logo.png"
-            logo_url = "https://allarassemjonathan.github.io/marate_white.png"
-            response = requests.get(logo_url, timeout=10)
-            if response.status_code == 200:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
-                    tmp_file.write(response.content)
-                    tmp_file.flush()
-                    self.image(tmp_file.name, 10, 8, 40)
-            
-            other_res= requests.get(logo_solidarite, timeout=10)
-            if other_res.status_code == 200:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file:
-                    tmp_file.write(other_res.content)
-                    tmp_file.flush()
-                    self.image(tmp_file.name, 160, 8, 40)
+            logos = [
+                ("https://allarassemjonathan.github.io/solidarite_logo.png", 12, 3, 38),
+                ("https://allarassemjonathan.github.io/marate_white.png", 160, 10, 30),
+            ]
+            for url, x, y, w in logos:
+                resp = requests.get(url, timeout=10)
+                if resp.status_code == 200:
+                    self.image(io.BytesIO(resp.content), x, y, w)
+        except Exception:
+            pass
 
-        except Exception as e:
-            print(f"Could not load logo: {e}")
+        # Clinic name on the band
+        self.set_y(10)
+        self.set_font('Arial', 'B', 15)
+        self.set_text_color(255, 255, 255)
+        self.cell(0, 10, 'Clinique de la Solidarite', align='C')
 
-        self.set_font('Arial', 'B', 16)
-        self.set_text_color(6, 182, 212)
-        self.cell(0, 10, 'Devis Cabinet Solidarité', border=False, ln=1, align='C')
-        self.ln(10)
+        # Contact info below band
+        self.set_y(39)
+        self.set_font('Arial', '', 8)
+        self.set_text_color(130, 130, 130)
+        self.cell(0, 5, 'Bd Maurice Gueye, Angle Rue de l\'Hopital  |  (+221) 33 939 91 91  |  BP: 486, Rufisque', align='C')
+
+        self.set_y(47)
 
     def footer(self):
-        self.set_y(-15)
-        self.set_font('Arial', 'I', 8)
-        self.set_text_color(128)
-        self.cell(0, 10, f'Page {self.page_no()}', align='C')
-
-    def add_patient_info(self, patient):
-        self.set_font('Arial', '', 11)
-        self.set_text_color(0)
-
-        self.cell(100, 10, f"Nom: {patient['name']}", ln=0)
-        self.cell(90, 10, "Cabinet dentaire la renaissance", ln=1)
-
-        self.cell(100, 10, f"Adresse: {patient['adresse'] or 'N/A'}", ln=0)
-        self.cell(90, 10, "Kantara Sacko, Rue 22, Medina Dakar", ln=1)
-
-        self.cell(100, 10, f"Date de naissance: {patient['date_of_birth'] or 'N/A'}", ln=0)
-        self.cell(90, 10, "cablarenaissance@gmail.com", ln=1)
-
-        self.cell(100, 10, f"Date de facture: {datetime.now().strftime('%d/%m/%Y %H:%M')}", ln=0)
-        self.cell(90, 10, "(+221) 78 635 95 65", ln=1)
-        self.ln(5)
+        self.set_y(-18)
+        self.set_draw_color(6, 182, 212)
+        self.set_line_width(0.3)
+        self.line(10, self.get_y(), 200, self.get_y())
+        self.ln(2)
+        self.set_font('Arial', '', 7)
+        self.set_text_color(140, 140, 140)
+        self.cell(63, 5, 'Clinique de la Solidarite', align='L')
+        self.cell(63, 5, f'Page {self.page_no()}/{{nb}}', align='C')
+        self.cell(63, 5, f'Genere le {datetime.now().strftime("%d/%m/%Y")}', align='R')
 
     def add_invoice_header(self, meta):
-        dic =  { "January": "Janvier",
-            "February": "Février",
-            "March": "Mars",
-            "April": "Avril",
-            "May": "Mai",
-            "June": "Juin",
-            "July": "Juillet",
-            "August": "Août",
-            "September": "Septembre",
-            "October": "Octobre",
-            "November": "Novembre",
-            "December": "Décembre"}
-        assurance = meta.get('assurance', '')
-        envoye_a = meta.get('envoye_a', '')
         now = datetime.now()
-        mois_annee = now.strftime('%B %Y').capitalize()
-        month = mois_annee.split(' ')[0]
-        print(month)
-        print(dic.get(month))
-        mois_annee = month if month not in dic else mois_annee.replace(month, dic.get(month))
-        
-        self.set_font('Arial', 'B', 14)
-        self.set_text_color(0)
-        self.cell(0, 10, f"Facture du mois de {mois_annee}", ln=1, align='C')
-        self.cell(0, 10, f"Société d'assurance :", ln=1, align='C')
+        month_en = now.strftime('%B')
+        month_fr = self.MOIS_FR.get(month_en, month_en)
+        year = now.strftime('%Y')
+        envoye_a = meta.get('envoye_a', '')
+
+        # Title pill
+        self.set_font('Arial', 'B', 13)
+        self.set_fill_color(230, 248, 250)
+        self.set_draw_color(6, 182, 212)
+        self.set_text_color(6, 182, 212)
+        self.set_line_width(0.4)
+        title = f'FACTURE  -  {month_fr} {year}'
+        tw = self.get_string_width(title) + 24
+        x = (210 - tw) / 2
+        self.set_x(x)
+        self.cell(tw, 11, title, border=1, ln=1, align='C', fill=True)
+        self.ln(4)
+
+        # Insurance / recipient subtitle
         if envoye_a:
-            self.cell(0, 10, f"{envoye_a}", ln=1, align='C')
-        self.cell(0, 10, "doit au cabinet Solidarité", ln=1, align='C')
-        self.ln(5)
+            self.set_font('Arial', '', 10)
+            self.set_text_color(80, 80, 80)
+            self.cell(0, 7, f"Societe d'assurance : {envoye_a}  -  doit au cabinet Solidarite", align='C', ln=1)
+            self.ln(2)
 
-        # Then the usual patient metadata below
-        self.set_font('Arial', '', 11)
-        self.set_text_color(0)
-        self.cell(95, 10, f"Nom: {meta.get('nom', '')}", ln=0)
-        self.cell(95, 10, f"N° Immatriculation (Identifiant de l'assurance): {meta.get('Immatriculation', '')}", ln=1)
+        # Patient info box
+        box_x = 10
+        box_y = self.get_y()
+        box_w = 190
+        box_h = 22
+        self.set_draw_color(6, 182, 212)
+        self.set_line_width(0.3)
+        self.rect(box_x, box_y, box_w, box_h, round_corners=True, corner_radius=3, style='D')
 
-        self.cell(95, 10, f"Prénom: {meta.get('prenom', '')}", ln=0)
+        # Row 1: Nom + N Police
+        self.set_xy(15, box_y + 3)
+        self.set_font('Arial', 'B', 9)
+        self.set_text_color(100, 100, 100)
+        self.cell(18, 5, 'Nom :')
+        self.set_font('Arial', '', 10)
+        self.set_text_color(30, 30, 30)
+        self.cell(67, 5, meta.get('nom', ''))
 
-        self.cell(95, 10, f"Date: {now.strftime('%d/%m/%Y')}", ln=1)
-        self.ln(5)
+        self.set_font('Arial', 'B', 9)
+        self.set_text_color(100, 100, 100)
+        self.cell(22, 5, 'N Police :')
+        self.set_font('Arial', '', 10)
+        self.set_text_color(30, 30, 30)
+        self.cell(0, 5, meta.get('police', ''), ln=1)
+
+        # Row 2: Prenom + Date
+        self.set_x(15)
+        self.set_font('Arial', 'B', 9)
+        self.set_text_color(100, 100, 100)
+        self.cell(18, 5, 'Prenom :')
+        self.set_font('Arial', '', 10)
+        self.set_text_color(30, 30, 30)
+        self.cell(67, 5, meta.get('prenom', ''))
+
+        self.set_font('Arial', 'B', 9)
+        self.set_text_color(100, 100, 100)
+        self.cell(22, 5, 'Date :')
+        self.set_font('Arial', '', 10)
+        self.set_text_color(30, 30, 30)
+        self.cell(0, 5, now.strftime('%d/%m/%Y'), ln=1)
+
+        self.set_y(box_y + box_h + 6)
 
     def add_invoice_sections(self, sections, pourcentage_patient):
         total_net = 0
-        self.set_font('Arial', 'B', 12)
+        col_widths = [50, 28, 37, 30, 45]
+        table_w = sum(col_widths)
 
         for section in sections:
-            self.set_fill_color(6, 182, 212)
-            self.set_text_color(255)
-            self.cell(0, 10, section.get('titre', 'Section'), 1, 1, 'C', 1)
-
-            headers = ['Libellé', 'Quantité', 'Montant unitaire', f'% Assurance', 'Net à payer']
-            col_widths = [50, 30, 35, 25, 45]
-
+            # Section title bar
             self.set_font('Arial', 'B', 11)
-            for i, header in enumerate(headers):
-                print("Rendering table headers for section:", section.get('titre', 'Section'))
-                self.cell(col_widths[i], 10, header, 1, 0, 'C', True)
+            self.set_fill_color(6, 182, 212)
+            self.set_text_color(255, 255, 255)
+            self.cell(table_w, 9, f'  {section.get("titre", "Section")}', 0, 1, 'L', True)
+
+            # Column headers
+            headers = ['Libelle', 'Quantite', 'Montant unit.', '% Assurance', 'Net a payer']
+            self.set_font('Arial', 'B', 9)
+            self.set_fill_color(230, 248, 250)
+            self.set_text_color(60, 60, 60)
+            self.set_draw_color(6, 182, 212)
+            self.set_line_width(0.2)
+            for i, h in enumerate(headers):
+                align = 'L' if i == 0 else 'C'
+                if i == len(headers) - 1:
+                    align = 'R'
+                self.cell(col_widths[i], 8, h, 'B', 0, align, True)
             self.ln()
 
-            self.set_font('Arial', '', 10)
-            self.set_text_color(0)
-
+            # Data rows
+            self.set_font('Arial', '', 9)
             sous_total = 0
 
-            for article in section.get('articles', []):
+            for idx, article in enumerate(section.get('articles', [])):
                 qte = float(article.get('quantite', 1))
                 brut = float(article.get('montant', 0))
                 net = round(brut * qte * pourcentage_patient / 100)
                 sous_total += net
                 total_net += net
 
+                # Alternating row fill
+                if idx % 2 == 0:
+                    self.set_fill_color(255, 255, 255)
+                else:
+                    self.set_fill_color(245, 247, 250)
+
+                self.set_text_color(30, 30, 30)
                 row = [
-                    article.get('libelle', ''),
-                    str(int(qte)),
-                    f"{int(brut)} Fcfa",
-                    f"{int(100 - pourcentage_patient)}%",
-                    f"{int(net)} Fcfa"
+                    (article.get('libelle', ''), 'L'),
+                    (str(int(qte)), 'C'),
+                    (self._fmt_currency(brut), 'C'),
+                    (f'{int(100 - pourcentage_patient)}%', 'C'),
+                    (self._fmt_currency(net), 'R'),
                 ]
-                for i, datum in enumerate(row):
-                    self.cell(col_widths[i], 10, datum, 1)
+                for i, (datum, align) in enumerate(row):
+                    self.cell(col_widths[i], 8, datum, 0, 0, align, True)
                 self.ln()
 
-            # Add section subtotal
-            self.set_font('Arial', 'B', 11)
+                # Hairline separator
+                y = self.get_y()
+                self.set_draw_color(210, 215, 220)
+                self.set_line_width(0.15)
+                self.line(10, y, 10 + table_w, y)
+
+            # Subtotal row
+            self.set_font('Arial', 'B', 10)
+            self.set_fill_color(230, 248, 250)
+            self.set_draw_color(6, 182, 212)
+            self.set_line_width(0.3)
             self.set_text_color(6, 182, 212)
-            self.cell(sum(col_widths[:-1]), 10, "Sous-total de la section", 1, 0, 'R')
-            self.cell(col_widths[-1], 10, f"{int(sous_total)} Fcfa", 1, 1, 'C')
+            self.cell(sum(col_widths[:-1]), 9, 'Sous-total  ', 'T', 0, 'R', True)
+            self.cell(col_widths[-1], 9, self._fmt_currency(sous_total), 'T', 1, 'R', True)
+            self.ln(5)
 
-            self.ln(3)
-
-        # Final total
+        # Final total box
+        self.ln(3)
+        box_w = 130
+        box_x = (210 - box_w) / 2
+        box_y = self.get_y()
+        self.set_fill_color(255, 245, 247)
+        self.set_draw_color(220, 20, 60)
+        self.set_line_width(0.6)
+        self.rect(box_x, box_y, box_w, 14, round_corners=True, corner_radius=3, style='DF')
+        self.set_xy(box_x, box_y + 2)
         self.set_font('Arial', 'B', 12)
         self.set_text_color(220, 20, 60)
-        self.cell(0, 10, f"MONTANT À PAYER PAR LE PATIENT: {int(total_net)} Fcfa", ln=1, align='C')
-
-    def add_invoice_table(self, items):
-        self.set_font('Arial', 'B', 11)
-        self.set_fill_color(6, 182, 212)
-        self.set_text_color(255)
-        headers = ['Article', 'Quantité', 'Prix Unitaire', 'Prix Total', 'Date']
-        col_widths = [40, 25, 35, 35, 40]
-
-        for i, header in enumerate(headers):
-            print("Rendering table headers for section:", header.get('titre', 'Section'))
-            self.cell(col_widths[i], 10, header, 1, 0, 'C', 1, True)
-        self.ln()
-        self.set_font('Arial', '', 10)
-        self.set_text_color(0)
-
-        total_amount = 0
-        for item in items:
-            quantity = int(str(item['quantity']).replace(' ', ''))
-            price = int(str(item['price']).replace(' ', ''))
-            total_price = quantity * price
-            total_amount += total_price
-
-            row = [
-                str(item['name']),
-                str(quantity),
-                f"{price} Fcfa",
-                f"{total_price} Fcfa",
-                datetime.now().strftime('%d/%m/%Y')
-            ]
-            for i, datum in enumerate(row):
-                self.cell(col_widths[i], 10, datum, 1)
-            self.ln()
-
-        # Total row
-        self.set_font('Arial', 'B', 11)
-        self.cell(col_widths[0] + col_widths[1] + col_widths[2], 10, 'TOTAL:', 1)
-        self.cell(col_widths[3], 10, f"{total_amount} Fcfa", 1)
-        self.cell(col_widths[4], 10, '', 1)
-        self.ln(10)
-
-        # Insurance breakdown
-        insurance_amount = int(total_amount * 0.80)
-        patient_amount = total_amount - insurance_amount
-
-        self.set_font('Arial', '', 11)
-        self.cell(60, 10, f"Part Assureur (80%): {insurance_amount} Fcfa", ln=1)
-        self.cell(60, 10, f"Part Patient (20%): {patient_amount} Fcfa", ln=1)
-
-        self.ln(5)
-        self.set_font('Arial', 'B', 12)
-        self.set_text_color(220, 20, 60)
-        self.cell(0, 10, f"MONTANT À PAYER PAR LE PATIENT: {patient_amount} Fcfa", ln=1, align='C')
+        self.cell(box_w, 10, f'TOTAL A PAYER : {self._fmt_currency(total_net)}', align='C')
+        self.ln(18)
 
 
 @app.route('/generate_invoice/<int:patient_id>', methods=['POST'])
@@ -685,27 +697,36 @@ def generate_invoice(patient_id):
         pourcentage_patient = 100 - float(meta.get('pourcentage', 0))  # e.g. 20 if insurance covers 80%
 
         pdf = InvoicePDF()
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.add_invoice_header(meta)
         pdf.add_invoice_sections(sections, pourcentage_patient)
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-            pdf.output(tmp_file.name)
-            tmp_file.seek(0)
+        tmp_path = tempfile.mktemp(suffix=".pdf")
+        pdf.output(tmp_path)
 
-            filename = f"facture_{meta['nom']}_{meta['prenom']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-            
-            log_file(
-                session.get('user_type'),
-                'Facture généré',
-                f"Facture généré pour le patient {meta.get('nom')} {meta.get('prenom')}"
-            )
-            return send_file(
-                tmp_file.name,
-                as_attachment=True,
-                download_name=filename,
-                mimetype='application/pdf'
-            )
+        filename = f"facture_{meta['nom']}_{meta['prenom']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+
+        log_file(
+            session.get('user_type'),
+            'Facture généré',
+            f"Facture généré pour le patient {meta.get('nom')} {meta.get('prenom')}"
+        )
+
+        @after_this_request
+        def cleanup(response):
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+            return response
+
+        return send_file(
+            tmp_path,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/pdf'
+        )
 
     except Exception as e:
         print(f"Error generating invoice: {str(e)}")

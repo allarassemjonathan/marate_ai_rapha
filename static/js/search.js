@@ -735,6 +735,7 @@ editForm.addEventListener('submit', (e) => {
     .then(res => res.json())
     .then(() => {
       form.reset();
+      closeAddPatientModal();
       loadPatients(searchBox.value);
       showToast('Patient ajouté avec succès', 2500);
     });

@@ -1,5 +1,12 @@
-2026-03-01
-Nouvelle evenement: 19:57:06 AraneWade, login, L'utilisateur 'AraneWade' s'est connecté avec succès
-Nouvelle evenement: 19:58:11 manager, Facture généré, Facture généré pour le patient Mamadou test
-Nouvelle evenement: 20:03:28 manager, Facture généré, Facture généré pour le patient Mamadou 
-Nouvelle evenement: 20:12:19 manager, Facture généré, Facture généré pour le patient Mamadou 
+2026-04-18
+Nouvelle evenement: 21:46:55 manager, login, L'utilisateur 'manager' s'est connecté avec succès
+Nouvelle evenement: 22:04:37 manager, Ajout d'un patient, Le patient 'Jonathan Allarassem' a été ajouté
+Nouvelle evenement: 22:04:42 manager, Patient sélectionné, Patient avec ID 395 selectionné.
+Nouvelle evenement: 22:04:46 manager, modification patient, Patient avec ID 395 a été modifié
+Nouvelle evenement: 22:04:50 manager, Patient sélectionné, Patient avec ID 395 selectionné.
+Nouvelle evenement: 22:04:56 manager, Détails des patients, Les détails du patient avec l'identifiant 395 ont été consulté.
+Nouvelle evenement: 22:05:17 manager, Suppression d'un patient, Le patient avec l'identifiant 395 a été supprimé. Voici les infos du patient supprimé [RealDictRow({'id': 395, 'name': 'Jonathan Allarassem', 'adresse': 'were', 'age': 0, 'date_of_birth': None, 'poids': None, 'taille': None, 'tension_arterielle': None, 'temperature': None, 'hypothese_de_diagnostique': None, 'bilan': None, 'resultat_bilan': None, 'signature': None, 'renseignements_clinique': None, 'ordonnance': None, 'created_at': datetime.date(2026, 4, 19), 'age_years': 0, 'age_months': 0, 'age_days': 0, 'ipm': None, 'montant': None, 'testyy': None, 'new_cases': None})]
+Nouvelle evenement: 22:11:06 manager, Facture généré, Facture généré pour le patient SECK NDEYE WARICK
+Nouvelle evenement: 22:26:51 manager, Facture généré, Facture généré pour le patient SECK NDEYE WARICK
+Nouvelle evenement: 22:34:59 manager, Facture généré, Facture généré pour le patient SECK NDEYE WARICK
+Nouvelle evenement: 22:40:03 manager, Facture généré, Facture généré pour le patient SECK NDEYE WARICK
