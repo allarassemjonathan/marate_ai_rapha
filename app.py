@@ -1329,7 +1329,24 @@ def patient_detail(patient_id):
     print(len(visits))
 
     row_as_visits = [dict(row) for row in visits]
-    return render_template('patient.html', visits = row_as_visits, patient=row_as_dicts[0])
+
+    # Fetch hospitalizations for this patient
+    cur.execute('''
+        SELECT * FROM hospitalizations
+        WHERE patient_id = %s ORDER BY date_admission DESC
+    ''', (patient_id,))
+    hospitalizations = [dict(row) for row in cur.fetchall()]
+
+    # Fetch treatments for each hospitalization
+    for hosp in hospitalizations:
+        cur.execute('''
+            SELECT * FROM hospitalization_treatments
+            WHERE hospitalization_id = %s ORDER BY ordre
+        ''', (hosp['id'],))
+        hosp['treatments'] = [dict(r) for r in cur.fetchall()]
+
+    conn.close()
+    return render_template('patient.html', visits=row_as_visits, patient=row_as_dicts[0], hospitalizations=hospitalizations)
 
 @app.route('/get_patient/<int:patient_id>')
 @login_required

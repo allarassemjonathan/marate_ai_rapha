@@ -108,6 +108,143 @@
       <p class="text-gray-500">No visits recorded yet.</p>
     {% endif %}
   </div>
+
+  <!-- Hospitalizations Section -->
+  <div class="bg-white p-8 rounded-2xl shadow-lg mb-8 mt-6">
+    <h2 class="text-2xl text-purple-700 font-semibold mb-6 flex items-center gap-3 pb-4 border-b-4 border-purple-200">
+      <span><i class="fa-solid fa-bed"></i></span>
+      <span>Historique des Hospitalisations</span>
+    </h2>
+
+    {% if hospitalizations %}
+      {% for hosp in hospitalizations %}
+      <div class="mb-6 border border-purple-200 rounded-xl overflow-hidden">
+        <!-- Hospitalization Header -->
+        <div class="bg-gradient-to-r from-purple-300 to-purple-400 text-white px-6 py-3 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span class="font-semibold">Admission: {{ hosp['date_admission'].strftime('%d/%m/%Y %H:%M') if hosp['date_admission'] and hosp['date_admission'].strftime else hosp['date_admission'] }}</span>
+          </div>
+          {% if hosp['date_sortie'] %}
+          <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">Sorti(e)</span>
+          {% else %}
+          <span class="bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">En cours</span>
+          {% endif %}
+        </div>
+
+        <div class="p-6 space-y-4">
+          <!-- Info grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% if hosp['medecin_traitant'] %}
+            <div class="p-3 bg-purple-50 rounded-lg">
+              <div class="text-xs text-purple-600 font-semibold mb-1"><i class="fa-solid fa-user-doctor"></i> Medecin Traitant</div>
+              <div class="text-gray-800">{{ hosp['medecin_traitant'] }}</div>
+            </div>
+            {% endif %}
+
+            {% if hosp['syndrome'] %}
+            <div class="p-3 bg-purple-50 rounded-lg">
+              <div class="text-xs text-purple-600 font-semibold mb-1"><i class="fa-solid fa-notes-medical"></i> Syndrome</div>
+              <div class="text-gray-800">{{ hosp['syndrome'] }}</div>
+            </div>
+            {% endif %}
+
+            {% if hosp['diagnostic'] %}
+            <div class="p-3 bg-purple-50 rounded-lg">
+              <div class="text-xs text-purple-600 font-semibold mb-1"><i class="fa-solid fa-diagnoses"></i> Diagnostic</div>
+              <div class="text-gray-800">{{ hosp['diagnostic'] }}</div>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Constantes -->
+          {% if hosp['constante_temperature'] or hosp['constante_ta'] or hosp['constante_fc'] or hosp['constante_poids'] %}
+          <div>
+            <div class="text-xs text-purple-600 font-semibold mb-2"><i class="fa-solid fa-heart-pulse"></i> Constantes</div>
+            <div class="flex flex-wrap gap-3">
+              {% if hosp['constante_temperature'] %}
+              <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-lg"><i class="fa-solid fa-temperature-half text-red-400"></i> {{ hosp['constante_temperature'] }} °C</span>
+              {% endif %}
+              {% if hosp['constante_ta'] %}
+              <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-lg"><i class="fa-solid fa-gauge-high text-blue-400"></i> TA: {{ hosp['constante_ta'] }}</span>
+              {% endif %}
+              {% if hosp['constante_fc'] %}
+              <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-lg"><i class="fa-solid fa-heartbeat text-pink-400"></i> FC: {{ hosp['constante_fc'] }}</span>
+              {% endif %}
+              {% if hosp['constante_poids'] %}
+              <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-lg"><i class="fa-solid fa-weight-scale text-green-400"></i> {{ hosp['constante_poids'] }} kg</span>
+              {% endif %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Treatments table -->
+          {% if hosp['treatments'] %}
+          <div>
+            <div class="text-xs text-purple-600 font-semibold mb-2"><i class="fa-solid fa-pills"></i> Traitements</div>
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="bg-purple-50 text-purple-700">
+                  <th class="text-left p-2 rounded-tl-lg">#</th>
+                  <th class="text-left p-2">Description</th>
+                  <th class="text-center p-2">Fait</th>
+                  <th class="text-left p-2">Infirmier</th>
+                  <th class="text-left p-2 rounded-tr-lg">Heure</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for t in hosp['treatments'] %}
+                <tr class="border-b border-gray-100 {{ 'bg-green-50' if t['fait'] else '' }}">
+                  <td class="p-2 text-gray-500">{{ t['ordre'] }}</td>
+                  <td class="p-2 text-gray-800">{{ t['description'] }}</td>
+                  <td class="p-2 text-center">
+                    {% if t['fait'] %}
+                    <span class="text-green-600"><i class="fa-solid fa-circle-check"></i></span>
+                    {% else %}
+                    <span class="text-gray-300"><i class="fa-regular fa-circle"></i></span>
+                    {% endif %}
+                  </td>
+                  <td class="p-2 text-gray-600">{{ t['fait_par'] or '' }}</td>
+                  <td class="p-2 text-gray-600">{{ t['heure'] or '' }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+
+          <!-- Observation -->
+          {% if hosp['observation'] %}
+          <div class="p-3 bg-gray-50 rounded-lg">
+            <div class="text-xs text-gray-500 font-semibold mb-1">Observation</div>
+            <div class="text-gray-800 text-sm">{{ hosp['observation'] }}</div>
+          </div>
+          {% endif %}
+
+          <!-- Sortie info -->
+          {% if hosp['date_sortie'] %}
+          <div class="border-t border-purple-100 pt-3 mt-3">
+            <div class="flex flex-wrap gap-4 text-sm">
+              <div>
+                <span class="text-purple-600 font-semibold">Sortie:</span>
+                <span class="text-gray-700">{{ hosp['date_sortie'].strftime('%d/%m/%Y %H:%M') if hosp['date_sortie'] and hosp['date_sortie'].strftime else hosp['date_sortie'] }}</span>
+              </div>
+              {% if hosp['observations_sortie'] %}
+              <div>
+                <span class="text-purple-600 font-semibold">Obs. sortie:</span>
+                <span class="text-gray-700">{{ hosp['observations_sortie'] }}</span>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-gray-500">Aucune hospitalisation enregistree.</p>
+    {% endif %}
+  </div>
   </div>
 </body>
 </html>
