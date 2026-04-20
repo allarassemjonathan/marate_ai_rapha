@@ -515,7 +515,7 @@ class InvoicePDF(FPDF):
 
     def header(self):
         # Cyan header band
-        self.set_fill_color(6, 182, 212)
+        self.set_fill_color(255,255,255)
         self.rect(0, 0, 210, 36, 'F')
 
         # Logos via BytesIO (no temp files)
@@ -531,19 +531,15 @@ class InvoicePDF(FPDF):
         except Exception:
             pass
 
-        # Clinic name on the band
+        # Title on the band
+        now = datetime.now()
+        month_fr = self.MOIS_FR.get(now.strftime('%B'), now.strftime('%B'))
         self.set_y(10)
         self.set_font('Arial', 'B', 15)
-        self.set_text_color(255, 255, 255)
-        self.cell(0, 10, 'Clinique de la Solidarite', align='C')
+        self.set_text_color(0, 0, 0)
+        self.cell(0, 10, f'FACTURE  -  {month_fr} {now.strftime("%Y")}', align='C')
 
-        # Contact info below band
-        self.set_y(39)
-        self.set_font('Arial', '', 8)
-        self.set_text_color(130, 130, 130)
-        self.cell(0, 5, 'Bd Maurice Gueye, Angle Rue de l\'Hopital  |  (+221) 33 939 91 91  |  BP: 486, Rufisque', align='C')
-
-        self.set_y(47)
+        self.set_y(58)
 
     def footer(self):
         self.set_y(-18)
@@ -563,19 +559,6 @@ class InvoicePDF(FPDF):
         month_fr = self.MOIS_FR.get(month_en, month_en)
         year = now.strftime('%Y')
         envoye_a = meta.get('envoye_a', '')
-
-        # Title pill
-        self.set_font('Arial', 'B', 13)
-        self.set_fill_color(230, 248, 250)
-        self.set_draw_color(6, 182, 212)
-        self.set_text_color(6, 182, 212)
-        self.set_line_width(0.4)
-        title = f'FACTURE  -  {month_fr} {year}'
-        tw = self.get_string_width(title) + 24
-        x = (210 - tw) / 2
-        self.set_x(x)
-        self.cell(tw, 11, title, border=1, ln=1, align='C', fill=True)
-        self.ln(4)
 
         # Insurance / recipient subtitle
         if envoye_a:

@@ -6,3 +6,9 @@ Nouvelle evenement: 00:11:51 manager, Patient sélectionné, Patient avec ID 396 s
 Nouvelle evenement: 00:12:19 manager, Hospitalisation, Nouvelle hospitalisation pour patient 396
 Nouvelle evenement: 00:12:22 manager, Détails des patients, Les détails du patient avec l'identifiant 396 ont été consulté.
 Nouvelle evenement: 00:13:05 manager, Suppression d'un patient, Le patient avec l'identifiant 396 a été supprimé. Voici les infos du patient supprimé [RealDictRow({'id': 396, 'name': 'Jonathan Allarassem', 'adresse': 'keury kao', 'age': 23, 'date_of_birth': datetime.date(2001, 2, 18), 'poids': '32', 'taille': None, 'tension_arterielle': '12/7', 'temperature': None, 'hypothese_de_diagnostique': None, 'bilan': None, 'resultat_bilan': None, 'signature': None, 'renseignements_clinique': None, 'ordonnance': None, 'created_at': datetime.date(2026, 4, 20), 'age_years': 23, 'age_months': 0, 'age_days': 0, 'ipm': None, 'montant': None, 'testyy': None, 'new_cases': None})]
+Nouvelle evenement: 09:51:05 manager, login, L'utilisateur 'manager' s'est connecté avec succès
+Nouvelle evenement: 09:51:31 manager, Facture généré, Facture généré pour le patient DIARRA maguette
+Nouvelle evenement: 09:54:09 manager, Facture généré, Facture généré pour le patient DIARRA maguette
+Nouvelle evenement: 09:55:40 manager, Facture généré, Facture généré pour le patient DIARRA maguette
+Nouvelle evenement: 10:07:27 manager, Facture généré, Facture généré pour le patient DIARRA maguette
+Nouvelle evenement: 10:14:13 manager, Facture généré, Facture généré pour le patient DIARRA maguette
