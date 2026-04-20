@@ -1,12 +1,109 @@
-2026-04-18
-Nouvelle evenement: 21:46:55 manager, login, L'utilisateur 'manager' s'est connecté avec succès
-Nouvelle evenement: 22:04:37 manager, Ajout d'un patient, Le patient 'Jonathan Allarassem' a été ajouté
-Nouvelle evenement: 22:04:42 manager, Patient sélectionné, Patient avec ID 395 selectionné.
-Nouvelle evenement: 22:04:46 manager, modification patient, Patient avec ID 395 a été modifié
-Nouvelle evenement: 22:04:50 manager, Patient sélectionné, Patient avec ID 395 selectionné.
-Nouvelle evenement: 22:04:56 manager, Détails des patients, Les détails du patient avec l'identifiant 395 ont été consulté.
-Nouvelle evenement: 22:05:17 manager, Suppression d'un patient, Le patient avec l'identifiant 395 a été supprimé. Voici les infos du patient supprimé [RealDictRow({'id': 395, 'name': 'Jonathan Allarassem', 'adresse': 'were', 'age': 0, 'date_of_birth': None, 'poids': None, 'taille': None, 'tension_arterielle': None, 'temperature': None, 'hypothese_de_diagnostique': None, 'bilan': None, 'resultat_bilan': None, 'signature': None, 'renseignements_clinique': None, 'ordonnance': None, 'created_at': datetime.date(2026, 4, 19), 'age_years': 0, 'age_months': 0, 'age_days': 0, 'ipm': None, 'montant': None, 'testyy': None, 'new_cases': None})]
-Nouvelle evenement: 22:11:06 manager, Facture généré, Facture généré pour le patient SECK NDEYE WARICK
-Nouvelle evenement: 22:26:51 manager, Facture généré, Facture généré pour le patient SECK NDEYE WARICK
-Nouvelle evenement: 22:34:59 manager, Facture généré, Facture généré pour le patient SECK NDEYE WARICK
-Nouvelle evenement: 22:40:03 manager, Facture généré, Facture généré pour le patient SECK NDEYE WARICK
+2026-04-19
+Nouvelle evenement: 23:07:15 manager, login, L'utilisateur 'manager' s'est connecté avec succès
+Nouvelle evenement: 23:07:25 manager, Patient sélectionné, Patient avec ID 388 selectionné.
+Nouvelle evenement: 23:15:58 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 23:15:58 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:15:58 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 23:15:58 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé [{'id': 1, 'name': 'Amadou Diallo'}]
+Nouvelle evenement: 23:15:58 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:15:58 infirmiers, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:15:58 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:15:58 medecins, Facture généré, Facture généré pour le patient Diallo Amadou
+Nouvelle evenement: 23:15:58 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 10
+Nouvelle evenement: 23:15:58 medecins, Hospitalisation MAJ, Hospitalisation 1 mise a jour
+Nouvelle evenement: 23:15:58 medecins, Hospitalisation supprimee, Hospitalisation 1 supprimee
+Nouvelle evenement: 23:15:58 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:15:58 medecins, Hospitalisation MAJ, Hospitalisation 5 mise a jour
+Nouvelle evenement: 23:15:58 medecins, Hospitalisation supprimee, Hospitalisation 5 supprimee
+Nouvelle evenement: 23:20:17 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 23:20:17 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:20:17 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 23:20:17 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé [{'id': 1, 'name': 'Amadou Diallo'}]
+Nouvelle evenement: 23:20:17 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:20:17 infirmiers, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:20:17 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:20:17 medecins, Facture généré, Facture généré pour le patient Diallo Amadou
+Nouvelle evenement: 23:20:17 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 10
+Nouvelle evenement: 23:20:17 medecins, Hospitalisation MAJ, Hospitalisation 1 mise a jour
+Nouvelle evenement: 23:20:17 medecins, Hospitalisation supprimee, Hospitalisation 1 supprimee
+Nouvelle evenement: 23:20:17 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:20:17 medecins, Hospitalisation MAJ, Hospitalisation 5 mise a jour
+Nouvelle evenement: 23:20:17 medecins, Hospitalisation supprimee, Hospitalisation 5 supprimee
+Nouvelle evenement: 23:21:10 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 23:21:10 medecins, Ajout d'un patient, Le patient 'Amadou Diallo' a été ajouté
+Nouvelle evenement: 23:21:10 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:21:10 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 23:21:10 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé [{'id': 1, 'name': 'Amadou Diallo'}]
+Nouvelle evenement: 23:21:10 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:21:10 infirmiers, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:21:10 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:21:10 medecins, Facture généré, Facture généré pour le patient Diallo Amadou
+Nouvelle evenement: 23:21:10 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 10
+Nouvelle evenement: 23:21:10 medecins, Hospitalisation MAJ, Hospitalisation 1 mise a jour
+Nouvelle evenement: 23:21:10 medecins, Hospitalisation supprimee, Hospitalisation 1 supprimee
+Nouvelle evenement: 23:21:10 medecins, Ajout d'un patient, Le patient 'Fatou Sall' a été ajouté
+Nouvelle evenement: 23:21:10 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:21:10 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:21:10 medecins, Hospitalisation MAJ, Hospitalisation 5 mise a jour
+Nouvelle evenement: 23:21:10 medecins, Hospitalisation supprimee, Hospitalisation 5 supprimee
+Nouvelle evenement: 23:21:21 medecins, Ajout d'un patient, Le patient 'Fatou Sall' a été ajouté
+Nouvelle evenement: 23:21:21 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:22:14 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 23:22:14 medecins, Ajout d'un patient, Le patient 'Amadou Diallo' a été ajouté
+Nouvelle evenement: 23:22:14 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:22:14 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 23:22:14 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé [{'id': 1, 'name': 'Amadou Diallo'}]
+Nouvelle evenement: 23:22:14 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:22:14 infirmiers, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:22:14 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:22:14 medecins, Facture généré, Facture généré pour le patient Diallo Amadou
+Nouvelle evenement: 23:22:14 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 10
+Nouvelle evenement: 23:22:14 medecins, Hospitalisation MAJ, Hospitalisation 1 mise a jour
+Nouvelle evenement: 23:22:14 medecins, Hospitalisation supprimee, Hospitalisation 1 supprimee
+Nouvelle evenement: 23:22:14 medecins, Ajout d'un patient, Le patient 'Fatou Sall' a été ajouté
+Nouvelle evenement: 23:22:14 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:22:14 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 23:22:14 medecins, Facture généré, Facture généré pour le patient Sall Fatou
+Nouvelle evenement: 23:22:14 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé [{'id': 1, 'name': 'Fatou Sall'}]
+Nouvelle evenement: 23:22:14 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:22:14 medecins, Hospitalisation MAJ, Hospitalisation 5 mise a jour
+Nouvelle evenement: 23:22:14 medecins, Hospitalisation supprimee, Hospitalisation 5 supprimee
+Nouvelle evenement: 23:22:28 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:22:28 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:22:28 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:22:28 medecins, Hospitalisation MAJ, Hospitalisation 1 mise a jour
+Nouvelle evenement: 23:22:28 medecins, Hospitalisation supprimee, Hospitalisation 1 supprimee
+Nouvelle evenement: 23:35:51 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:35:51 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:35:51 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:35:51 infirmiers, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:35:51 receptionistes, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:35:51 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:35:52 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 23:35:54 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:35:54 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:35:54 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 23:35:54 medecins, Hospitalisation MAJ, Hospitalisation 1 mise a jour
+Nouvelle evenement: 23:35:54 medecins, Hospitalisation supprimee, Hospitalisation 1 supprimee
+Nouvelle evenement: 23:35:54 medecins, Ajout d'un patient, Le patient 'John Doe' a été ajouté
+Nouvelle evenement: 23:35:54 medecins, Ajout d'un patient, Le patient 'Valid Patient' a été ajouté
+Nouvelle evenement: 23:35:54 medecins, Ajout d'un patient, Le patient 'Consistency Test' a été ajouté
+Nouvelle evenement: 23:35:54 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:35:56 medecins, Ajout d'un patient, Le patient 'Test Patient' a été ajouté
+Nouvelle evenement: 23:35:56 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 23:35:56 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé <MagicMock name='get_db_connection().cursor().fetchall()' id='4567220304'>
+Nouvelle evenement: 23:35:56 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:35:56 medecins, Détails des patients, Les détails du patient avec l'identifiant 1 ont été consulté.
+Nouvelle evenement: 23:35:56 medecins, Facture généré, Facture généré pour le patient Doe John
+Nouvelle evenement: 23:35:56 medecins, Facture généré, Facture généré pour le patient Test User
+Nouvelle evenement: 23:35:56 medecins, Facture généré, Facture généré pour le patient Test User
+Nouvelle evenement: 23:35:56 medecins, Facture généré, Facture généré pour le patient Doe John
+Nouvelle evenement: 23:35:58 medecins, Ajout d'un patient, Le patient 'Test Patient' a été ajouté
+Nouvelle evenement: 23:35:59 medecins, Ajout d'un patient, Le patient 'Test Patient' a été ajouté
+Nouvelle evenement: 23:35:59 medecins, Patient sélectionné, Patient avec ID 99999 selectionné.
+Nouvelle evenement: 23:36:00 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 23:36:10 medecins, Ajout d'un patient, Le patient 'Test Patient' a été ajouté
+Nouvelle evenement: 23:36:11 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 23:36:11 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé <MagicMock name='get_db_connection().cursor().fetchall()' id='4591776640'>
+Nouvelle evenement: 23:36:11 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 23:36:11 medecins, Détails des patients, Les détails du patient avec l'identifiant 1 ont été consulté.

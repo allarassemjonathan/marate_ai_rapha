@@ -169,17 +169,26 @@ class TestPatientManagement:
         assert response.status_code == 200
         assert b'Test Patient' in response.data
     
-    def test_statistics_endpoint(self, authenticated_session, mock_db_connection):
-        """Test statistics endpoint"""
-        # Mock statistics data
-        mock_db_connection.fetchall.side_effect = [
-            [{'count': 100}],  # Total patients
-            [{'avg': 35.5}],   # Average age
-            [{'avg': 170.2}],  # Average height
-            [{'avg': 70.8}]    # Average weight
-        ]
-        
+    @patch('app.load_df')
+    def test_statistics_endpoint(self, mock_load_df, authenticated_session, mock_db_connection):
+        """Test statistics page loads with Chart.js charts"""
+        import pandas as pd
+        mock_df = pd.DataFrame({
+            'name': ['Patient A', 'Patient B', 'Patient A', 'Patient C'],
+            'created_at': pd.to_datetime(['2025-01-10', '2025-01-15', '2025-02-10', '2025-02-20']),
+            'adresse': ['Quartier1/Apt1', 'Quartier2/Apt2', 'Quartier1/Apt3', 'Quartier3/Apt4'],
+            'new_cases': ['oui', 'oui', 'non', 'oui'],
+            'signature': ['Dr Test', 'Dr Test', 'Dr Other', 'Dr Test']
+        })
+        mock_load_df.return_value = mock_df
+
         response = authenticated_session.get('/stat')
         assert response.status_code == 200
-        assert b'100 patients' in response.data
-        assert b'36 ans' in response.data  # rounded average age
+        # Verify Chart.js is loaded and data is injected
+        assert b'chart.js' in response.data or b'chart.umd.min.js' in response.data
+        assert b'CHART_DATA' in response.data
+        assert b'chartDailyRevenue' in response.data
+        assert b'chartMonthlyRevenue' in response.data
+        assert b'chartEvolution' in response.data
+        # Verify no matplotlib base64 images
+        assert b'data:image/png;base64' not in response.data

@@ -571,6 +571,7 @@ function loadPatients(q = '') {
             <button title="Modifier" onclick="editPatient(${p.id})"><i class="fa-solid fa-pen hover:text-blue-600"></i></button>
             <button title="Supprimer" onclick="deletePatient(${p.id})"><i class="fa-solid fa-trash hover:text-red-600"></i></button>
             <button title="Détails" onclick="window.location.href='/patient/${p.id}'"><i class="fa-solid fa-eye hover:text-green-600"></i></button>
+            <button title="Hospitalisation" onclick="openHospitalizationModal(${p.id})"><i class="fa-solid fa-bed hover:text-purple-600"></i></button>
             <button title="Facture" data-patient='${btoa(unescape(encodeURIComponent(JSON.stringify(p))))}' onclick="openInvoiceFromButton(this)"><i class="fa-solid fa-file-invoice hover:text-yellow-600"></i></button>
           </div>
         `;
@@ -768,6 +769,141 @@ editForm.addEventListener('submit', (e) => {
   }, duration);
 };
 
+
+  // ── Hospitalization modal ───────────────────────────────────────
+
+  let currentHospPatientId = null;
+
+  window.openHospitalizationModal = function(patientId) {
+    currentHospPatientId = patientId;
+    document.getElementById('hosp_patient_id').value = patientId;
+    document.getElementById('hosp_edit_id').value = '';
+
+    // Set default admission date to now
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const localISO = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    document.getElementById('hosp_date_admission').value = localISO;
+
+    // Auto-fill doctor name if logged in as medecin
+    const username = window.USER_TYPE === 'medecins' ? (window.USERNAME || '') : '';
+    document.getElementById('hosp_medecin').value = username.replace(/_/g, ' ');
+
+    // Fetch patient data to pre-fill
+    fetch(`/get_patient/${patientId}`)
+      .then(r => r.json())
+      .then(p => {
+        if (p.status === 'error') { showToast(p.message); return; }
+
+        document.getElementById('hosp_patient_name').value = p.name || '';
+
+        let ageStr = '';
+        if (p.age_years) ageStr += p.age_years + ' ans ';
+        if (p.age_months) ageStr += p.age_months + ' mois';
+        document.getElementById('hosp_patient_age').value = ageStr.trim() || (p.age ? p.age + ' ans' : '');
+
+        document.getElementById('hosp_temperature').value = p.temperature || '';
+        document.getElementById('hosp_ta').value = p.tension_arterielle || '';
+        document.getElementById('hosp_poids').value = p.poids || '';
+      })
+      .catch(() => {});
+
+    // Clear other fields
+    ['hosp_syndrome','hosp_fc','hosp_diagnostic','hosp_observation',
+     'hosp_date_sortie','hosp_observations_sortie'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+
+    // Reset treatments and add one empty row
+    document.getElementById('hosp_treatments_list').innerHTML = '';
+    addHospTreatmentRow();
+
+    document.getElementById('hospitalizationModal').style.display = 'flex';
+  };
+
+  window.closeHospitalizationModal = function() {
+    document.getElementById('hospitalizationModal').style.display = 'none';
+    currentHospPatientId = null;
+  };
+
+  // Close on backdrop click
+  document.getElementById('hospitalizationModal').addEventListener('click', function(e) {
+    if (e.target === this) closeHospitalizationModal();
+  });
+
+  window.addHospTreatmentRow = function() {
+    const list = document.getElementById('hosp_treatments_list');
+    const idx = list.children.length + 1;
+    const row = document.createElement('div');
+    row.className = 'hosp-treatment-row flex flex-wrap items-center gap-2 p-2 bg-gray-50 rounded-lg';
+    row.innerHTML = `
+      <span class="text-xs font-bold text-gray-400 w-5">${idx}</span>
+      <input type="text" placeholder="Description du traitement" class="hosp-t-desc flex-1 min-w-0 p-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-cyan-400">
+      <label class="flex items-center gap-1 text-xs text-gray-500">
+        <input type="checkbox" class="hosp-t-fait rounded">
+        Fait
+      </label>
+      <input type="text" placeholder="Infirmier" class="hosp-t-par w-24 p-2 rounded-lg border border-gray-300 text-xs focus:ring-2 focus:ring-cyan-400">
+      <input type="time" class="hosp-t-heure p-2 rounded-lg border border-gray-300 text-xs focus:ring-2 focus:ring-cyan-400">
+      <button type="button" onclick="this.closest('.hosp-treatment-row').remove()" class="text-red-400 hover:text-red-600 text-sm">&times;</button>
+    `;
+    list.appendChild(row);
+  };
+
+  window.submitHospitalization = function() {
+    const patientId = document.getElementById('hosp_patient_id').value;
+    const editId = document.getElementById('hosp_edit_id').value;
+
+    // Gather treatments
+    const treatments = [];
+    document.querySelectorAll('.hosp-treatment-row').forEach(row => {
+      treatments.push({
+        description: row.querySelector('.hosp-t-desc').value,
+        fait: row.querySelector('.hosp-t-fait').checked,
+        fait_par: row.querySelector('.hosp-t-par').value,
+        heure: row.querySelector('.hosp-t-heure').value,
+      });
+    });
+
+    const payload = {
+      patient_id: parseInt(patientId),
+      date_admission: document.getElementById('hosp_date_admission').value || null,
+      medecin_traitant: document.getElementById('hosp_medecin').value,
+      syndrome: document.getElementById('hosp_syndrome').value,
+      constante_temperature: document.getElementById('hosp_temperature').value,
+      constante_ta: document.getElementById('hosp_ta').value,
+      constante_fc: document.getElementById('hosp_fc').value,
+      constante_poids: document.getElementById('hosp_poids').value || null,
+      diagnostic: document.getElementById('hosp_diagnostic').value,
+      observation: document.getElementById('hosp_observation').value,
+      date_sortie: document.getElementById('hosp_date_sortie').value || null,
+      observations_sortie: document.getElementById('hosp_observations_sortie').value,
+      treatments: treatments,
+    };
+
+    const url = editId ? `/hospitalization/${editId}` : '/hospitalization';
+    const method = editId ? 'PUT' : 'POST';
+
+    fetch(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === 'success') {
+        closeHospitalizationModal();
+        showToast('Hospitalisation enregistree', 2500);
+      } else {
+        alert(res.message || 'Erreur');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Erreur de connexion');
+    });
+  };
 
   // Initial load - load columns first, then setup table and load patients
   loadColumnConfiguration().then(() => {

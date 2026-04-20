@@ -164,6 +164,37 @@ def init_db():
                     details TEXT
                 )
             ''')
+            # Hospitalization tables
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS hospitalizations (
+                    id SERIAL PRIMARY KEY,
+                    patient_id INTEGER REFERENCES patients(id) ON DELETE CASCADE,
+                    date_admission TIMESTAMP NOT NULL DEFAULT NOW(),
+                    medecin_traitant TEXT,
+                    syndrome TEXT,
+                    constante_temperature TEXT,
+                    constante_ta TEXT,
+                    constante_fc TEXT,
+                    constante_poids REAL,
+                    diagnostic TEXT,
+                    observation TEXT,
+                    date_sortie TIMESTAMP,
+                    observations_sortie TEXT,
+                    created_by TEXT,
+                    created_at TIMESTAMP DEFAULT NOW()
+                )
+            ''')
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS hospitalization_treatments (
+                    id SERIAL PRIMARY KEY,
+                    hospitalization_id INTEGER REFERENCES hospitalizations(id) ON DELETE CASCADE,
+                    ordre INTEGER,
+                    description TEXT NOT NULL,
+                    fait BOOLEAN DEFAULT FALSE,
+                    fait_par TEXT,
+                    heure TEXT
+                )
+            ''')
             # Create the column metadata table
             cur.execute('''
                 CREATE TABLE IF NOT EXISTS patient_columns_meta (
@@ -731,6 +762,183 @@ def generate_invoice(patient_id):
     except Exception as e:
         print(f"Error generating invoice: {str(e)}")
         return jsonify({'status': 'error', 'message': 'Internal server error'}), 500
+
+
+# ── Hospitalization routes ──────────────────────────────────────────
+
+@app.route('/hospitalization', methods=['POST'])
+@login_required
+def create_hospitalization():
+    try:
+        data = request.get_json()
+        patient_id = data.get('patient_id')
+        if not patient_id:
+            return jsonify({'status': 'error', 'message': 'patient_id requis'}), 400
+
+        treatments = data.get('treatments', [])
+
+        conn = get_db_connection()
+        conn.autocommit = True
+        cur = conn.cursor()
+
+        cur.execute('''
+            INSERT INTO hospitalizations
+            (patient_id, date_admission, medecin_traitant, syndrome,
+             constante_temperature, constante_ta, constante_fc, constante_poids,
+             diagnostic, observation, date_sortie, observations_sortie, created_by)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            RETURNING id
+        ''', (
+            patient_id,
+            data.get('date_admission') or None,
+            data.get('medecin_traitant'),
+            data.get('syndrome'),
+            data.get('constante_temperature'),
+            data.get('constante_ta'),
+            data.get('constante_fc'),
+            float(data['constante_poids']) if data.get('constante_poids') else None,
+            data.get('diagnostic'),
+            data.get('observation'),
+            data.get('date_sortie') or None,
+            data.get('observations_sortie'),
+            session.get('username'),
+        ))
+        hosp_id = cur.fetchone()['id']
+
+        for i, t in enumerate(treatments):
+            if not t.get('description', '').strip():
+                continue
+            cur.execute('''
+                INSERT INTO hospitalization_treatments
+                (hospitalization_id, ordre, description, fait, fait_par, heure)
+                VALUES (%s,%s,%s,%s,%s,%s)
+            ''', (
+                hosp_id, i + 1, t['description'],
+                t.get('fait', False), t.get('fait_par'), t.get('heure'),
+            ))
+
+        conn.close()
+
+        log_file(session.get('user_type'), 'Hospitalisation',
+                 f"Nouvelle hospitalisation pour patient {patient_id}")
+
+        return jsonify({'status': 'success', 'id': hosp_id})
+    except Exception as e:
+        print(f"Error creating hospitalization: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/hospitalizations/<int:patient_id>')
+@login_required
+def list_hospitalizations(patient_id):
+    conn = get_db_connection()
+    conn.autocommit = True
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT * FROM hospitalizations
+        WHERE patient_id = %s ORDER BY date_admission DESC
+    ''', (patient_id,))
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    for r in rows:
+        for k, v in r.items():
+            if hasattr(v, 'isoformat'):
+                r[k] = v.isoformat()
+    return jsonify(rows)
+
+
+@app.route('/hospitalization/<int:hosp_id>')
+@login_required
+def get_hospitalization(hosp_id):
+    conn = get_db_connection()
+    conn.autocommit = True
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM hospitalizations WHERE id = %s', (hosp_id,))
+    hosp = cur.fetchone()
+    if not hosp:
+        conn.close()
+        return jsonify({'status': 'error', 'message': 'Non trouve'}), 404
+    hosp = dict(hosp)
+    for k, v in hosp.items():
+        if hasattr(v, 'isoformat'):
+            hosp[k] = v.isoformat()
+
+    cur.execute('''
+        SELECT * FROM hospitalization_treatments
+        WHERE hospitalization_id = %s ORDER BY ordre
+    ''', (hosp_id,))
+    hosp['treatments'] = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return jsonify(hosp)
+
+
+@app.route('/hospitalization/<int:hosp_id>', methods=['PUT'])
+@login_required
+def update_hospitalization(hosp_id):
+    try:
+        data = request.get_json()
+        conn = get_db_connection()
+        conn.autocommit = True
+        cur = conn.cursor()
+
+        cur.execute('''
+            UPDATE hospitalizations SET
+                medecin_traitant=%s, syndrome=%s,
+                constante_temperature=%s, constante_ta=%s,
+                constante_fc=%s, constante_poids=%s,
+                diagnostic=%s, observation=%s,
+                date_sortie=%s, observations_sortie=%s
+            WHERE id=%s
+        ''', (
+            data.get('medecin_traitant'),
+            data.get('syndrome'),
+            data.get('constante_temperature'),
+            data.get('constante_ta'),
+            data.get('constante_fc'),
+            float(data['constante_poids']) if data.get('constante_poids') else None,
+            data.get('diagnostic'),
+            data.get('observation'),
+            data.get('date_sortie') or None,
+            data.get('observations_sortie'),
+            hosp_id,
+        ))
+
+        # Replace treatments
+        cur.execute('DELETE FROM hospitalization_treatments WHERE hospitalization_id=%s', (hosp_id,))
+        for i, t in enumerate(data.get('treatments', [])):
+            if not t.get('description', '').strip():
+                continue
+            cur.execute('''
+                INSERT INTO hospitalization_treatments
+                (hospitalization_id, ordre, description, fait, fait_par, heure)
+                VALUES (%s,%s,%s,%s,%s,%s)
+            ''', (
+                hosp_id, i + 1, t['description'],
+                t.get('fait', False), t.get('fait_par'), t.get('heure'),
+            ))
+
+        conn.close()
+
+        log_file(session.get('user_type'), 'Hospitalisation MAJ',
+                 f"Hospitalisation {hosp_id} mise a jour")
+
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        print(f"Error updating hospitalization: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/hospitalization/<int:hosp_id>', methods=['DELETE'])
+@login_required
+def delete_hospitalization(hosp_id):
+    conn = get_db_connection()
+    conn.autocommit = True
+    cur = conn.cursor()
+    cur.execute('DELETE FROM hospitalizations WHERE id=%s', (hosp_id,))
+    conn.close()
+    log_file(session.get('user_type'), 'Hospitalisation supprimee',
+             f"Hospitalisation {hosp_id} supprimee")
+    return jsonify({'status': 'deleted'})
 
 
 @app.route('/')
@@ -1976,12 +2184,13 @@ def graph_automatique():
 @app.route("/stat", methods=['GET','POST'])
 @login_required
 def rapport():
-    df = load_df()  # charge les donnees
+    df = load_df()
     df['created_at'] = pd.to_datetime(df['created_at'])
 
-    img1 = img2 = img3 = img4 = img5 = img6 = img7 = img8 = None
+    chart_data = {}
     list_mois = []
     mois = None
+    column_name = None
 
     # --- 1. Revenu journalier ---
     if 'created_at' in df.columns:
@@ -1989,14 +2198,10 @@ def rapport():
         toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
         visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
         revenu_par_jour = visites_par_jour * 10000
-
-        fig1, ax1 = plt.subplots(figsize=(8, 4))
-        revenu_par_jour.plot(kind="line", marker="o", color="blue", ax=ax1)
-        ax1.set_title("Evolution des revenus journaliers")
-        ax1.set_ylabel("Revenu (FCFA)")
-        ax1.set_xlabel("Date")
-        img1 = fig_to_base64(fig1)
-        plt.close(fig1)
+        chart_data['dailyRevenue'] = {
+            'labels': [str(d.date()) for d in toutes_les_dates],
+            'values': revenu_par_jour.tolist()
+        }
 
     # --- 2. Revenu mensuel ---
     if 'created_at' in df.columns:
@@ -2004,68 +2209,44 @@ def rapport():
         revenu_par_mois = consultations_par_mois * 10000
         toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
         revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
-
-        fig2, ax2 = plt.subplots(figsize=(8, 4))
-        revenu_par_mois.plot(kind="line", marker="o", color="blue", ax=ax2)
-        ax2.set_title("Evolution des revenus mensuels")
-        ax2.set_ylabel("Revenu (FCFA)")
-        ax2.set_xlabel("Mois")
-        ax2.yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
-        img2 = fig_to_base64(fig2)
-        plt.close(fig2)
+        chart_data['monthlyRevenue'] = {
+            'labels': [str(p) for p in toutes_les_periodes],
+            'values': revenu_par_mois.tolist()
+        }
 
     # --- 3. Fréquences patients ---
     if 'name' in df.columns:
         patients_count = df['name'].str.lower().value_counts()[0:8]
         patients_count.index = patients_count.index.str.title()
-
-        fig3, ax3 = plt.subplots(figsize=(8, 4))
-        patients_count.plot(kind="bar", color="blue", ax=ax3)
-        ax3.set_title("Fréquences des patients")
-        ax3.set_xlabel("Nom")
-        ax3.set_ylabel("Fréquences de visites")
-        img3 = fig_to_base64(fig3)
-        plt.close(fig3)
+        chart_data['recurringPatients'] = {
+            'labels': patients_count.index.tolist(),
+            'values': patients_count.values.tolist()
+        }
 
     # --- 4. Distribution par quartier ---
     if 'adresse' in df.columns:
-        df['adresse'] = df['adresse'].str.split('/').str[0] 
-        df['adresse'] = df['adresse'].str.replace('\d+', '', regex=True)  
-        df['adresse'] = df['adresse'].str.strip()  
-        df['adresse'] = df['adresse'].str.title()  
+        df['adresse'] = df['adresse'].str.split('/').str[0]
+        df['adresse'] = df['adresse'].str.replace(r'\d+', '', regex=True)
+        df['adresse'] = df['adresse'].str.strip()
+        df['adresse'] = df['adresse'].str.title()
         adresse_counts = df['adresse'].value_counts()[0:10]
-
         if not adresse_counts.empty:
-            fig4, ax4 = plt.subplots(figsize=(8, 4))
-            colors = plt.cm.Set3(range(len(adresse_counts)))
-            ax4.pie(adresse_counts.values,
-                    labels=adresse_counts.index,
-                    autopct='%1.1f%%',
-                    colors=colors,
-                    startangle=90,
-                    labeldistance=1.15,
-                    pctdistance=0.87)
-            ax4.set_title("Nombre de patients par adresse")
-            img4 = fig_to_base64(fig4)
-            plt.close(fig4)
+            chart_data['neighborhoodDistribution'] = {
+                'labels': adresse_counts.index.tolist(),
+                'values': adresse_counts.values.tolist()
+            }
 
     # --- 5. Nouveaux patients ---
     if 'new_cases' in df.columns:
         nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
-        nouveaux_patients = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
-        if not nouveaux_patients.empty:
-            fig5, ax5 = plt.subplots(figsize=(8, 4))
-            nouveaux_patients.plot(kind='bar', color='darkblue', width=0.2, ax=ax5)
-            ax5.set_title("Nombre de nouveaux patients par mois")
-            ax5.set_xlabel("Mois")
-            ax5.set_ylabel("Nombre de nouveaux patients")
-            ax5.set_xticks(ax5.get_xticks(), ax5.get_xticklabels(), rotation=45, ha="right")
-            for i, value in enumerate(nouveaux_patients):
-                ax5.text(i, value + 0.1, str(value), ha='center', va='bottom', fontweight='bold')
-            img5 = fig_to_base64(fig5)
-            plt.close(fig5)
+        nouveaux_par_mois = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
+        if not nouveaux_par_mois.empty:
+            chart_data['newPatientsPerMonth'] = {
+                'labels': [str(p) for p in nouveaux_par_mois.index],
+                'values': nouveaux_par_mois.values.tolist()
+            }
 
-    # --- 6. Patients par médecins ---
+    # --- 6. Patients par médecins (all months for client-side switching) ---
     if 'signature' in df.columns:
         df['signature'] = df['signature'].str.lower().str.title()
         df = df.dropna(subset=['signature'])
@@ -2075,116 +2256,69 @@ def rapport():
             medecins['mois'] = medecins['created_at'].astype(str)
             list_mois = sorted(medecins['mois'].unique())
             mois = request.args.get("mois", default=list_mois[0])
-            df_medecins = medecins[medecins['mois'] == mois].set_index("signature")['patients']
-            df_medecins = df_medecins.sort_values(ascending=True)
-
-            fig6, ax6 = plt.subplots(figsize=(8, 4))
-            df_medecins.plot(kind='bar', color='blue', ax=ax6)
-            ax6.set_title(f"Nombre de patients par medecins pour {mois}")
-            ax6.set_xlabel("Médecins")
-            ax6.set_ylabel("Nombre de patients")
-            img6 = fig_to_base64(fig6)
-            plt.close(fig6)
-            
+            by_month = {}
+            for m in list_mois:
+                df_m = medecins[medecins['mois'] == m].set_index("signature")['patients'].sort_values(ascending=True)
+                by_month[m] = {
+                    'labels': df_m.index.tolist(),
+                    'values': df_m.values.tolist()
+                }
+            chart_data['patientsPerDoctor'] = {
+                'months': list_mois,
+                'defaultMonth': mois,
+                'byMonth': by_month
+            }
 
     # --- 7. Evolution des patients ---
     df['created_at'] = pd.to_datetime(df['created_at'])
-
     nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
     patients_frequents = df[df['new_cases'].str.lower() != 'oui']
-
     nouveaux_patients_mensuel = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
     patients_frequents_mensuel = patients_frequents.groupby(patients_frequents['created_at'].dt.to_period('M')).size()
-
     evolutions_patients = pd.DataFrame({
-        'Nouveaux patients' : nouveaux_patients_mensuel,
-        'Patients frequents' : patients_frequents_mensuel
+        'Nouveaux patients': nouveaux_patients_mensuel,
+        'Patients frequents': patients_frequents_mensuel
     }).fillna(0)
-    
-    fig7, ax7 = plt.subplots(figsize=(6, 5))
-    ax7.plot(
-        evolutions_patients.index.astype(str),
-        evolutions_patients['Nouveaux patients'],
-        marker='o',color='blue',label='Nouveaux patients'
-    )
-    ax7.plot(
-        evolutions_patients.index.astype(str),
-        evolutions_patients['Patients frequents'],
-        marker='o',color='orange',label='Patients frequents'
-    )
+    chart_data['patientEvolution'] = {
+        'labels': [str(p) for p in evolutions_patients.index],
+        'newPatients': evolutions_patients['Nouveaux patients'].astype(int).tolist(),
+        'recurringPatients': evolutions_patients['Patients frequents'].astype(int).tolist()
+    }
 
-    for i, (np_val, pf_val) in enumerate(zip(evolutions_patients['Nouveaux patients'],
-                                             evolutions_patients['Patients frequents'])):
-        ax7.text(i, np_val + 0.2, str(int(np_val)), ha='center', va='bottom',
-                color='blue', fontweight='bold', fontsize=9)
-        ax7.text(i, pf_val + 0.2, str(int(pf_val)), ha='center', va='bottom',
-                color='orange', fontweight='bold', fontsize=9)
-                
-    ax7.set_title("Evolution mensuelle des patients")
-    ax7.set_xlabel("Mois")
-    ax7.set_ylabel("Nombre de patients")
-    ax7.legend()
-    ax7.grid(True, linestyle='--', alpha=0.6)
-    plt.xticks(rotation=45,ha='right')
-    plt.tight_layout()
-
-    img7 = fig_to_base64(fig7)
-    plt.close(fig7)
-
-    # --- 8. Evolution des patients ---
+    # --- 8. Distribution dynamique ---
     df = nettoyer_donnees(df)
-    
     if 'created_at' in df.columns:
         df['created_at'] = pd.to_datetime(df['created_at'])
 
-    data = None
     column = request.form.get("column")
-
-    if column and column in df.columns:  # ← Vérifier que column existe
+    if column and column in df.columns:
+        column_name = column
         data = df[column].dropna()
-    
-    if data is not None and len(data) > 0:  # Si la colonne a des données
-        fig8, ax8 = plt.subplots(figsize=(8,4))
-        if pd.api.types.is_numeric_dtype(data):
-            ax8.hist(data, bins=30, color='skyblue', edgecolor='black', alpha=0.7)
-            ax8.set_title(f'Distribution de {column}')
-            ax8.set_xlabel(column)
-            ax8.set_ylabel('Fréquence')
-            ax8.grid(axis='y', alpha=0.3)
-        
-        else:
-            # Pour les données qui ne sont pas numeriques
-            value_counts = data.value_counts().head(20) 
-            fig8, ax8 = plt.subplots(figsize=(8,4)) 
-            ax8.barh(range(len(value_counts)), value_counts.values, color='coral')
-            ax8.set_yticks(range(len(value_counts)))
-            ax8.set_yticklabels(value_counts.index)
-            ax8.set_xlabel('Nombre d\'occurrences')
-            ax8.set_title(f'Distribution de {column} (Top 20)')
-            ax8.invert_yaxis()
+        if len(data) > 0:
+            if pd.api.types.is_numeric_dtype(data):
+                counts, bin_edges = pd.cut(data, bins=30, retbins=True)
+                hist_values = data.groupby(counts).count()
+                chart_data['distribution'] = {
+                    'type': 'histogram',
+                    'labels': [f"{bin_edges[i]:.1f}-{bin_edges[i+1]:.1f}" for i in range(len(bin_edges)-1)],
+                    'values': hist_values.values.tolist(),
+                    'columnName': column
+                }
+            else:
+                value_counts = data.value_counts().head(20)
+                chart_data['distribution'] = {
+                    'type': 'categorical',
+                    'labels': [str(l) for l in value_counts.index.tolist()],
+                    'values': value_counts.values.tolist(),
+                    'columnName': column
+                }
 
-            for i, v in enumerate(value_counts.values):
-                ax8.text(v + max(value_counts.values)*0.01, i, str(v), 
-                        va='center', fontweight='bold')
-    else:
-        # Cas du premier affichage : aucune colonne encore choisie
-        fig8, ax8 = plt.subplots(figsize=(8,4))
-        ax8.text(0.5, 0.5, "Sélectionnez une colonne pour afficher la distribution",
-                ha='center', va='center', fontsize=12, style='italic')
-        ax8.axis('off')
-        
-    plt.tight_layout()
-    img8 = fig_to_base64(fig8)
-    plt.close(fig8)
-    column_name = column
-    
     return render_template("stats.html",
-                           img1=img1, img2=img2, img3=img3,
-                           img4=img4, img5=img5, img6=img6,
-                           img7=img7,img8=img8,
-                           mois=mois, list_mois=list_mois,
-                           columns=df.columns,
-                           column_name = column_name)
+                           chart_data=chart_data,
+                           list_mois=list_mois,
+                           mois=mois,
+                           columns=df.columns.tolist(),
+                           column_name=column_name)
 
 @app.route("/visibility")
 @login_required

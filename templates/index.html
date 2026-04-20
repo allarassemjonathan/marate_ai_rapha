@@ -632,6 +632,150 @@ window.addEventListener('click', function(e) {
     </form>
   </div>
 </div>
+<!-- Hospitalization Modal -->
+<div id="hospitalizationModal"
+     class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center px-2"
+     style="display: none;">
+  <div class="bg-white text-black rounded-2xl p-6 md:p-8 shadow-lg w-full max-w-2xl max-h-[85vh] overflow-y-auto scrollbar">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-lg md:text-xl font-bold text-black">Fiche Medicale d'Hospitalisation</h2>
+      <button onclick="closeHospitalizationModal()" class="text-gray-600 hover:text-red-500 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <form id="hospitalizationForm" class="space-y-5">
+      <input type="hidden" id="hosp_patient_id">
+      <input type="hidden" id="hosp_edit_id">
+
+      <!-- Date d'admission -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">Date d'admission</label>
+        <input type="datetime-local" id="hosp_date_admission"
+               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+      </div>
+
+      <!-- Patient info (read-only) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Patient</label>
+          <input type="text" id="hosp_patient_name" readonly
+                 class="w-full p-3 rounded-xl border border-gray-200 bg-gray-100 text-gray-700">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Age</label>
+          <input type="text" id="hosp_patient_age" readonly
+                 class="w-full p-3 rounded-xl border border-gray-200 bg-gray-100 text-gray-700">
+        </div>
+      </div>
+
+      <!-- Medecin traitant -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">Medecin Traitant</label>
+        <input type="text" id="hosp_medecin" placeholder="Prenom - Nom"
+               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+      </div>
+
+      <!-- Syndrome -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">Syndrome</label>
+        <input type="text" id="hosp_syndrome" placeholder="Syndrome"
+               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+      </div>
+
+      <!-- Constantes -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-2">Constantes</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs text-gray-500">Temperature</label>
+            <div class="flex items-center gap-1">
+              <input type="text" id="hosp_temperature" placeholder="--"
+                     class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-400 text-sm">
+              <span class="text-xs text-gray-400">°C</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500">TA</label>
+            <input type="text" id="hosp_ta" placeholder="--/--"
+                   class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-400 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500">FC</label>
+            <input type="text" id="hosp_fc" placeholder="--"
+                   class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-400 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-500">Poids</label>
+            <div class="flex items-center gap-1">
+              <input type="number" id="hosp_poids" placeholder="--" step="0.1"
+                     class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-400 text-sm">
+              <span class="text-xs text-gray-400">kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagnostic -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">Diagnostic</label>
+        <input type="text" id="hosp_diagnostic" placeholder="Diagnostic"
+               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+      </div>
+
+      <!-- Traitements -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-2">Traitement</label>
+        <div id="hosp_treatments_list" class="space-y-2"></div>
+        <button type="button" onclick="addHospTreatmentRow()"
+                class="mt-2 text-sm bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg transition">
+          + Ajouter un traitement
+        </button>
+      </div>
+
+      <!-- Observation -->
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-1">Observation</label>
+        <textarea id="hosp_observation" rows="2" placeholder="Observation"
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400"></textarea>
+      </div>
+
+      <!-- Sortie -->
+      <div class="border-t border-gray-200 pt-4">
+        <h3 class="text-sm font-semibold text-gray-700 mb-3">Sortie</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">Date et Heure de sortie</label>
+            <input type="datetime-local" id="hosp_date_sortie"
+                   class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-xs text-gray-500 mb-1">Observations de sortie</label>
+            <textarea id="hosp_observations_sortie" rows="2" placeholder="Observations de sortie"
+                      class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex flex-col md:flex-row justify-between gap-3 pt-2">
+        <button type="button" onclick="closeHospitalizationModal()"
+                class="w-full md:w-auto px-6 py-3 bg-gray-300 hover:bg-gray-400 text-black rounded-xl transition">
+          Annuler
+        </button>
+        <button type="button" onclick="submitHospitalization()"
+                class="glow-button w-full md:w-auto px-6 py-3 rounded-xl text-lg font-medium">
+          Enregistrer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- Invoice Modal -->
 <!-- Outer backdrop -->
 <div id="invoiceModal"
@@ -1585,6 +1729,7 @@ function showToast(message, duration = 3000) {
 };
 
 window.USER_TYPE = "{{user_type}}"
+window.USERNAME = "{{username}}"
 
   </script>
   <script src="/static/js/search.js">
