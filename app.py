@@ -911,6 +911,36 @@ def update_hospitalization(hosp_id):
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
+@app.route('/hospitalization/<int:hosp_id>/treatments', methods=['PATCH'])
+@login_required
+def update_treatments(hosp_id):
+    user_type = session.get('user_type')
+    try:
+        data = request.get_json()
+        conn = get_db_connection()
+        conn.autocommit = True
+        cur = conn.cursor()
+        for t in data.get('treatments', []):
+            cur.execute('''
+                UPDATE hospitalization_treatments
+                SET fait=%s, fait_par=%s, heure=%s
+                WHERE id=%s AND hospitalization_id=%s
+            ''', (
+                t.get('fait', False),
+                t.get('fait_par'),
+                t.get('heure'),
+                t['id'],
+                hosp_id,
+            ))
+        conn.close()
+        log_file(user_type, 'Traitement MAJ',
+                 f"Traitements hospitalisation {hosp_id} mis a jour par {session.get('username')}")
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        print(f"Error updating treatments: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
 @app.route('/hospitalization/<int:hosp_id>', methods=['DELETE'])
 @login_required
 def delete_hospitalization(hosp_id):
@@ -1329,7 +1359,7 @@ def patient_detail(patient_id):
         hosp['treatments'] = [dict(r) for r in cur.fetchall()]
 
     conn.close()
-    return render_template('patient.html', visits=row_as_visits, patient=row_as_dicts[0], hospitalizations=hospitalizations)
+    return render_template('patient.html', visits=row_as_visits, patient=row_as_dicts[0], hospitalizations=hospitalizations, username=session.get('username'), user_type=session.get('user_type'))
 
 @app.route('/get_patient/<int:patient_id>')
 @login_required

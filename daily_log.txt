@@ -1,14 +1,66 @@
-2026-04-20
-Nouvelle evenement: 00:10:55 manager, Détails des patients, Les détails du patient avec l'identifiant 389 ont été consulté.
-Nouvelle evenement: 00:11:30 manager, Ajout d'un patient, Le patient 'Jonathan Allarassem' a été ajouté
-Nouvelle evenement: 00:11:34 manager, Détails des patients, Les détails du patient avec l'identifiant 396 ont été consulté.
-Nouvelle evenement: 00:11:51 manager, Patient sélectionné, Patient avec ID 396 selectionné.
-Nouvelle evenement: 00:12:19 manager, Hospitalisation, Nouvelle hospitalisation pour patient 396
-Nouvelle evenement: 00:12:22 manager, Détails des patients, Les détails du patient avec l'identifiant 396 ont été consulté.
-Nouvelle evenement: 00:13:05 manager, Suppression d'un patient, Le patient avec l'identifiant 396 a été supprimé. Voici les infos du patient supprimé [RealDictRow({'id': 396, 'name': 'Jonathan Allarassem', 'adresse': 'keury kao', 'age': 23, 'date_of_birth': datetime.date(2001, 2, 18), 'poids': '32', 'taille': None, 'tension_arterielle': '12/7', 'temperature': None, 'hypothese_de_diagnostique': None, 'bilan': None, 'resultat_bilan': None, 'signature': None, 'renseignements_clinique': None, 'ordonnance': None, 'created_at': datetime.date(2026, 4, 20), 'age_years': 23, 'age_months': 0, 'age_days': 0, 'ipm': None, 'montant': None, 'testyy': None, 'new_cases': None})]
-Nouvelle evenement: 09:51:05 manager, login, L'utilisateur 'manager' s'est connecté avec succès
-Nouvelle evenement: 09:51:31 manager, Facture généré, Facture généré pour le patient DIARRA maguette
-Nouvelle evenement: 09:54:09 manager, Facture généré, Facture généré pour le patient DIARRA maguette
-Nouvelle evenement: 09:55:40 manager, Facture généré, Facture généré pour le patient DIARRA maguette
-Nouvelle evenement: 10:07:27 manager, Facture généré, Facture généré pour le patient DIARRA maguette
-Nouvelle evenement: 10:14:13 manager, Facture généré, Facture généré pour le patient DIARRA maguette
+2026-04-22
+Nouvelle evenement: 00:21:29 manager, login, L'utilisateur 'manager' s'est connecté avec succès
+Nouvelle evenement: 00:21:35 manager, Patient sélectionné, Patient avec ID 401 selectionné.
+Nouvelle evenement: 00:21:54 manager, Ajout d'un patient, Le patient 'Jonathan Allarassem' a été ajouté
+Nouvelle evenement: 00:21:56 manager, Patient sélectionné, Patient avec ID 425 selectionné.
+Nouvelle evenement: 00:22:19 manager, Hospitalisation, Nouvelle hospitalisation pour patient 425
+Nouvelle evenement: 00:22:23 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:25:20 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 00:25:20 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 00:25:20 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 00:25:20 infirmiers, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 00:25:20 receptionistes, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 00:25:20 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 00:25:20 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 00:25:24 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 00:25:24 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 00:25:24 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 00:25:24 medecins, Hospitalisation MAJ, Hospitalisation 1 mise a jour
+Nouvelle evenement: 00:25:24 medecins, Hospitalisation supprimee, Hospitalisation 1 supprimee
+Nouvelle evenement: 00:25:24 medecins, Ajout d'un patient, Le patient 'John Doe' a été ajouté
+Nouvelle evenement: 00:25:24 medecins, Ajout d'un patient, Le patient 'Valid Patient' a été ajouté
+Nouvelle evenement: 00:25:24 medecins, Ajout d'un patient, Le patient 'Consistency Test' a été ajouté
+Nouvelle evenement: 00:25:24 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 00:25:25 medecins, Ajout d'un patient, Le patient 'Test Patient' a été ajouté
+Nouvelle evenement: 00:25:25 medecins, modification patient, Patient avec ID 1 a été modifié
+Nouvelle evenement: 00:25:25 medecins, Suppression d'un patient, Le patient avec l'identifiant 1 a été supprimé. Voici les infos du patient supprimé <MagicMock name='get_db_connection().cursor().fetchall()' id='4530388480'>
+Nouvelle evenement: 00:25:25 medecins, Patient sélectionné, Patient avec ID 1 selectionné.
+Nouvelle evenement: 00:25:26 medecins, Détails des patients, Les détails du patient avec l'identifiant 1 ont été consulté.
+Nouvelle evenement: 00:25:26 medecins, Facture généré, Facture généré pour le patient Doe John
+Nouvelle evenement: 00:25:26 medecins, Facture généré, Facture généré pour le patient Test User
+Nouvelle evenement: 00:25:26 medecins, Facture généré, Facture généré pour le patient Test User
+Nouvelle evenement: 00:25:26 medecins, Facture généré, Facture généré pour le patient Doe John
+Nouvelle evenement: 00:25:27 medecins, Ajout d'un patient, Le patient 'Test Patient' a été ajouté
+Nouvelle evenement: 00:25:28 medecins, Ajout d'un patient, Le patient 'Test Patient' a été ajouté
+Nouvelle evenement: 00:25:28 medecins, Patient sélectionné, Patient avec ID 99999 selectionné.
+Nouvelle evenement: 00:25:30 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 00:25:36 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 00:25:36 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 00:25:36 medecins, Hospitalisation, Nouvelle hospitalisation pour patient 1
+Nouvelle evenement: 00:25:36 medecins, Hospitalisation MAJ, Hospitalisation 1 mise a jour
+Nouvelle evenement: 00:25:36 medecins, Hospitalisation supprimee, Hospitalisation 1 supprimee
+Nouvelle evenement: 00:26:47 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:28:22 manager, Patient sélectionné, Patient avec ID 425 selectionné.
+Nouvelle evenement: 00:28:25 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:31:27 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 00:32:55 SokhnaGoumbo, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 00:34:11 SokhnaGoumbo, login, L'utilisateur 'SokhnaGoumbo' s'est connecté avec succès
+Nouvelle evenement: 00:34:16 manager, Patient sélectionné, Patient avec ID 425 selectionné.
+Nouvelle evenement: 00:34:19 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:36:36 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:36:46 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 00:36:54 manager, login, L'utilisateur 'manager' s'est connecté avec succès
+Nouvelle evenement: 00:36:59 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:37:07 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:37:14 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 00:37:22 SokhnaGoumbo, login, L'utilisateur 'SokhnaGoumbo' s'est connecté avec succès
+Nouvelle evenement: 00:37:26 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:40:12 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:40:20 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 00:40:49 SokhnaGoumbo, login, L'utilisateur 'SokhnaGoumbo' s'est connecté avec succès
+Nouvelle evenement: 00:40:53 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:40:59 manager, Traitement MAJ, Traitements hospitalisation 8 mis a jour par SokhnaGoumbo
+Nouvelle evenement: 00:40:59 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:41:04 manager, Détails des patients, Les détails du patient avec l'identifiant 425 ont été consulté.
+Nouvelle evenement: 00:41:13 manager, Suppression d'un patient, Le patient avec l'identifiant 425 a été supprimé. Voici les infos du patient supprimé [RealDictRow({'id': 425, 'name': 'Jonathan Allarassem', 'adresse': None, 'age': 0, 'date_of_birth': None, 'poids': None, 'taille': None, 'tension_arterielle': None, 'temperature': None, 'hypothese_de_diagnostique': None, 'bilan': None, 'resultat_bilan': None, 'signature': None, 'renseignements_clinique': None, 'ordonnance': None, 'created_at': datetime.date(2026, 4, 22), 'age_years': 0, 'age_months': 0, 'age_days': 0, 'ipm': None, 'montant': None, 'testyy': None, 'new_cases': None})]
+Nouvelle evenement: 00:41:16 manager, logout, L'utilisateur 'manager' s'est déconnecté
