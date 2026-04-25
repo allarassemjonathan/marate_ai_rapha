@@ -25,7 +25,6 @@ Chart.defaults.plugins.tooltip.titleFont = { weight: 'bold', size: 13 };
 Chart.defaults.plugins.tooltip.bodyFont = { size: 12 };
 Chart.defaults.plugins.legend.labels.usePointStyle = true;
 Chart.defaults.plugins.legend.labels.padding = 16;
-Chart.defaults.elements.bar.borderRadius = 6;
 Chart.defaults.scale.grid = { color: 'rgba(0, 0, 0, 0.04)' };
 
 // --- Helper: create gradient fill ---
@@ -135,19 +134,27 @@ if (CHART_DATA.monthlyRevenue) {
 }
 
 // ============================================================
-// Chart 3: Recurring Patients (Bar)
+// Chart 3: Recurring Patients (Line)
 // ============================================================
 if (CHART_DATA.recurringPatients) {
-  new Chart(document.getElementById('chartRecurringPatients'), {
-    type: 'bar',
+  const ctx3 = document.getElementById('chartRecurringPatients').getContext('2d');
+  new Chart(ctx3, {
+    type: 'line',
     data: {
       labels: CHART_DATA.recurringPatients.labels,
       datasets: [{
         label: 'Visites',
         data: CHART_DATA.recurringPatients.values,
-        backgroundColor: COLORS.pieColors.slice(0, CHART_DATA.recurringPatients.labels.length),
-        borderRadius: 8,
-        borderSkipped: false
+        borderColor: COLORS.primary,
+        backgroundColor: createGradient(ctx3, COLORS.primary),
+        fill: true,
+        tension: 0.3,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: COLORS.primary,
+        pointBorderWidth: 2,
+        borderWidth: 2.5
       }]
     },
     options: {
@@ -162,6 +169,7 @@ if (CHART_DATA.recurringPatients) {
           grid: { color: 'rgba(0,0,0,0.04)' }
         },
         x: {
+          ticks: { maxRotation: 45 },
           grid: { display: false }
         }
       }
@@ -208,20 +216,27 @@ if (CHART_DATA.neighborhoodDistribution) {
 }
 
 // ============================================================
-// Chart 5: New Patients Per Month (Bar)
+// Chart 5: New Patients Per Month (Line)
 // ============================================================
 if (CHART_DATA.newPatientsPerMonth) {
-  new Chart(document.getElementById('chartNewPatients'), {
-    type: 'bar',
+  const ctx5 = document.getElementById('chartNewPatients').getContext('2d');
+  new Chart(ctx5, {
+    type: 'line',
     data: {
       labels: CHART_DATA.newPatientsPerMonth.labels,
       datasets: [{
         label: 'Nouveaux patients',
         data: CHART_DATA.newPatientsPerMonth.values,
-        backgroundColor: COLORS.primary,
-        borderRadius: 6,
-        borderSkipped: false,
-        maxBarThickness: 50
+        borderColor: COLORS.secondary,
+        backgroundColor: createGradient(ctx5, COLORS.secondary),
+        fill: true,
+        tension: 0.3,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: COLORS.secondary,
+        pointBorderWidth: 2,
+        borderWidth: 2.5
       }]
     },
     options: {
@@ -250,7 +265,7 @@ if (CHART_DATA.newPatientsPerMonth) {
 }
 
 // ============================================================
-// Chart 6: Patients Per Doctor (Bar, switchable by month)
+// Chart 6: Patients Per Doctor (Line, switchable by month)
 // ============================================================
 let doctorChart = null;
 
@@ -262,17 +277,24 @@ function updateDoctorChart(month) {
   const canvas = document.getElementById('chartDoctors');
   if (doctorChart) doctorChart.destroy();
 
-  doctorChart = new Chart(canvas, {
-    type: 'bar',
+  const ctx6 = canvas.getContext('2d');
+  doctorChart = new Chart(ctx6, {
+    type: 'line',
     data: {
       labels: monthData.labels,
       datasets: [{
         label: 'Patients',
         data: monthData.values,
-        backgroundColor: COLORS.pieColors.slice(0, monthData.labels.length),
-        borderRadius: 8,
-        borderSkipped: false,
-        maxBarThickness: 60
+        borderColor: COLORS.accent,
+        backgroundColor: createGradient(ctx6, COLORS.accent),
+        fill: true,
+        tension: 0.3,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: COLORS.accent,
+        pointBorderWidth: 2,
+        borderWidth: 2.5
       }]
     },
     options: {
@@ -377,19 +399,24 @@ if (CHART_DATA.patientEvolution) {
 // ============================================================
 if (CHART_DATA.distribution) {
   const dist = CHART_DATA.distribution;
+  const ctx8 = document.getElementById('chartDistribution').getContext('2d');
 
   if (dist.type === 'histogram') {
-    new Chart(document.getElementById('chartDistribution'), {
-      type: 'bar',
+    new Chart(ctx8, {
+      type: 'line',
       data: {
         labels: dist.labels,
         datasets: [{
           label: dist.columnName,
           data: dist.values,
-          backgroundColor: COLORS.primaryLight,
           borderColor: COLORS.primary,
-          borderWidth: 1,
-          borderRadius: 2
+          backgroundColor: createGradient(ctx8, COLORS.primary),
+          fill: true,
+          tension: 0.3,
+          pointRadius: 2,
+          pointHoverRadius: 6,
+          pointBackgroundColor: COLORS.primary,
+          borderWidth: 2
         }]
       },
       options: {
@@ -412,23 +439,27 @@ if (CHART_DATA.distribution) {
       }
     });
   } else {
-    // Horizontal bar for categorical data
-    new Chart(document.getElementById('chartDistribution'), {
-      type: 'bar',
+    // Line chart for categorical data
+    new Chart(ctx8, {
+      type: 'line',
       data: {
         labels: dist.labels,
         datasets: [{
           label: "Nombre d'occurrences",
           data: dist.values,
-          backgroundColor: COLORS.pieColors.slice(0, dist.labels.length).concat(
-            Array(Math.max(0, dist.labels.length - COLORS.pieColors.length)).fill(COLORS.primary)
-          ),
-          borderRadius: 6,
-          borderSkipped: false
+          borderColor: COLORS.secondary,
+          backgroundColor: createGradient(ctx8, COLORS.secondary),
+          fill: true,
+          tension: 0.3,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: COLORS.secondary,
+          pointBorderWidth: 2,
+          borderWidth: 2.5
         }]
       },
       options: {
-        indexAxis: 'y',
         responsive: true,
         plugins: {
           legend: { display: false },
@@ -440,12 +471,13 @@ if (CHART_DATA.distribution) {
           }
         },
         scales: {
-          x: {
+          y: {
             beginAtZero: true,
             title: { display: true, text: "Nombre d'occurrences" },
             grid: { color: 'rgba(0,0,0,0.04)' }
           },
-          y: {
+          x: {
+            ticks: { maxRotation: 45 },
             grid: { display: false }
           }
         }
