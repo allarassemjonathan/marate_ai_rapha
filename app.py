@@ -42,8 +42,8 @@ except:
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
-cabinet = os.getenv("cabinet")
-manager = os.getenv("manager")
+cabinet = os.getenv("cabinet")  # legacy, replaced by session['clinic_name']
+manager = os.getenv("manager")  # legacy, replaced by multi-tenant auth
 
 app = Flask(__name__)
 
@@ -102,6 +102,11 @@ def get_db_connection():
     return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
 
 def init_db():
+    """Ensure default column meta and visibility exist for the current clinic."""
+    clinic_id = session.get('clinic_id')
+    if not clinic_id:
+        return
+
     defaults = {
         'medecins': ['created_at', 'name','adresse','phone_number', 'meeting', 'new_cases', 'age','poids','taille','tension_arterielle','temperature','hypothese_de_diagnostique', 'renseignements_clinique', 'bilan','resultat_bilan', 'ordonnance', 'signature'],
         'infirmiers': ['created_at', 'name','poids','taille','tension_arterielle','temperature'],
@@ -110,120 +115,12 @@ def init_db():
     with get_db_connection() as conn:
         conn.autocommit = True
         with conn.cursor() as cur:
-            # setting up the regular tables
-            cur.execute('''
-                CREATE TABLE IF NOT EXISTS patients (
-                    id SERIAL PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    adresse TEXT,
-                    age_years INTEGER,
-                    age_months INTEGER,
-                    age_days INTEGER,
-                    date_of_birth DATE, 
-                    poids REAL,
-                    taille REAL,
-                    tension_arterielle REAL,
-                    temperature TEXT,
-                    hypothese_de_diagnostique TEXT,
-                    bilan TEXT, 
-                    resultat_bilan TEXT,
-                    signature TEXT,
-                    renseignements_clinique TEXT,
-                    ordonnance TEXT,
-                    created_at DATE
-                )
-            ''')
-            cur.execute('''
-                CREATE TABLE IF NOT EXISTS users (
-                    id SERIAL PRIMARY KEY,
-                    username TEXT NOT NULL,
-                    password TEXT,
-                    role TEXT,
-                    numero TEXT,
-                    last_sms_verification DATE,
-                    pending_code TEXT
-                )
-            ''')
-            cur.execute('''
-            CREATE TABLE IF NOT EXISTS column_visibility ( id SERIAL PRIMARY KEY, role VARCHAR(50) UNIQUE NOT NULL, columns JSONB NOT NULL);
-            ''')
-            cur.execute('''
-                CREATE TABLE IF NOT EXISTS visits (
-                    id SERIAL PRIMARY KEY,
-                    patient_id INTEGER REFERENCES patients(id),
-                    visit_date DATE,
-                    notes TEXT
-                )
-            ''')
-            cur.execute('''
-                CREATE TABLE IF NOT EXISTS action_logs (
-                    id SERIAL PRIMARY KEY,
-                    timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
-                    user_type TEXT,
-                    action TEXT NOT NULL,
-                    details TEXT
-                )
-            ''')
-            # Hospitalization tables
-            cur.execute('''
-                CREATE TABLE IF NOT EXISTS hospitalizations (
-                    id SERIAL PRIMARY KEY,
-                    patient_id INTEGER REFERENCES patients(id) ON DELETE CASCADE,
-                    date_admission TIMESTAMP NOT NULL DEFAULT NOW(),
-                    medecin_traitant TEXT,
-                    syndrome TEXT,
-                    constante_temperature TEXT,
-                    constante_ta TEXT,
-                    constante_fc TEXT,
-                    constante_poids REAL,
-                    diagnostic TEXT,
-                    observation TEXT,
-                    date_sortie TIMESTAMP,
-                    observations_sortie TEXT,
-                    created_by TEXT,
-                    created_at TIMESTAMP DEFAULT NOW()
-                )
-            ''')
-            cur.execute('''
-                CREATE TABLE IF NOT EXISTS hospitalization_treatments (
-                    id SERIAL PRIMARY KEY,
-                    hospitalization_id INTEGER REFERENCES hospitalizations(id) ON DELETE CASCADE,
-                    ordre INTEGER,
-                    description TEXT NOT NULL,
-                    fait BOOLEAN DEFAULT FALSE,
-                    fait_par TEXT,
-                    heure TEXT
-                )
-            ''')
-            # Create the column metadata table
-            cur.execute('''
-                CREATE TABLE IF NOT EXISTS patient_columns_meta (
-                    id SERIAL PRIMARY KEY,
-                    column_name TEXT UNIQUE NOT NULL,
-                    display_name TEXT NOT NULL,
-                    data_type TEXT NOT NULL,
-                    is_visible BOOLEAN DEFAULT TRUE,
-                    is_required BOOLEAN DEFAULT FALSE,
-                    display_order INTEGER DEFAULT 0,
-                    created_at TIMESTAMP DEFAULT NOW()
-                )
-            ''')
-            
-            # Check if metadata exists, if not populate with existing columns
-            cur.execute("SELECT COUNT(*) FROM patient_columns_meta")
+            # Check if metadata exists for this clinic
+            cur.execute("SELECT COUNT(*) FROM patient_columns_meta WHERE clinic_id = %s", (clinic_id,))
             result = cur.fetchone()
-            
-            if result is None:
-                count = 0
-            else:
-                # Handle both tuple and RealDictRow formats
-                if hasattr(result, 'get'):
-                    count = result.get('count', 0)
-                else:
-                    count = result[0]
-            
+            count = result.get('count', 0) if hasattr(result, 'get') else result[0]
+
             if count == 0:
-                # Insert default column metadata
                 default_columns = [
                     ('id', 'ID', 'SERIAL', True, True, 1),
                     ('name', 'Nom', 'TEXT', True, True, 2),
@@ -242,54 +139,53 @@ def init_db():
                     ('ordonnance', 'Ordonnance', 'TEXT', True, False, 15),
                     ('created_at', 'Date de création', 'DATE', True, False, 16)
                 ]
-                
                 for col_name, display_name, data_type, is_visible, is_required, order in default_columns:
                     cur.execute('''
-                        INSERT INTO patient_columns_meta 
-                        (column_name, display_name, data_type, is_visible, is_required, display_order)
-                        VALUES (%s, %s, %s, %s, %s, %s)
-                    ''', (col_name, display_name, data_type, is_visible, is_required, order))
-            
+                        INSERT INTO patient_columns_meta
+                        (column_name, display_name, data_type, is_visible, is_required, display_order, clinic_id)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ''', (col_name, display_name, data_type, is_visible, is_required, order, clinic_id))
 
-            # setup the column visibility parameters
+            # Setup column visibility for this clinic
             for role, cols in defaults.items():
-                cur.execute("SELECT 1 FROM column_visibility WHERE role=%s;", (role,))
+                cur.execute("SELECT 1 FROM column_visibility WHERE role=%s AND clinic_id=%s;", (role, clinic_id))
                 if not cur.fetchone():
-                    print("made it here")
                     cur.execute("""
-                        INSERT INTO column_visibility (role, columns)
-                        VALUES (%s, %s)
-                        ON CONFLICT (role) DO NOTHING;
-                    """, (role, json.dumps(cols)))
+                        INSERT INTO column_visibility (role, columns, clinic_id)
+                        VALUES (%s, %s, %s);
+                    """, (role, json.dumps(cols), clinic_id))
             conn.commit()
 
 # Column management utility functions
 def get_visible_columns():
     """Get list of visible columns in display order"""
     print('get_vis_col_py')
+    clinic_id = session.get('clinic_id')
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
     cur.execute('''
-        SELECT column_name, display_name, data_type 
-        FROM patient_columns_meta 
-        WHERE is_visible = TRUE 
+        SELECT column_name, display_name, data_type
+        FROM patient_columns_meta
+        WHERE is_visible = TRUE AND clinic_id = %s
         ORDER BY display_order
-    ''')
+    ''', (clinic_id,))
     columns = cur.fetchall()
     conn.close()
     return columns
 
 def get_all_columns():
     """Get all columns with their metadata"""
+    clinic_id = session.get('clinic_id')
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
     cur.execute('''
         SELECT column_name, display_name, data_type, is_visible, is_required, display_order
-        FROM patient_columns_meta 
+        FROM patient_columns_meta
+        WHERE clinic_id = %s
         ORDER BY display_order
-    ''')
+    ''', (clinic_id,))
     columns = cur.fetchall()
     conn.close()
     return columns
@@ -344,14 +240,15 @@ def remove_column_from_patients(column_name):
 
 def update_column_visibility(column_name, is_visible):
     """Update column visibility"""
+    clinic_id = session.get('clinic_id')
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
     cur.execute('''
-        UPDATE patient_columns_meta 
-        SET is_visible = %s 
-        WHERE column_name = %s
-    ''', (is_visible, column_name))
+        UPDATE patient_columns_meta
+        SET is_visible = %s
+        WHERE column_name = %s AND clinic_id = %s
+    ''', (is_visible, column_name, clinic_id))
     conn.commit()
     conn.close()
 
@@ -398,7 +295,7 @@ def log_file(user_type, action, details=None):
 #     except Exception as e:
 #         print(f"Error logging action: {e}")
 
-init_db()
+# init_db() is now called per-request in index() since it needs clinic_id from session
 # on_startup()
 
 print('hello')
@@ -429,8 +326,7 @@ Special_user = ''
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # If either logged_in or username missing → go to login
-        if not session.get('logged_in') or not session.get('username'):
+        if not session.get('logged_in') or not session.get('username') or not session.get('clinic_id'):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -973,12 +869,12 @@ def index():
     role_col = get_visibility_backend(user_type)
     visible_columns = [dict(row) for row in visible_columns]
     print(visible_columns)
-    return render_template('index.html', 
-                         user_type=user_type, 
+    return render_template('index.html',
+                         user_type=user_type,
                          username=username,
                          role_col = role_col,
-                         visible_columns=visible_columns, 
-                         cabinet=cabinet, 
+                         visible_columns=visible_columns,
+                         cabinet=session.get('clinic_name', ''),
                          manager = manager)
 
 
@@ -1006,9 +902,10 @@ def search():
         print('here is search 3 ', select_columns)
         try:
             print('right before')
+            clinic_id = session.get('clinic_id')
             cur.execute(
-            f"SELECT * FROM patients WHERE name ILIKE %s;",
-            (f'%{q}%',)  # one-element tuple
+            "SELECT * FROM patients WHERE name ILIKE %s AND clinic_id = %s;",
+            (f'%{q}%', clinic_id)
             )
             print('right after')
         except Exception as e:
@@ -1036,8 +933,9 @@ def show_distribution():
     columns = ['adresse', 'sexe', 'groupe_sanguin']
     all_values = defaultdict(lambda: defaultdict(int))
 
+    clinic_id = session.get('clinic_id')
     for col in columns:
-        cur.execute(f"SELECT {col} FROM patients")
+        cur.execute(f"SELECT {col} FROM patients WHERE clinic_id = %s", (clinic_id,))
         rows = cur.fetchall()
         for (val,) in rows:
             if val:
@@ -1073,13 +971,15 @@ def ipm_page():
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    clinic_id = session.get('clinic_id')
     cur.execute("""
         SELECT name, created_at
         FROM patients
         WHERE ipm = %s
         AND DATE_TRUNC('month', created_at) = DATE_TRUNC('month', %s::timestamp)
+        AND clinic_id = %s
         ORDER BY created_at;
-    """, (ipm_value, start_date))
+    """, (ipm_value, start_date, clinic_id))
     patients = cur.fetchall()
     cur.close()
     conn.close()
@@ -1159,7 +1059,8 @@ def add():
     conn.autocommit = True
     cur = conn.cursor()
 
-    cur.execute("select * from patient_columns_meta")
+    clinic_id = session.get('clinic_id')
+    cur.execute("SELECT * FROM patient_columns_meta WHERE clinic_id = %s", (clinic_id,))
     rows = cur.fetchall()
     rows = [dict(row) for row in rows]
     print("rows are ", rows)
@@ -1275,7 +1176,9 @@ def add():
                 data['signature'] = session['username'].replace('_', ' ')
             else:
                 data['signature'] = 'medecins'
-        
+
+        data['clinic_id'] = session.get('clinic_id')
+
         # Use parameterized query
         columns = list(data.keys())
         values = list(data.values())
@@ -1310,9 +1213,10 @@ def delete(rowid):
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
-    cur.execute('SELECT * FROM patients WHERE id = %s', (rowid, ))
+    clinic_id = session.get('clinic_id')
+    cur.execute('SELECT * FROM patients WHERE id = %s AND clinic_id = %s', (rowid, clinic_id))
     row = cur.fetchall()
-    cur.execute('DELETE FROM patients WHERE id = %s', (rowid,))
+    cur.execute('DELETE FROM patients WHERE id = %s AND clinic_id = %s', (rowid, clinic_id))
     conn.commit()
     conn.close()
     log_file(user_type, 'Suppression d\'un patient', f"Le patient avec l'identifiant {rowid} a été supprimé. Voici les infos du patient supprimé {row}")
@@ -1327,36 +1231,28 @@ def patient_detail(patient_id):
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
-    cur.execute('SELECT * FROM patients WHERE id = %s', (patient_id,))
+    clinic_id = session.get('clinic_id')
+    cur.execute('SELECT * FROM patients WHERE id = %s AND clinic_id = %s', (patient_id, clinic_id))
     patients = cur.fetchall()
 
+    if not patients:
+        conn.close()
+        return "Patient non trouvé", 404
+
     row_as_dicts = [dict(row) for row in patients]
-    
+
     print(patients)
     print(row_as_dicts[0])
 
     name = row_as_dicts[0]['name']
     print('name', name)
-    cur.execute('SELECT * FROM patients WHERE name = %s', (name,))
+    cur.execute('SELECT * FROM patients WHERE name = %s AND clinic_id = %s', (name, clinic_id))
     visits = cur.fetchall()
     print(len(visits))
 
     row_as_visits = [dict(row) for row in visits]
 
-    # Fetch hospitalizations for this patient
-    cur.execute('''
-        SELECT * FROM hospitalizations
-        WHERE patient_id = %s ORDER BY date_admission DESC
-    ''', (patient_id,))
-    hospitalizations = [dict(row) for row in cur.fetchall()]
-
-    # Fetch treatments for each hospitalization
-    for hosp in hospitalizations:
-        cur.execute('''
-            SELECT * FROM hospitalization_treatments
-            WHERE hospitalization_id = %s ORDER BY ordre
-        ''', (hosp['id'],))
-        hosp['treatments'] = [dict(r) for r in cur.fetchall()]
+    hospitalizations = []
 
     conn.close()
     return render_template('patient.html', visits=row_as_visits, patient=row_as_dicts[0], hospitalizations=hospitalizations, username=session.get('username'), user_type=session.get('user_type'))
@@ -1370,26 +1266,24 @@ def get_patient(patient_id):
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
-    cur.execute('SELECT * FROM patients WHERE id = %s', (patient_id,))
+    clinic_id = session.get('clinic_id')
+    cur.execute('SELECT * FROM patients WHERE id = %s AND clinic_id = %s', (patient_id, clinic_id))
     row = cur.fetchone()
-    print(row)
-
-    row =dict(row)
-    print(row)
     conn.close()
+
+    if not row:
+        return jsonify({'status': 'error', 'message': 'Patient non trouvé'}), 404
+
+    row = dict(row)
     print(session['username'])
 
-    if user_type=='infirmiers' or user_type == 'receptionistes':
+    if user_type == 'infirmiers' or user_type == 'receptionistes':
         return jsonify(row)
     if row['signature'] is None:
-        return jsonify(row)
-    if session['username'] == 'manager':
-        print('ot here?')
         return jsonify(row)
     if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
         return jsonify(row)
     else:
-        print('ieah')
         return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
 
 
@@ -1408,7 +1302,8 @@ def update_patient(patient_id):
     conn.autocommit = True
     cur = conn.cursor()
 
-    cur.execute("select * from patient_columns_meta")
+    clinic_id = session.get('clinic_id')
+    cur.execute("SELECT * FROM patient_columns_meta WHERE clinic_id = %s", (clinic_id,))
     rows = cur.fetchall()
     rows = [dict(row) for row in rows]
     print("rows are ", rows)
@@ -1430,7 +1325,8 @@ def update_patient(patient_id):
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
-    cur.execute(f'UPDATE patients SET {set_clause} WHERE id = %s', values)
+    values.append(clinic_id)
+    cur.execute(f'UPDATE patients SET {set_clause} WHERE id = %s AND clinic_id = %s', values)
     conn.commit()
     conn.close()
 
@@ -1511,83 +1407,46 @@ import random
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # If already logged in, go to index
-    if session.get('logged_in') and session.get('username') and session.get('user_type'):
+    if session.get('logged_in') and session.get('username') and session.get('clinic_id'):
         return redirect(url_for('index', user_type=session.get('user_type')))
 
     if request.method == 'POST':
-        # username_input = request.form['username'].replace(' ', '_')
-        username_input = request.form['username']
-        password = request.form['password']
+        email_input = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
 
-        print(username_input, password)
         try:
             conn = get_db_connection()
             conn.autocommit = True
             cur = conn.cursor()
-            cur.execute("SELECT password, role, numero, last_sms_verification FROM users WHERE username = %s", (username_input,))
+            cur.execute("""
+                SELECT u.password_hash, u.role, u.name, u.clinic_id, c.name as clinic_name
+                FROM users u
+                JOIN clinics c ON c.id = u.clinic_id
+                WHERE u.email = %s
+            """, (email_input,))
             user = cur.fetchone()
-            print(user)
             cur.close()
             conn.close()
         except Exception as e:
             print(e)
-            flash('Erreur de connection avec la base de donnee', e)
+            flash('Erreur de connection avec la base de donnee')
             return render_template('login.html')
 
         if not user:
             flash('Cet utilisateur n\'existe pas.')
             return render_template('login.html')
-        
-        stored_hash = user['password']
-        print("here")
-        print(stored_hash, password)
+
+        stored_hash = user['password_hash']
         if verify_password(stored_hash, password):
-            # store session info
-            session['username'] = username_input
+            session['username'] = user['name']
             session['user_type'] = user['role']
-
-            # check if verification needed
-            last_verified = user['last_sms_verification']
-            needs_verification = (
-                not last_verified or 
-                (datetime.now().date() - last_verified) > timedelta(days=180)
-            )
-
-            if needs_verification:
-                # Generate code
-                code = str(random.randint(100000, 999999))
-
-                # Store the code in the db
-                try:
-                    conn = get_db_connection()
-                    conn.autocommit = True
-                    cur = conn.cursor()
-                    cur.execute(
-                        "UPDATE users SET pending_code = %s WHERE username = %s",
-                        (code, username_input)
-                    )
-                    conn.commit()
-                    cur.close()
-                    conn.close()
-                except Exception as e:
-                    print('DB update error', e)
-
-                # Send via SMS
-                sms(username_input, user['numero'], '', '', '', "Veuillez confirmer votre compte.", code)
-
-                session['pending_verification'] = True
-                flash('Un code de vérification a été envoyé à votre téléphone.')
-                return redirect(url_for('verify_sms'))
-            
+            session['clinic_id'] = user['clinic_id']
+            session['clinic_name'] = user['clinic_name']
             session['logged_in'] = True
-            log_file(username_input, 'login', f"L'utilisateur '{username_input}' s'est connecté avec succès")
-            dic = backend_api_get_columns()
-            print("just checking", dic["all_columns"])
-
+            log_file(user['name'], 'login', f"L'utilisateur '{user['name']}' s'est connecté avec succès")
             return redirect(url_for('index', user_type=session['user_type']))
         else:
-            flash('username et/ou mot de passe incorrects.')
-            log_file(username_input, 'La connexion a échoué', "Failed login attempt")
+            flash('Email et/ou mot de passe incorrects.')
     return render_template('login.html')
 
 
@@ -1752,30 +1611,29 @@ def send_daily_report_email():
     except Exception as e:
         return f"Failed to send daily report email: {e}"
     
-_cache = {"df":None, "last_load":0}
+_cache = {}  # keyed by clinic_id
 
 def load_df_cached(ttl=60):
-
-    # get the current time
+    clinic_id = session.get('clinic_id')
     now = time.time()
 
-    # if the table has not been loaded yet or it has been loaded a while ago reload
-    if _cache["df"] is None or (now - _cache["last_load"]) > ttl:
-        _cache["df"] = load_df()
-        _cache["last_load"] = now
-    # else just return what you have
-    return _cache["df"]
+    if clinic_id not in _cache or _cache[clinic_id]["df"] is None or (now - _cache[clinic_id]["last_load"]) > ttl:
+        _cache[clinic_id] = {"df": load_df(clinic_id), "last_load": now}
+    return _cache[clinic_id]["df"]
 
-def load_df():
+def load_df(clinic_id=None):
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT * FROM patients")
+    if clinic_id:
+        cur.execute("SELECT * FROM patients WHERE clinic_id = %s", (clinic_id,))
+    else:
+        cur.execute("SELECT * FROM patients")
     rows = cur.fetchall()
     columns = [desc[0] for desc in cur.description]
     cur.close()
     conn.close()
-    df = pd.DataFrame(rows , columns=columns)
+    df = pd.DataFrame(rows, columns=columns)
     if 'created_at' in df.columns:
         df['created_at'] = pd.to_datetime(df['created_at'])
     if 'name' in df.columns:
@@ -2364,38 +2222,37 @@ def visibility_page():
     cur = conn.cursor()
 
     # make sure all columns are in here first?
-    cur.execute("SELECT role, columns FROM column_visibility;")
+    clinic_id = session.get('clinic_id')
+    cur.execute("SELECT role, columns FROM column_visibility WHERE clinic_id = %s;", (clinic_id,))
     rows = cur.fetchall()
-    return render_template("visibility.html", roles=rows, allColumns=ColsNames) 
+    return render_template("visibility.html", roles=rows, allColumns=ColsNames)
 
 @app.route("/get_visibility/<role>")
 @login_required
 def get_visibility(role):
     """API endpoint for frontend JS to fetch visible columns for a role."""
+    clinic_id = session.get('clinic_id')
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
-    cur.execute("SELECT columns FROM column_visibility WHERE role=%s;", (role,))
+    cur.execute("SELECT columns FROM column_visibility WHERE role=%s AND clinic_id=%s;", (role, clinic_id))
     row = cur.fetchone()
     cur.close()
     conn.close()
-    print(row['columns'])
     return jsonify(row["columns"] if row else [])
 
 
 def get_visibility_backend(role):
-    """API endpoint for frontend JS to fetch visible columns for a role."""
+    """Backend helper to fetch visible columns for a role."""
+    clinic_id = session.get('clinic_id')
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
-    cur.execute("SELECT columns FROM column_visibility WHERE role=%s;", (role,))
+    cur.execute("SELECT columns FROM column_visibility WHERE role=%s AND clinic_id=%s;", (role, clinic_id))
     row = cur.fetchone()
-    print(role)
-    print(row)
     cur.close()
     conn.close()
-    print(row['columns'])
-    return row["columns"]
+    return row["columns"] if row else []
 
 @app.route("/update_visibility", methods=["POST"])
 @login_required
@@ -2408,9 +2265,10 @@ def update_visibility():
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
+    clinic_id = session.get('clinic_id')
     cur.execute(
-        "UPDATE column_visibility SET columns=%s WHERE role=%s;",
-        (json.dumps(new_columns), role)
+        "UPDATE column_visibility SET columns=%s WHERE role=%s AND clinic_id=%s;",
+        (json.dumps(new_columns), role, clinic_id)
     )
     conn.commit()
     cur.close()
@@ -2481,7 +2339,8 @@ def api_add_column():
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
-    cur.execute('SELECT COUNT(*) FROM patient_columns_meta WHERE column_name = %s', (column_name,))
+    clinic_id = session.get('clinic_id')
+    cur.execute('SELECT COUNT(*) FROM patient_columns_meta WHERE column_name = %s AND clinic_id = %s', (column_name, clinic_id))
     result = cur.fetchone()
     count = result.get('count', 0) if hasattr(result, 'get') else result[0]
     if count > 0:
@@ -2493,25 +2352,25 @@ def api_add_column():
         return jsonify({'status': 'error', 'message': 'Failed to add column to database'}), 500
     
     # Add to metadata
-    cur.execute('SELECT MAX(display_order) as max_order FROM patient_columns_meta')
+    cur.execute('SELECT MAX(display_order) as max_order FROM patient_columns_meta WHERE clinic_id = %s', (clinic_id,))
     result = cur.fetchone()
     max_order = result.get('max_order', 0) if hasattr(result, 'get') else (result[0] or 0)
     if max_order is None:
         max_order = 0
     
     cur.execute('''
-        INSERT INTO patient_columns_meta 
-        (column_name, display_name, data_type, is_visible, is_required, display_order)
-        VALUES (%s, %s, %s, %s, %s, %s)
-    ''', (column_name, display_name, data_type, True, False, max_order + 1))
-    
-    # Add to the column visibility table
+        INSERT INTO patient_columns_meta
+        (column_name, display_name, data_type, is_visible, is_required, display_order, clinic_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    ''', (column_name, display_name, data_type, True, False, max_order + 1, clinic_id))
+
+    # Add to the column visibility table for this clinic
     cur.execute("""
         UPDATE column_visibility
         SET columns = columns::jsonb || %s::jsonb
-        WHERE role = %s;
+        WHERE role = %s AND clinic_id = %s;
         """,
-        (f'["{column_name}"]', 'medecins')
+        (f'["{column_name}"]', 'medecins', clinic_id)
     )
 
     conn.commit()
@@ -2557,11 +2416,11 @@ def api_remove_column(column_name):
     conn = get_db_connection()
     conn.autocommit = True
     cur = conn.cursor()
-    cur.execute('DELETE FROM patient_columns_meta WHERE column_name = %s', (column_name,))
-    
-    # Remove from visibility
-    # Fetch all rows
-    cur.execute("SELECT role, columns FROM column_visibility;")
+    clinic_id = session.get('clinic_id')
+    cur.execute('DELETE FROM patient_columns_meta WHERE column_name = %s AND clinic_id = %s', (column_name, clinic_id))
+
+    # Remove from visibility for this clinic
+    cur.execute("SELECT role, columns FROM column_visibility WHERE clinic_id = %s;", (clinic_id,))
     rows = cur.fetchall()
     # you just added this now you need to get the list for a role specific, remove the old column and then introducte that in the db
     roles_dict = {row['role']: row['columns'] for row in rows}
@@ -2576,7 +2435,7 @@ def api_remove_column(column_name):
             roles_dict[key] = newval
             print('new val', roles_dict[key], newval)
             try:
-                cur.execute("UPDATE column_Visibility SET columns = %s WHERE role = %s", (json.dumps(roles_dict[key]), key))
+                cur.execute("UPDATE column_visibility SET columns = %s WHERE role = %s AND clinic_id = %s", (json.dumps(roles_dict[key]), key, clinic_id))
                 print(f"UPDATED row {key}")
                 print(roles_dict)
             except Exception as e:

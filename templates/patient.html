@@ -85,27 +85,26 @@
           </tr>
         </thead>
         <tbody id="resultsTable" class="text-black-300 text-sm">
-        <!-- Results will be populated here -->
-         {% for visit in visits %}    
-          <tr>
-                  <td class="p-2 border-b">{{visit['created_at']}}</td>
-                  <td class="p-2 border-b">{{visit['age_years']}} ans</td>
-                  <td class="p-2 border-b">{{visit['age_months']}} mois</td>
-                  <td class="p-2 border-b">{{visit['age_days']}} jours</td>
-                  <td class="p-2 border-b">{{visit['temperature']}} °C</td>
-                  <td class="p-2 border-b">{{visit['taille']}} m</td>
-                  <td class="p-2 border-b">{{visit['poids']}} kg</td>
-                  <td class="p-2 border-b">{{visit['hypothese_de_diagnostique']}}</td>
-                  <td class="p-2 border-b">{{visit['bilan']}}</td>
-                  <td class="p-2 border-b">{{visit['resultat_bilan']}}</td>
-                  <td class="p-2 border-b">{{visit['ordonnance']}}</td>
-                  <td class="p-2 border-b">{{visit['signature']}}</td>
+         {% for visit in visits %}
+          <tr class="{{ 'bg-blue-50' if loop.index is odd else 'bg-white' }} hover:bg-blue-100 transition-colors">
+                  <td class="p-3 border-b border-blue-100">{{ visit['created_at'] if visit['created_at'] else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ '%s ans' % visit['age_years'] if visit['age_years'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ '%s mois' % visit['age_months'] if visit['age_months'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ '%s jours' % visit['age_days'] if visit['age_days'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ '%s °C' % visit['temperature'] if visit['temperature'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ '%s m' % visit['taille'] if visit['taille'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ '%s kg' % visit['poids'] if visit['poids'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ visit['hypothese_de_diagnostique'] if visit['hypothese_de_diagnostique'] else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ visit['bilan'] if visit['bilan'] else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ visit['resultat_bilan'] if visit['resultat_bilan'] else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ visit['ordonnance'] if visit['ordonnance'] else '—' }}</td>
+                  <td class="p-3 border-b border-blue-100">{{ visit['signature'] if visit['signature'] else '—' }}</td>
             </tr>
           {% endfor %}
         </tbody>
     </table>
     {% else %}
-      <p class="text-gray-500">No visits recorded yet.</p>
+      <p class="text-gray-400 text-center py-8 italic">Aucune visite enregistree.</p>
     {% endif %}
   </div>
 

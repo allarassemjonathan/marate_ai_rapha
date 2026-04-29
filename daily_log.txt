@@ -1,2 +1,27 @@
-2026-04-24
-Nouvelle evenement: 21:49:59 manager, login, L'utilisateur 'manager' s'est connecté avec succès
+2026-04-29
+Nouvelle evenement: 01:40:57 Dr Rapha, login, L'utilisateur 'Dr Rapha' s'est connecté avec succès
+Nouvelle evenement: 01:41:08 Dr Rapha, login, L'utilisateur 'Dr Rapha' s'est connecté avec succès
+Nouvelle evenement: 01:41:09 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 01:41:09 Dr Mere Enfant, login, L'utilisateur 'Dr Mere Enfant' s'est connecté avec succès
+Nouvelle evenement: 01:41:10 medecins, Patient sélectionné, Patient avec ID 9 selectionné.
+Nouvelle evenement: 01:49:12 Dr Rapha, login, L'utilisateur 'Dr Rapha' s'est connecté avec succès
+Nouvelle evenement: 01:50:38 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 01:50:53 Dr Mere Enfant, login, L'utilisateur 'Dr Mere Enfant' s'est connecté avec succès
+Nouvelle evenement: 01:59:19 medecins, Patient sélectionné, Patient avec ID 34 selectionné.
+Nouvelle evenement: 01:59:32 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 01:59:42 Dr Mere Enfant, login, L'utilisateur 'Dr Mere Enfant' s'est connecté avec succès
+Nouvelle evenement: 02:02:06 medecins, Ajout d'un patient, Le patient 'NDEYE WARICK SECK' a été ajouté
+Nouvelle evenement: 02:04:34 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 02:07:11 Dr Rapha, login, L'utilisateur 'Dr Rapha' s'est connecté avec succès
+Nouvelle evenement: 02:07:26 medecins, Détails des patients, Les détails du patient avec l'identifiant 33 ont été consulté.
+Nouvelle evenement: 02:08:38 medecins, Détails des patients, Les détails du patient avec l'identifiant 31 ont été consulté.
+Nouvelle evenement: 02:08:46 medecins, Patient sélectionné, Patient avec ID 31 selectionné.
+Nouvelle evenement: 02:08:51 medecins, Détails des patients, Les détails du patient avec l'identifiant 31 ont été consulté.
+Nouvelle evenement: 02:11:26 medecins, Facture généré, Facture généré pour le patient Erik 
+Nouvelle evenement: 02:13:15 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 02:14:18 Dr Mere Enfant, login, L'utilisateur 'Dr Mere Enfant' s'est connecté avec succès
+Nouvelle evenement: 02:15:47 medecins, Détails des patients, Les détails du patient avec l'identifiant 34 ont été consulté.
+Nouvelle evenement: 02:16:02 medecins, Détails des patients, Les détails du patient avec l'identifiant 34 ont été consulté.
+Nouvelle evenement: 02:16:14 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 02:16:16 Dr Rapha, login, L'utilisateur 'Dr Rapha' s'est connecté avec succès
+Nouvelle evenement: 02:16:20 medecins, Détails des patients, Les détails du patient avec l'identifiant 31 ont été consulté.
