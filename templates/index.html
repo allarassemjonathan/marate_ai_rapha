@@ -356,10 +356,8 @@ button:hover i {
       <a href="{{ url_for('logout') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Déconnexion</a>
       {% if user_type == 'manager' %}
         <a href="{{ url_for('send_daily_report_email') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Rapport</a>
-        <a href="/stat" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Stats</a>
+        <a href="/dashboard" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Dashboard</a>
         <a href="/visibility" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Permissions</a>
-      {% elif user_type == 'medecins' %}
-        <a href="/stat" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Stats</a>
       {% endif %}
       <span class="text-gray-700">Bienvenue {{username}}</span>
     </div>
@@ -383,10 +381,8 @@ button:hover i {
     {{user_type}}
     {% if user_type == 'manager' %}
       <a href="{{ url_for('send_daily_report_email') }}" class="text-black text-lg hover:text-cyan-600">Rapport</a>
-      <a href="/stat" class="text-black text-lg hover:text-cyan-600">Stats</a>
+      <a href="/dashboard" class="text-black text-lg hover:text-cyan-600">Dashboard</a>
       <a href="/visibility" class="text-black text-lg hover:text-cyan-600">Permissions</a>
-    {% elif user_type == 'medecins' %}
-      <a href="/stat" class="text-black text-lg hover:text-cyan-600">Stats</a>
     {% endif %}
     <span class="mt-4 text-gray-700">Bienvenue {{username}}</span>
   </div>

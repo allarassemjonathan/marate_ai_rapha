@@ -25,3 +25,48 @@ Nouvelle evenement: 02:16:02 medecins, Détails des patients, Les détails du pati
 Nouvelle evenement: 02:16:14 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
 Nouvelle evenement: 02:16:16 Dr Rapha, login, L'utilisateur 'Dr Rapha' s'est connecté avec succès
 Nouvelle evenement: 02:16:20 medecins, Détails des patients, Les détails du patient avec l'identifiant 31 ont été consulté.
+Nouvelle evenement: 02:32:08 Manager, login, L'utilisateur 'Manager' s'est connecté avec succès
+Nouvelle evenement: 02:32:08 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 02:32:08 jonathan, login, L'utilisateur 'jonathan' s'est connecté avec succès
+Nouvelle evenement: 02:32:30 Dr Rapha, login, L'utilisateur 'Dr Rapha' s'est connecté avec succès
+Nouvelle evenement: 02:32:30 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 02:32:30 Manager, login, L'utilisateur 'Manager' s'est connecté avec succès
+Nouvelle evenement: 11:25:02 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 11:30:26 Admin Marate, login, L'utilisateur 'Admin Marate' s'est connecté avec succès
+Nouvelle evenement: 12:15:15 manager, Patient sélectionné, Patient avec ID 368 selectionné.
+Nouvelle evenement: 12:15:20 manager, Patient sélectionné, Patient avec ID 368 selectionné.
+Nouvelle evenement: 12:15:26 manager, Détails des patients, Les détails du patient avec l'identifiant 368 ont été consulté.
+Nouvelle evenement: 12:15:34 manager, Patient sélectionné, Patient avec ID 368 selectionné.
+Nouvelle evenement: 12:24:25 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 13:22:52 Admin Marate, login, L'utilisateur 'Admin Marate' s'est connecté avec succès
+Nouvelle evenement: 13:30:33 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 13:31:43 Admin Marate, login, L'utilisateur 'Admin Marate' s'est connecté avec succès
+Nouvelle evenement: 13:38:21 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 13:38:44 Dr Allarassem, login, L'utilisateur 'Dr Allarassem' s'est connecté avec succès
+Nouvelle evenement: 13:39:34 medecins, Patient sélectionné, Patient avec ID 368 selectionné.
+Nouvelle evenement: 13:39:36 medecins, Patient sélectionné, Patient avec ID 376 selectionné.
+Nouvelle evenement: 13:39:38 medecins, Patient sélectionné, Patient avec ID 402 selectionné.
+Nouvelle evenement: 13:39:40 medecins, Patient sélectionné, Patient avec ID 236 selectionné.
+Nouvelle evenement: 13:39:41 medecins, Patient sélectionné, Patient avec ID 216 selectionné.
+Nouvelle evenement: 13:40:59 medecins, Patient sélectionné, Patient avec ID 368 selectionné.
+Nouvelle evenement: 13:41:06 medecins, Patient sélectionné, Patient avec ID 368 selectionné.
+Nouvelle evenement: 13:41:06 medecins, Patient sélectionné, Patient avec ID 368 selectionné.
+Nouvelle evenement: 13:41:33 medecins, Patient sélectionné, Patient avec ID 368 selectionné.
+Nouvelle evenement: 13:42:13 medecins, Ajout d'un patient, Le patient 'Maguette Ndiaye' a été ajouté
+Nouvelle evenement: 13:42:37 medecins, Patient sélectionné, Patient avec ID 517 selectionné.
+Nouvelle evenement: 13:43:09 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 13:43:50 Admin Marate, login, L'utilisateur 'Admin Marate' s'est connecté avec succès
+Nouvelle evenement: 13:50:04 manager, logout, L'utilisateur 'manager' s'est déconnecté
+Nouvelle evenement: 13:50:15 Dr Allarassem, login, L'utilisateur 'Dr Allarassem' s'est connecté avec succès
+Nouvelle evenement: 13:50:47 medecins, Patient sélectionné, Patient avec ID 517 selectionné.
+Nouvelle evenement: 13:51:03 medecins, modification patient, Patient avec ID 517 a été modifié
+Nouvelle evenement: 13:51:21 medecins, Patient sélectionné, Patient avec ID 517 selectionné.
+Nouvelle evenement: 13:51:28 medecins, modification patient, Patient avec ID 517 a été modifié
+Nouvelle evenement: 13:51:38 medecins, Détails des patients, Les détails du patient avec l'identifiant 517 ont été consulté.
+Nouvelle evenement: 13:52:12 medecins, Patient sélectionné, Patient avec ID 517 selectionné.
+Nouvelle evenement: 13:52:16 medecins, Patient sélectionné, Patient avec ID 517 selectionné.
+Nouvelle evenement: 13:53:30 medecins, logout, L'utilisateur 'medecins' s'est déconnecté
+Nouvelle evenement: 13:53:55 Dr Fatoumata Diallo, login, L'utilisateur 'Dr Fatoumata Diallo' s'est connecté avec succès
+Nouvelle evenement: 13:54:13 medecins, Patient sélectionné, Patient avec ID 340 selectionné.
+Nouvelle evenement: 14:04:57 medecins, Facture généré, Facture généré pour le patient SidibÃ© Souleymane
+Nouvelle evenement: 14:05:05 medecins, logout, L'utilisateur 'medecins' s'est déconnecté

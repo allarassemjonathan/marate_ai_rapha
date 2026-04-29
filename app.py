@@ -2069,38 +2069,51 @@ def graph_automatique():
     
 
 
-@app.route("/stat", methods=['GET','POST'])
+@app.route("/dashboard", methods=['GET','POST'])
 @login_required
 def rapport():
+    if session.get('user_type') != 'manager':
+        return redirect(url_for('index'))
     df = load_df()
     df['created_at'] = pd.to_datetime(df['created_at'])
 
-    chart_data = {}
+    # Fetch clinic names for legend labels
+    conn = get_db_connection()
+    conn.autocommit = True
+    cur = conn.cursor()
+    cur.execute("SELECT id, name FROM clinics")
+    clinic_names = {r['id']: r['name'] for r in cur.fetchall()}
+    cur.close(); conn.close()
+    clinic_ids = sorted(df['clinic_id'].dropna().unique())
+
+    chart_data = {'clinicNames': {str(k): v for k, v in clinic_names.items()}}
     list_mois = []
     mois = None
     column_name = None
 
-    # --- 1. Revenu journalier ---
+    # --- 1. Revenu journalier (per clinic) ---
     if 'created_at' in df.columns:
-        visites_par_jour = df.groupby(df['created_at'].dt.date).size()
         toutes_les_dates = pd.date_range(df['created_at'].min().date(), df['created_at'].max().date())
-        visites_par_jour = visites_par_jour.reindex(toutes_les_dates, fill_value=0)
-        revenu_par_jour = visites_par_jour * 10000
-        chart_data['dailyRevenue'] = {
-            'labels': [str(d.date()) for d in toutes_les_dates],
-            'values': revenu_par_jour.tolist()
-        }
+        labels = [str(d.date()) for d in toutes_les_dates]
+        datasets = []
+        for cid in clinic_ids:
+            df_c = df[df['clinic_id'] == cid]
+            visites = df_c.groupby(df_c['created_at'].dt.date).size()
+            visites = visites.reindex(toutes_les_dates, fill_value=0)
+            datasets.append({'clinic': str(int(cid)), 'values': (visites * 10000).tolist()})
+        chart_data['dailyRevenue'] = {'labels': labels, 'datasets': datasets}
 
-    # --- 2. Revenu mensuel ---
+    # --- 2. Revenu mensuel (per clinic) ---
     if 'created_at' in df.columns:
-        consultations_par_mois = df.groupby(df['created_at'].dt.to_period('M')).size()
-        revenu_par_mois = consultations_par_mois * 10000
         toutes_les_periodes = pd.period_range(df['created_at'].min(), df['created_at'].max(), freq='M')
-        revenu_par_mois = revenu_par_mois.reindex(toutes_les_periodes, fill_value=0)
-        chart_data['monthlyRevenue'] = {
-            'labels': [str(p) for p in toutes_les_periodes],
-            'values': revenu_par_mois.tolist()
-        }
+        labels = [str(p) for p in toutes_les_periodes]
+        datasets = []
+        for cid in clinic_ids:
+            df_c = df[df['clinic_id'] == cid]
+            consult = df_c.groupby(df_c['created_at'].dt.to_period('M')).size()
+            consult = consult.reindex(toutes_les_periodes, fill_value=0)
+            datasets.append({'clinic': str(int(cid)), 'values': (consult * 10000).tolist()})
+        chart_data['monthlyRevenue'] = {'labels': labels, 'datasets': datasets}
 
     # --- 3. Fréquences patients ---
     if 'name' in df.columns:
@@ -2124,15 +2137,19 @@ def rapport():
                 'values': adresse_counts.values.tolist()
             }
 
-    # --- 5. Nouveaux patients ---
+    # --- 5. Nouveaux patients (per clinic) ---
     if 'new_cases' in df.columns:
-        nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
-        nouveaux_par_mois = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
-        if not nouveaux_par_mois.empty:
-            chart_data['newPatientsPerMonth'] = {
-                'labels': [str(p) for p in nouveaux_par_mois.index],
-                'values': nouveaux_par_mois.values.tolist()
-            }
+        nouveaux = df[df['new_cases'].str.lower() == 'oui']
+        if not nouveaux.empty:
+            all_periods = sorted(nouveaux['created_at'].dt.to_period('M').unique())
+            labels = [str(p) for p in all_periods]
+            datasets = []
+            for cid in clinic_ids:
+                nv_c = nouveaux[nouveaux['clinic_id'] == cid]
+                par_mois = nv_c.groupby(nv_c['created_at'].dt.to_period('M')).size()
+                par_mois = par_mois.reindex(all_periods, fill_value=0)
+                datasets.append({'clinic': str(int(cid)), 'values': par_mois.values.tolist()})
+            chart_data['newPatientsPerMonth'] = {'labels': labels, 'datasets': datasets}
 
     # --- 6. Patients par médecins (all months for client-side switching) ---
     if 'signature' in df.columns:
@@ -2157,21 +2174,64 @@ def rapport():
                 'byMonth': by_month
             }
 
-    # --- 7. Evolution des patients ---
+    # --- 7. Evolution des patients (per clinic) ---
     df['created_at'] = pd.to_datetime(df['created_at'])
-    nouveaux_patients = df[df['new_cases'].str.lower() == 'oui']
-    patients_frequents = df[df['new_cases'].str.lower() != 'oui']
-    nouveaux_patients_mensuel = nouveaux_patients.groupby(nouveaux_patients['created_at'].dt.to_period('M')).size()
-    patients_frequents_mensuel = patients_frequents.groupby(patients_frequents['created_at'].dt.to_period('M')).size()
-    evolutions_patients = pd.DataFrame({
-        'Nouveaux patients': nouveaux_patients_mensuel,
-        'Patients frequents': patients_frequents_mensuel
-    }).fillna(0)
-    chart_data['patientEvolution'] = {
-        'labels': [str(p) for p in evolutions_patients.index],
-        'newPatients': evolutions_patients['Nouveaux patients'].astype(int).tolist(),
-        'recurringPatients': evolutions_patients['Patients frequents'].astype(int).tolist()
-    }
+    all_periods = sorted(df['created_at'].dt.to_period('M').unique())
+    labels = [str(p) for p in all_periods]
+    evo_datasets = []
+    for cid in clinic_ids:
+        df_c = df[df['clinic_id'] == cid]
+        nv = df_c[df_c['new_cases'].str.lower() == 'oui'].groupby(df_c['created_at'].dt.to_period('M')).size().reindex(all_periods, fill_value=0)
+        rec = df_c[df_c['new_cases'].str.lower() != 'oui'].groupby(df_c['created_at'].dt.to_period('M')).size().reindex(all_periods, fill_value=0)
+        evo_datasets.append({
+            'clinic': str(int(cid)),
+            'newPatients': nv.astype(int).tolist(),
+            'recurringPatients': rec.astype(int).tolist()
+        })
+    chart_data['patientEvolution'] = {'labels': labels, 'datasets': evo_datasets}
+
+    # --- 9. Heatmap activité (per clinic) ---
+    if 'created_at' in df.columns:
+        df_heat = df.copy()
+        df_heat['hour'] = df_heat['created_at'].dt.hour
+        df_heat['day'] = df_heat['created_at'].dt.dayofweek
+        heatmap_clinics = {}
+        for cid in clinic_ids:
+            df_hc = df_heat[df_heat['clinic_id'] == cid]
+            hm = df_hc.groupby(['day', 'hour']).size().reset_index(name='count')
+            heatmap_clinics[str(int(cid))] = {
+                'name': clinic_names.get(int(cid), f'Clinic {int(cid)}'),
+                'data': [{'x': int(r['hour']), 'y': int(r['day']), 'v': int(r['count'])} for _, r in hm.iterrows()]
+            }
+        chart_data['activityHeatmap'] = {'clinics': heatmap_clinics}
+
+    # --- 10. Top diagnostics par mois (stacked area, per clinic) ---
+    if 'hypothese_de_diagnostique' in df.columns:
+        df_diag = df.dropna(subset=['hypothese_de_diagnostique'])
+        df_diag = df_diag[df_diag['hypothese_de_diagnostique'].str.strip() != '']
+        if not df_diag.empty:
+            df_diag['month'] = df_diag['created_at'].dt.to_period('M')
+            # Find top 6 diagnoses overall
+            top_diags = df_diag['hypothese_de_diagnostique'].str.strip().str.title().value_counts().head(6).index.tolist()
+            df_diag['diag_clean'] = df_diag['hypothese_de_diagnostique'].str.strip().str.title()
+            all_months = sorted(df_diag['month'].unique())
+            labels = [str(m) for m in all_months]
+            diag_datasets = []
+            for cid in clinic_ids:
+                df_dc = df_diag[df_diag['clinic_id'] == cid]
+                clinic_series = {}
+                for diag in top_diags:
+                    counts = df_dc[df_dc['diag_clean'] == diag].groupby('month').size().reindex(all_months, fill_value=0)
+                    clinic_series[diag] = counts.values.tolist()
+                diag_datasets.append({
+                    'clinic': str(int(cid)),
+                    'series': clinic_series
+                })
+            chart_data['topDiagnoses'] = {
+                'labels': labels,
+                'diagnoses': top_diags,
+                'datasets': diag_datasets
+            }
 
     # --- 8. Distribution dynamique ---
     df = nettoyer_donnees(df)

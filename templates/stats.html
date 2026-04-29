@@ -21,6 +21,64 @@
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
+
+    /* Heatmap styles */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: 50px repeat(var(--cols), 1fr);
+      gap: 3px;
+    }
+    .heatmap-cell {
+      aspect-ratio: 1.6;
+      border-radius: 6px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: default;
+      position: relative;
+      opacity: 0;
+      animation: heatFadeIn 0.4s ease forwards;
+    }
+    .heatmap-cell:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10;
+    }
+    .heatmap-label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+    .heatmap-col-label {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    .heatmap-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .heatmap-cell:hover .heatmap-tooltip {
+      display: block;
+    }
+    @keyframes heatFadeIn {
+      from { opacity: 0; transform: scale(0.6); }
+      to   { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body class="text-gray-800">
@@ -94,10 +152,27 @@
     </div>
     {% endif %}
 
+    {% if chart_data.topDiagnoses %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-virus"></i> Diagnostics les plus fréquents par mois</h3>
+      <p class="text-gray-500 text-sm mb-4">Surveillance épidémiologique — top pathologies par clinique</p>
+      <div id="diagChartContainer" style="display:flex;gap:2rem;flex-wrap:wrap">
+      </div>
+    </div>
+    {% endif %}
+
+    {% if chart_data.activityHeatmap %}
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
+      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-fire"></i> Activité de la clinique</h3>
+      <p class="text-gray-500 text-sm mb-4">Nombre de consultations par jour et heure</p>
+      <div id="heatmapContainer"></div>
+    </div>
+    {% endif %}
+
     <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
       <h3 class="text-lg font-semibold text-cyan-600 mb-4"><i class="fa-solid fa-chart-line"></i> Distribution des données (Ce graphe est expérimental)</h3>
       <p class="text-gray-600 mb-4">Sélectionnez une colonne pour visualiser sa distribution.</p>
-      <form method="POST" action="/stat" class="flex flex-wrap items-center gap-3 mb-4">
+      <form method="POST" action="/dashboard" class="flex flex-wrap items-center gap-3 mb-4">
         <select name="column" required class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">
           <option value="">-- Sélectionner une colonne --</option>
           {% for col in columns %}
