@@ -2,120 +2,32 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Modifier la visibilité</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permissions — Cabinet RAPHA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #ffffff;
-      color: #111111;
-      margin: 0;
-      padding: 2rem;
-    }
-
-    h2 {
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-bottom: 2rem;
-      text-decoration: none;
-      color: #8000FF;
-      font-weight: 600;
-      transition: color 0.2s ease;
-    }
-
-    .back-link:hover {
-      color: #00FFFF;
-    }
-
-    .role-box {
-      background: #ffffff;
-      border: 1px solid rgba(200, 200, 200, 0.5);
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      margin: 1.5rem auto;
-      max-width: 600px;
-    }
-
-    .role-box h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      margin-bottom: 1rem;
-      color: #111111;
-      border-bottom: 2px solid #00FFFF;
-      padding-bottom: 0.5rem;
-    }
-
-    .columns-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 0.5rem 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .columns-list label {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.95rem;
-    }
-
-    .columns-list input[type="checkbox"] {
-      accent-color: #00FFFF;
-      transform: scale(1.2);
-    }
-
-    button {
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 0.75rem;
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
-
-    .glow-button {
-      background: linear-gradient(90deg, #00FFFF, #8000FF);
-      color: #050505;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-    }
-
-    .glow-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #00FFFF, #8000FF, #00FFFF);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      z-index: -1;
-      background-size: 200% auto;
-    }
-
-    .glow-button:hover::before {
-      opacity: 1;
-      animation: shimmer 2s linear infinite;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 0% center; }
-      100% { background-position: 200% center; }
-    }
+    body { font-family: 'Inter', sans-serif; }
+    input[type="checkbox"] { accent-color: #0F2A47; }
   </style>
 </head>
-<body>
-  <h2 class="cyan-glow">Configurer la visibilité des colonnes</h2>
-  <a href="/" class="back-link" style="height: 50px;
-            width: auto;">← Retour menu</a>
+<body class="bg-slate-50 min-h-screen text-gray-800 p-4 md:p-8">
+
+  <!-- Header -->
+  <header class="flex flex-col md:flex-row items-center justify-between bg-white/60 backdrop-blur-md shadow-sm px-6 py-4 mb-8 rounded-xl gap-3 border border-slate-200 max-w-5xl mx-auto">
+    <div class="flex items-center gap-4 flex-wrap">
+      <a href="/" class="text-[#0F2A47] hover:text-[#1E3A5F] font-semibold text-lg">
+        <i class="fa-solid fa-arrow-left"></i> Retour au menu
+      </a>
+      <h1 class="text-2xl font-bold text-slate-900">
+        <i class="fa-solid fa-shield-halved text-[#0F2A47]"></i> Permissions
+      </h1>
+    </div>
+    <p class="text-gray-500 text-sm italic hidden md:block">
+      Configurer la visibilité des colonnes par rôle
+    </p>
+  </header>
 
   <script>
     const allColumns = [
@@ -124,29 +36,42 @@
       'resultat_bilan','ordonnance','signature','meeting','new_cases','phone_number'
     ];
   </script>
-    
-  {% for role in roles %}
-    <div class="role-box">
-      <h3>{{ role.role|capitalize }}</h3>
-      <form onsubmit="return saveVisibility('{{ role.role }}', this)">
-        <div class="columns-list">
-          {% for col in allColumns %}
-            <label>
-              <input type="checkbox" name="columns" value="{{ col }}"
-                {% if col in role.columns %}checked{% endif %}>
-              {{ col }}
-            </label>
-          {% endfor %}
-        </div>
-        <button type="submit" class="glow-button">Enregistrer</button>
-      </form>
-    </div>
-  {% endfor %}
+
+  <main class="max-w-5xl mx-auto pb-10 space-y-6">
+    {% for role in roles %}
+      <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-200 transition hover:shadow-lg">
+        <h3 class="text-lg font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">
+          <i class="fa-solid fa-user-tag text-[#0F2A47] mr-2"></i>{{ role.role|capitalize }}
+        </h3>
+        <form onsubmit="return saveVisibility('{{ role.role }}', this)">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2 mb-5">
+            {% for col in allColumns %}
+              <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer transition">
+                <input type="checkbox" name="columns" value="{{ col }}"
+                       class="w-4 h-4 rounded border-slate-300 text-[#0F2A47] focus:ring-2 focus:ring-[#0F2A47]/30"
+                       {% if col in role.columns %}checked{% endif %}>
+                <span class="text-sm text-slate-700">{{ col }}</span>
+              </label>
+            {% endfor %}
+          </div>
+          <div class="flex items-center justify-end gap-3">
+            <span class="save-msg hidden text-sm"></span>
+            <button type="submit"
+                    class="inline-flex items-center gap-2 text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] shadow-sm transition">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>Enregistrer</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    {% endfor %}
+  </main>
 
   <script>
     function saveVisibility(role, form) {
       const formData = new FormData(form);
       const selected = formData.getAll("columns");
+      const msg = form.querySelector('.save-msg');
 
       fetch("/update_visibility", {
         method: "POST",
@@ -156,10 +81,17 @@
       .then(res => res.json())
       .then(data => {
         if (data.status === "success") {
-          alert("✔ Bon travail, les permissions pour les " + role + " ont été mises à jour !");
+          msg.innerHTML = '<i class="fa-solid fa-check"></i> Permissions des ' + role + ' enregistrées';
+          msg.className = 'save-msg text-sm text-emerald-600';
+          setTimeout(() => { msg.classList.add('hidden'); }, 2500);
         } else {
-          alert("Erreur: " + data.message);
+          msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erreur : ' + (data.message || 'inconnue');
+          msg.className = 'save-msg text-sm text-red-600';
         }
+      })
+      .catch(err => {
+        msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erreur réseau : ' + err.message;
+        msg.className = 'save-msg text-sm text-red-600';
       });
       return false;
     }

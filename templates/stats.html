@@ -8,9 +8,21 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
   <style>
-    body {
-      background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
+    html, body {
       min-height: 100vh;
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    /* Chart canvases must stay inside their card */
+    .chart-card canvas { max-width: 100% !important; height: auto !important; }
+    /* Tighter chart-card padding on small screens so canvases have more room */
+    @media (max-width: 640px) {
+      .chart-card { padding: 1rem; }
+    }
+    /* AI report modal — guarantee it never exceeds the viewport width on any device */
+    #aiReportModal > div {
+      width: calc(100vw - 1rem);
+      max-width: 48rem; /* matches max-w-3xl */
     }
 
     .chart-card {
@@ -79,63 +91,178 @@
       from { opacity: 0; transform: scale(0.6); }
       to   { opacity: 1; transform: scale(1); }
     }
+
+    /* AI report content typography — mirror the email's "smooth" look */
+    #aiReportContent {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: #0f172a;
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+    #aiReportContent h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0F2A47;
+      margin: 1.75rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    #aiReportContent h2:first-child { margin-top: 0; }
+    #aiReportContent h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 1.25rem 0 0.5rem;
+    }
+    #aiReportContent h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+      margin: 1rem 0 0.4rem;
+    }
+    #aiReportContent p { margin: 0 0 0.85rem; }
+    #aiReportContent ul, #aiReportContent ol {
+      margin: 0 0 1rem 1.25rem;
+      padding-left: 1rem;
+    }
+    #aiReportContent ul { list-style: disc; }
+    #aiReportContent ol { list-style: decimal; }
+    #aiReportContent li { margin: 0.35rem 0; }
+    #aiReportContent strong { color: #0F2A47; }
+    #aiReportContent table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1.25rem;
+      font-size: 0.9rem;
+    }
+    #aiReportContent th, #aiReportContent td {
+      border: 1px solid #e2e8f0;
+      padding: 0.45rem 0.65rem;
+      text-align: left;
+    }
+    #aiReportContent th { background: #f8fafc; font-weight: 600; color: #0F2A47; }
+    #aiReportContent hr { margin: 1.5rem 0; border: 0; border-top: 1px solid #e2e8f0; }
   </style>
 </head>
-<body class="text-gray-800">
+<body class="text-gray-800 bg-slate-50 overflow-x-hidden">
 
   <!-- Header -->
-  <header class="flex flex-col md:flex-row items-center justify-between bg-white/60 backdrop-blur-md shadow-sm px-6 py-4 mb-8 rounded-xl">
-    <div class="flex items-center gap-3">
-      <a href="/" class="text-cyan-600 hover:text-cyan-800 font-semibold text-lg"><i class="fa-solid fa-arrow-left"></i> Retour au menu</a>
-      <h1 class="text-2xl font-bold text-gray-700">Tableau de bord — Statistiques</h1>
+  <header class="flex flex-col md:flex-row items-center justify-between bg-white/60 backdrop-blur-md shadow-sm px-4 sm:px-6 py-4 mx-2 sm:mx-0 mb-8 rounded-xl gap-3 border border-slate-200">
+    <div class="flex flex-wrap items-center gap-3 min-w-0">
+      <a href="/" class="text-[#0F2A47] hover:text-[#1E3A5F] font-semibold text-base sm:text-lg"><i class="fa-solid fa-arrow-left"></i> Retour au menu</a>
+      <h1 class="text-lg sm:text-2xl font-bold text-slate-900 break-words">Tableau de bord — Statistiques</h1>
     </div>
-    <p class="text-gray-500 text-sm mt-2 md:mt-0 italic">Suivi et analyse des activités des patients</p>
+    <div class="flex items-center gap-3">
+      <p class="text-gray-500 text-sm italic hidden md:block">Suivi et analyse des activités des patients</p>
+      <button type="button" onclick="openAiReport()"
+              class="inline-flex items-center gap-2 text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] shadow-sm transition">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>Rapport IA</span>
+      </button>
+    </div>
   </header>
+
+  <!-- AI Report Modal -->
+  <div id="aiReportModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+      <!-- Modal header -->
+      <div class="flex items-center justify-between gap-2 px-4 sm:px-6 py-4 border-b border-slate-200">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <i class="fa-solid fa-wand-magic-sparkles text-[#0F2A47] flex-shrink-0"></i>
+          <h2 class="text-base sm:text-lg font-semibold text-slate-900 break-words min-w-0">Analyse Intelligence artificielle</h2>
+        </div>
+        <button type="button" onclick="closeAiReport()" class="text-slate-500 hover:text-slate-800 text-xl leading-none flex-shrink-0">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="flex-1 overflow-y-auto px-4 sm:px-6 py-5">
+        <!-- Prompt input panel (shown first, before generation) -->
+        <div id="aiReportPrompt">
+          <p class="text-sm text-slate-600 mb-3">
+            Vous pouvez enrichir la réponse du modèle en précisant ce que vous souhaitez.
+            Autrement dit, il vous donnera un aperçu général de ce qui se passe dans toutes les cliniques.
+          </p>
+          <textarea id="aiReportExtraPrompt" rows="5"
+                    placeholder="ex: Concentre-toi sur les enfants de moins de 5 ans à Solidarité et compare les taux de paludisme entre les deux cliniques."
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] resize-y"></textarea>
+          <div class="flex justify-end mt-4">
+            <button type="button" id="aiReportGenerateBtn" onclick="fetchAiReport()"
+                    class="inline-flex items-center gap-2 text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] shadow-sm transition">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Générer l'analyse</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="aiReportLoading" class="hidden flex-col items-center justify-center py-12 text-slate-600">
+          <i class="fa-solid fa-spinner fa-spin text-3xl text-[#0F2A47] mb-3"></i>
+          <p class="font-medium">Analyse des données patients en cours…</p>
+          <p class="text-sm text-slate-500 mt-1">Cela peut prendre 10 à 30 secondes.</p>
+        </div>
+        <div id="aiReportError" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3"></div>
+        <div id="aiReportContent" class="hidden max-w-none"></div>
+      </div>
+
+      <!-- Modal footer (email) -->
+      <div id="aiReportFooter" class="hidden border-t border-slate-200 px-4 sm:px-6 py-4 bg-slate-50">
+        <form id="aiReportEmailForm" class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+          <input type="email" id="aiReportEmail" required placeholder="email@destinataire.com"
+                 class="flex-1 min-w-0 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47]">
+          <button type="submit" id="aiReportEmailBtn"
+                  class="inline-flex items-center justify-center gap-2 text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] transition">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>Envoyer par email</span>
+          </button>
+        </form>
+        <p id="aiReportEmailMsg" class="text-sm mt-2 hidden"></p>
+      </div>
+    </div>
+  </div>
 
   <!-- Content Grid -->
   <main class="max-w-7xl mx-auto px-4 pb-10 grid gap-8 md:grid-cols-2">
 
     {% if chart_data.dailyRevenue %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-calendar"></i> Estimation des revenus journaliers</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-3"><i class="fa-solid fa-calendar"></i> Estimation des revenus journaliers</h3>
       <canvas id="chartDailyRevenue"></canvas>
     </div>
     {% endif %}
 
     {% if chart_data.monthlyRevenue %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-chart-line"></i> Estimation des revenus mensuels</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-3"><i class="fa-solid fa-chart-line"></i> Estimation des revenus mensuels</h3>
       <canvas id="chartMonthlyRevenue"></canvas>
     </div>
     {% endif %}
 
     {% if chart_data.recurringPatients %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-person"></i> Patients récurrents</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-3"><i class="fa-solid fa-person"></i> Patients récurrents</h3>
       <canvas id="chartRecurringPatients"></canvas>
     </div>
     {% endif %}
 
     {% if chart_data.neighborhoodDistribution %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-location-dot"></i> Distribution par quartier</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-3"><i class="fa-solid fa-location-dot"></i> Distribution par quartier</h3>
       <canvas id="chartNeighborhood"></canvas>
     </div>
     {% endif %}
 
     {% if chart_data.newPatientsPerMonth %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-stethoscope"></i> Nouveaux patients par mois</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-3"><i class="fa-solid fa-stethoscope"></i> Nouveaux patients par mois</h3>
       <canvas id="chartNewPatients"></canvas>
     </div>
     {% endif %}
 
     {% if chart_data.patientsPerDoctor %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-user-doctor"></i> Nombre de patients par médecin</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-3"><i class="fa-solid fa-user-doctor"></i> Nombre de patients par médecin</h3>
       <div class="flex items-center gap-3 mb-4">
         <label class="text-gray-600 font-medium">Sélection du mois :</label>
-        <select id="monthSelector" onchange="updateDoctorChart(this.value)" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">
+        <select id="monthSelector" onchange="updateDoctorChart(this.value)" class="border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] focus:outline-none">
           {% for m in list_mois %}
           <option value="{{ m }}" {% if m == mois %}selected{% endif %}>{{ m }}</option>
           {% endfor %}
@@ -146,15 +273,15 @@
     {% endif %}
 
     {% if chart_data.patientEvolution %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-chart-column"></i> Evolution des patients par mois</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-3"><i class="fa-solid fa-chart-column"></i> Evolution des patients par mois</h3>
       <canvas id="chartEvolution"></canvas>
     </div>
     {% endif %}
 
     {% if chart_data.topDiagnoses %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-virus"></i> Diagnostics les plus fréquents par mois</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-3"><i class="fa-solid fa-virus"></i> Diagnostics les plus fréquents par mois</h3>
       <p class="text-gray-500 text-sm mb-4">Surveillance épidémiologique — top pathologies par clinique</p>
       <div id="diagChartContainer" style="display:flex;gap:2rem;flex-wrap:wrap">
       </div>
@@ -162,28 +289,28 @@
     {% endif %}
 
     {% if chart_data.activityHeatmap %}
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-3"><i class="fa-solid fa-fire"></i> Activité de la clinique</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-3"><i class="fa-solid fa-fire"></i> Activité de la clinique</h3>
       <p class="text-gray-500 text-sm mb-4">Nombre de consultations par jour et heure</p>
       <div id="heatmapContainer"></div>
     </div>
     {% endif %}
 
-    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full">
-      <h3 class="text-lg font-semibold text-cyan-600 mb-4"><i class="fa-solid fa-chart-line"></i> Distribution des données (Ce graphe est expérimental)</h3>
+    <div class="chart-card bg-white rounded-2xl p-6 shadow-md col-span-full border border-slate-200">
+      <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fa-solid fa-chart-line"></i> Distribution des données (Ce graphe est expérimental)</h3>
       <p class="text-gray-600 mb-4">Sélectionnez une colonne pour visualiser sa distribution.</p>
       <form method="POST" action="/dashboard" class="flex flex-wrap items-center gap-3 mb-4">
-        <select name="column" required class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">
+        <select name="column" required class="border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] focus:outline-none">
           <option value="">-- Sélectionner une colonne --</option>
           {% for col in columns %}
           <option value="{{ col }}" {% if col == column_name %}selected{% endif %}>{{ col }}</option>
           {% endfor %}
         </select>
-        <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded-lg transition">Générer</button>
+        <button type="submit" class="bg-[#0F2A47] hover:bg-[#1E3A5F] text-white font-semibold px-4 py-2 rounded-lg transition">Générer</button>
       </form>
 
       {% if column_name %}
-      <div class="bg-cyan-50 text-cyan-800 font-medium px-4 py-2 rounded-lg mb-3">
+      <div class="bg-slate-100 text-slate-800 font-medium px-4 py-2 rounded-lg mb-3">
         Distribution actuelle : {{ column_name }}
       </div>
       {% endif %}
@@ -199,6 +326,98 @@
 
   <script>
     const CHART_DATA = {{ chart_data | tojson }};
+
+    let aiReportHtml = '';
+
+    function openAiReport() {
+      const modal = document.getElementById('aiReportModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('aiReportPrompt').classList.remove('hidden');
+      document.getElementById('aiReportLoading').classList.add('hidden');
+      document.getElementById('aiReportLoading').classList.remove('flex');
+      document.getElementById('aiReportError').classList.add('hidden');
+      document.getElementById('aiReportContent').classList.add('hidden');
+      document.getElementById('aiReportFooter').classList.add('hidden');
+      document.getElementById('aiReportEmailMsg').classList.add('hidden');
+    }
+
+    function closeAiReport() {
+      const modal = document.getElementById('aiReportModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function fetchAiReport() {
+      const extraPrompt = document.getElementById('aiReportExtraPrompt').value.trim();
+      document.getElementById('aiReportPrompt').classList.add('hidden');
+      document.getElementById('aiReportError').classList.add('hidden');
+      document.getElementById('aiReportContent').classList.add('hidden');
+      const loading = document.getElementById('aiReportLoading');
+      loading.classList.remove('hidden');
+      loading.classList.add('flex');
+      try {
+        const res = await fetch('/ai_report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ extra_prompt: extraPrompt }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || ('HTTP ' + res.status));
+        }
+        aiReportHtml = data.html;
+        document.getElementById('aiReportContent').innerHTML = data.html;
+        loading.classList.add('hidden');
+        loading.classList.remove('flex');
+        document.getElementById('aiReportContent').classList.remove('hidden');
+        document.getElementById('aiReportFooter').classList.remove('hidden');
+      } catch (err) {
+        const errEl = document.getElementById('aiReportError');
+        errEl.textContent = 'Échec du rapport IA : ' + err.message;
+        errEl.classList.remove('hidden');
+        loading.classList.add('hidden');
+        loading.classList.remove('flex');
+        document.getElementById('aiReportPrompt').classList.remove('hidden');
+      }
+    }
+
+    document.getElementById('aiReportEmailForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('aiReportEmail').value.trim();
+      const msg = document.getElementById('aiReportEmailMsg');
+      const btn = document.getElementById('aiReportEmailBtn');
+      if (!email || !aiReportHtml) return;
+      btn.disabled = true;
+      const original = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Envoi…</span>';
+      msg.classList.add('hidden');
+      try {
+        const res = await fetch('/ai_report/email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, html: aiReportHtml }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        msg.textContent = 'Rapport envoyé à ' + email + '.';
+        msg.className = 'text-sm mt-2 text-green-700';
+      } catch (err) {
+        msg.textContent = 'Échec de l\'envoi : ' + err.message;
+        msg.className = 'text-sm mt-2 text-red-700';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+        msg.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('aiReportModal').addEventListener('click', (e) => {
+      if (e.target.id === 'aiReportModal') closeAiReport();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeAiReport();
+    });
   </script>
   <script src="{{ url_for('static', filename='js/stats-charts.js') }}"></script>
 </body>

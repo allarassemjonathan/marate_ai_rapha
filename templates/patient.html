@@ -5,33 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title> Détails du patient</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen p-5">
-  <a href="/" class="inline-flex gap-3 bg-gradient-to-r from-blue-400 to-blue-300 text-white px-5 py-2 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all mb-8">
+<body class="bg-slate-50 min-h-screen p-5" style="font-family: 'Inter', sans-serif;">
+  <a href="/" class="inline-flex gap-3 items-center bg-[#0F2A47] hover:bg-[#1E3A5F] text-white px-5 py-2 rounded-xl font-semibold shadow-sm transition-all mb-8">
             <span><i class="fa-solid fa-arrow-left"></i> Retour à la page principale</span>
   </a>
   <!--<div class="w-full max-w-7xl p-6 bg-white shadow-lg rounded-lg mt-10">-->
     <div class="max-w-7xl mx-auto"></div>
-    <div class="bg-gradient-to-r from-blue-300 to-blue-400 text-white p-8 rounded-t-2xl shadow-lg flex items-center gap-4">
+    <div style="background: linear-gradient(to right, #334155, #0f172a);" class="text-white p-8 rounded-t-2xl shadow-lg flex items-center gap-4">
             <span class="text-4xl"><i class="fa-solid fa-clipboard-user"></i></span>
             <h1 class="text-3xl font-semibold">Détails du Patient</h1>
     </div>
     <!--<h1 class="text-3xl font-bold text-center mb-6">Détails</h1>-->
 
-    <div class="space-y-2 bg-white p-8 rounded-b-2xl shadow-lg mb-8 border-l-4 border-blue-300">
+    <div class="space-y-2 bg-white p-8 rounded-b-2xl shadow-lg mb-8 border-l-4 border-slate-300">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400 hover:shadow-md hover:-translate-y-1 transition-all">
-                    <div class="flex items-center gap-2 text-blue-700 font-semibold text-sm mb-2">
+        <div class="p-4 bg-slate-50 rounded-xl border-l-4 border-slate-700 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="flex items-center gap-2 text-slate-800 font-semibold text-sm mb-2">
                         <span><i class="fa-solid fa-user"></i></span>
                         <span>Nom</span>
                     </div>
           <div class="text-gray-800 text-lg font-medium">{{ patient['name'] }}</div>
         </div>
 
-        <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400 hover:shadow-md hover:-translate-y-1 transition-all">
-                    <div class="flex items-center gap-2 text-blue-700 font-semibold text-sm mb-2">
+        <div class="p-4 bg-slate-50 rounded-xl border-l-4 border-slate-700 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="flex items-center gap-2 text-slate-800 font-semibold text-sm mb-2">
                         <span><i class="fa-solid fa-calendar"></i></span>
                         <span>Date de naissance</span>
                     </div>
@@ -43,8 +44,8 @@
                       {%endif%}
                     </div>
         </div>
-        <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400 hover:shadow-md hover:-translate-y-1 transition-all">
-                    <div class="flex items-center gap-2 text-blue-700 font-semibold text-sm mb-2">
+        <div class="p-4 bg-slate-50 rounded-xl border-l-4 border-slate-700 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="flex items-center gap-2 text-slate-800 font-semibold text-sm mb-2">
                         <span><i class="fa-solid fa-location-dot"></i></span>
                         <span>Adresse</span>
                     </div>
@@ -62,13 +63,13 @@
   </div>
 
   <div class="bg-white p-8 rounded-2xl shadow-lg mb-8 overflow-x-auto mt-6">
-    <h2 class="text-2xl text-blue-700 font-semibold mb-6 flex items-center gap-3 pb-4 border-b-4 border-blue-200">
+    <h2 class="text-2xl text-slate-800 font-semibold mb-6 flex items-center gap-3 pb-4 border-b-4 border-slate-200">
                 <span><i class="fa-solid fa-stethoscope"></i></span>
                 <span>Historique des Visites</span>
     </h2>
      {% if visits %}
     <table class="w-full border-collapse rounded-lg overflow-hidden">
-        <thead class="bg-gradient-to-r from-blue-300 to-blue-400 text-white">
+        <thead style="background: linear-gradient(to right, #334155, #0f172a);" class="text-white">
           <tr id="tableHeader">
               <th  class="text-left p-2 border-b">Date</th>
               <th  class="text-left p-2 border-b">Age (annee)</th>
@@ -86,19 +87,19 @@
         </thead>
         <tbody id="resultsTable" class="text-black-300 text-sm">
          {% for visit in visits %}
-          <tr class="{{ 'bg-blue-50' if loop.index is odd else 'bg-white' }} hover:bg-blue-100 transition-colors">
-                  <td class="p-3 border-b border-blue-100">{{ visit['created_at'] if visit['created_at'] else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ '%s ans' % visit['age_years'] if visit['age_years'] is not none else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ '%s mois' % visit['age_months'] if visit['age_months'] is not none else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ '%s jours' % visit['age_days'] if visit['age_days'] is not none else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ '%s °C' % visit['temperature'] if visit['temperature'] is not none else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ '%s m' % visit['taille'] if visit['taille'] is not none else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ '%s kg' % visit['poids'] if visit['poids'] is not none else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ visit['hypothese_de_diagnostique'] if visit['hypothese_de_diagnostique'] else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ visit['bilan'] if visit['bilan'] else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ visit['resultat_bilan'] if visit['resultat_bilan'] else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ visit['ordonnance'] if visit['ordonnance'] else '—' }}</td>
-                  <td class="p-3 border-b border-blue-100">{{ visit['signature'] if visit['signature'] else '—' }}</td>
+          <tr class="{{ 'bg-slate-50' if loop.index is odd else 'bg-white' }} hover:bg-slate-100 transition-colors">
+                  <td class="p-3 border-b border-slate-200">{{ visit['created_at'] if visit['created_at'] else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ '%s ans' % visit['age_years'] if visit['age_years'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ '%s mois' % visit['age_months'] if visit['age_months'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ '%s jours' % visit['age_days'] if visit['age_days'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ '%s °C' % visit['temperature'] if visit['temperature'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ '%s m' % visit['taille'] if visit['taille'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ '%s kg' % visit['poids'] if visit['poids'] is not none else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ visit['hypothese_de_diagnostique'] if visit['hypothese_de_diagnostique'] else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ visit['bilan'] if visit['bilan'] else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ visit['resultat_bilan'] if visit['resultat_bilan'] else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ visit['ordonnance'] if visit['ordonnance'] else '—' }}</td>
+                  <td class="p-3 border-b border-slate-200">{{ visit['signature'] if visit['signature'] else '—' }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -110,16 +111,16 @@
 
   <!-- Hospitalizations Section -->
   <div class="bg-white p-8 rounded-2xl shadow-lg mb-8 mt-6">
-    <h2 class="text-2xl text-purple-700 font-semibold mb-6 flex items-center gap-3 pb-4 border-b-4 border-purple-200">
+    <h2 class="text-2xl text-slate-800 font-semibold mb-6 flex items-center gap-3 pb-4 border-b-4 border-slate-200">
       <span><i class="fa-solid fa-bed"></i></span>
       <span>Historique des Hospitalisations</span>
     </h2>
 
     {% if hospitalizations %}
       {% for hosp in hospitalizations %}
-      <div class="mb-6 border border-purple-200 rounded-xl overflow-hidden">
+      <div class="mb-6 border border-slate-200 rounded-xl overflow-hidden">
         <!-- Hospitalization Header -->
-        <div class="bg-gradient-to-r from-purple-300 to-purple-400 text-white px-6 py-3 flex flex-wrap items-center justify-between gap-2">
+        <div style="background: linear-gradient(to right, #334155, #0f172a);" class="text-white px-6 py-3 flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-3">
             <i class="fa-solid fa-calendar-check"></i>
             <span class="font-semibold">Admission: {{ hosp['date_admission'].strftime('%d/%m/%Y %H:%M') if hosp['date_admission'] and hosp['date_admission'].strftime else hosp['date_admission'] }}</span>
@@ -135,22 +136,22 @@
           <!-- Info grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {% if hosp['medecin_traitant'] %}
-            <div class="p-3 bg-purple-50 rounded-lg">
-              <div class="text-xs text-purple-600 font-semibold mb-1"><i class="fa-solid fa-user-doctor"></i> Medecin Traitant</div>
+            <div class="p-3 bg-slate-50 rounded-lg">
+              <div class="text-xs text-slate-700 font-semibold mb-1"><i class="fa-solid fa-user-doctor"></i> Medecin Traitant</div>
               <div class="text-gray-800">{{ hosp['medecin_traitant'] }}</div>
             </div>
             {% endif %}
 
             {% if hosp['syndrome'] %}
-            <div class="p-3 bg-purple-50 rounded-lg">
-              <div class="text-xs text-purple-600 font-semibold mb-1"><i class="fa-solid fa-notes-medical"></i> Syndrome</div>
+            <div class="p-3 bg-slate-50 rounded-lg">
+              <div class="text-xs text-slate-700 font-semibold mb-1"><i class="fa-solid fa-notes-medical"></i> Syndrome</div>
               <div class="text-gray-800">{{ hosp['syndrome'] }}</div>
             </div>
             {% endif %}
 
             {% if hosp['diagnostic'] %}
-            <div class="p-3 bg-purple-50 rounded-lg">
-              <div class="text-xs text-purple-600 font-semibold mb-1"><i class="fa-solid fa-diagnoses"></i> Diagnostic</div>
+            <div class="p-3 bg-slate-50 rounded-lg">
+              <div class="text-xs text-slate-700 font-semibold mb-1"><i class="fa-solid fa-diagnoses"></i> Diagnostic</div>
               <div class="text-gray-800">{{ hosp['diagnostic'] }}</div>
             </div>
             {% endif %}
@@ -159,7 +160,7 @@
           <!-- Constantes -->
           {% if hosp['constante_temperature'] or hosp['constante_ta'] or hosp['constante_fc'] or hosp['constante_poids'] %}
           <div>
-            <div class="text-xs text-purple-600 font-semibold mb-2"><i class="fa-solid fa-heart-pulse"></i> Constantes</div>
+            <div class="text-xs text-slate-700 font-semibold mb-2"><i class="fa-solid fa-heart-pulse"></i> Constantes</div>
             <div class="flex flex-wrap gap-3">
               {% if hosp['constante_temperature'] %}
               <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-lg"><i class="fa-solid fa-temperature-half text-red-400"></i> {{ hosp['constante_temperature'] }} °C</span>
@@ -181,16 +182,16 @@
           {% if hosp['treatments'] %}
           <div id="treatments-section-{{ hosp['id'] }}">
             <div class="flex items-center justify-between mb-2">
-              <div class="text-xs text-purple-600 font-semibold"><i class="fa-solid fa-pills"></i> Traitements</div>
+              <div class="text-xs text-slate-700 font-semibold"><i class="fa-solid fa-pills"></i> Traitements</div>
               <button onclick="toggleEditMode({{ hosp['id'] }})"
                       id="edit-btn-{{ hosp['id'] }}"
-                      class="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-lg hover:bg-purple-200 transition-colors">
+                      class="text-xs bg-[#0F2A47] hover:bg-[#1E3A5F] text-white px-3 py-1 rounded-lg transition-colors">
                 <i class="fa-solid fa-pen-to-square"></i> Editer
               </button>
             </div>
             <table class="w-full text-sm border-collapse">
               <thead>
-                <tr class="bg-purple-50 text-purple-700">
+                <tr class="bg-slate-50 text-slate-800">
                   <th class="text-left p-2 rounded-tl-lg">#</th>
                   <th class="text-left p-2">Description</th>
                   <th class="text-center p-2">Fait</th>
@@ -252,15 +253,15 @@
 
           <!-- Sortie info -->
           {% if hosp['date_sortie'] %}
-          <div class="border-t border-purple-100 pt-3 mt-3">
+          <div class="border-t border-slate-200 pt-3 mt-3">
             <div class="flex flex-wrap gap-4 text-sm">
               <div>
-                <span class="text-purple-600 font-semibold">Sortie:</span>
+                <span class="text-slate-700 font-semibold">Sortie:</span>
                 <span class="text-gray-700">{{ hosp['date_sortie'].strftime('%d/%m/%Y %H:%M') if hosp['date_sortie'] and hosp['date_sortie'].strftime else hosp['date_sortie'] }}</span>
               </div>
               {% if hosp['observations_sortie'] %}
               <div>
-                <span class="text-purple-600 font-semibold">Obs. sortie:</span>
+                <span class="text-slate-700 font-semibold">Obs. sortie:</span>
                 <span class="text-gray-700">{{ hosp['observations_sortie'] }}</span>
               </div>
               {% endif %}

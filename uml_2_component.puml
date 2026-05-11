@@ -1,0 +1,57 @@
+@startuml
+
+package "Frontend (Navigateur)" {
+  [Jinja2 + Tailwind CSS] as UI
+  [search.js] as JS
+}
+
+package "Backend (Flask - app.py)" {
+
+  package "Securite" {
+    [login_required] as AUTH
+    [Argon2 + Pepper] as HASH
+    [Twilio SMS 2FA] as SMS
+  }
+
+  package "Routes Metier" {
+    [Patients CRUD] as PATIENTS
+    [Hospitalisation] as HOSP
+    [Recherche] as SEARCH
+    [Statistiques] as STATS
+  }
+
+  package "Services" {
+    [InvoicePDF (fpdf2)] as PDF
+    [Email SMTP] as EMAIL
+    [Matplotlib] as GRAPH
+    [Logger] as LOG
+  }
+}
+
+database "PostgreSQL" {
+  [patients] as TBL_PAT
+  [users] as TBL_USR
+  [visits] as TBL_VIS
+  [column_visibility] as TBL_COL
+}
+
+UI --> AUTH : HTTP
+JS --> SEARCH : AJAX
+AUTH --> PATIENTS
+AUTH --> HOSP
+AUTH --> STATS
+
+PATIENTS --> TBL_PAT : psycopg2
+HOSP --> TBL_PAT
+SEARCH --> TBL_PAT
+STATS --> TBL_VIS
+
+PATIENTS --> PDF
+PATIENTS --> EMAIL
+STATS --> GRAPH
+PATIENTS --> LOG
+
+HASH --> TBL_USR
+SMS ..> AUTH
+
+@enduml

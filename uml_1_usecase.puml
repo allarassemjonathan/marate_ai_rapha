@@ -1,0 +1,100 @@
+@startuml
+
+actor "Medecin\n(Docteur)" as doc
+actor "Infirmier\n(Nurse)" as nurse
+actor "Receptioniste" as recep
+actor "Manager\n(Admin)" as admin
+
+rectangle "Cabinet RAPHA - Gestion des Patients" {
+
+  package "Authentification" {
+    usecase "Se connecter" as UC_LOGIN
+    usecase "Verification SMS 2FA" as UC_2FA
+    usecase "Se deconnecter" as UC_LOGOUT
+  }
+
+  package "Gestion des Patients" {
+    usecase "Consulter la liste" as UC_LIST
+    usecase "Rechercher" as UC_SEARCH
+    usecase "Ajouter" as UC_ADD
+    usecase "Modifier" as UC_UPDATE
+    usecase "Supprimer" as UC_DELETE
+    usecase "Voir fiche" as UC_VIEW
+  }
+
+  package "Hospitalisation" {
+    usecase "Creer" as UC_HOSP_ADD
+    usecase "Modifier" as UC_HOSP_EDIT
+    usecase "Gerer traitements" as UC_TREAT
+  }
+
+  package "Facturation" {
+    usecase "Generer facture PDF" as UC_INVOICE
+    usecase "Saisir paiement IPM" as UC_IPM
+  }
+
+  package "Statistiques" {
+    usecase "Tableau de bord" as UC_DASH
+    usecase "Revenus" as UC_REV
+    usecase "Rapport email" as UC_REPORT
+  }
+
+  package "Administration" {
+    usecase "Gerer colonnes" as UC_COLS
+    usecase "Visibilite par role" as UC_VISI
+  }
+}
+
+doc --> UC_LOGIN
+nurse --> UC_LOGIN
+recep --> UC_LOGIN
+admin --> UC_LOGIN
+UC_LOGIN ..> UC_2FA : <<include>>
+
+doc --> UC_LIST
+nurse --> UC_LIST
+recep --> UC_LIST
+
+doc --> UC_SEARCH
+nurse --> UC_SEARCH
+recep --> UC_SEARCH
+
+doc --> UC_ADD
+nurse --> UC_ADD
+recep --> UC_ADD
+
+doc --> UC_UPDATE
+nurse --> UC_UPDATE
+
+doc --> UC_DELETE
+
+doc --> UC_VIEW
+nurse --> UC_VIEW
+recep --> UC_VIEW
+
+doc --> UC_HOSP_ADD
+doc --> UC_HOSP_EDIT
+doc --> UC_TREAT
+
+doc --> UC_INVOICE
+recep --> UC_IPM
+
+doc --> UC_DASH
+admin --> UC_DASH
+doc --> UC_REV
+doc --> UC_REPORT
+
+admin --> UC_COLS
+admin --> UC_VISI
+
+note right of doc
+  Ne voit que ses
+  propres patients
+end note
+
+note right of admin
+  Acces total
+  a tous les patients
+end note
+
+@enduml

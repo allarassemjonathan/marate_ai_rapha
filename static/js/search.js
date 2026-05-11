@@ -597,6 +597,12 @@ function loadPatients(q = '') {
   }
 
 window.editPatient = function(id) {
+  const toDateInputValue = (v) => {
+    if (!v) return '';
+    const d = new Date(v);
+    return isNaN(d) ? '' : d.toISOString().split('T')[0];
+  };
+
   fetch(`/get_patient/${id}`)
     .then(async res => {
       const data = await res.json();
@@ -608,7 +614,7 @@ window.editPatient = function(id) {
       // Populate the edit form
       document.getElementById('editId').value = data.id;
       document.getElementById('edit_name').value = data.name;
-      document.getElementById('edit_date_of_birth').value = data.date_of_birth;
+      document.getElementById('edit_date_of_birth').value = toDateInputValue(data.date_of_birth);
       console.log(data.age);
       // Convert age into years, months, days
 
@@ -636,29 +642,20 @@ window.editPatient = function(id) {
       visibleColumns.forEach(field => {
         const input = document.getElementById(`edit_${field}`);
         if (input) {
-          console.log(input);
-          input.value = data[field] || '';
-        }
-        if (field=='created_at'){
-            const createdDate = data.created_at
-            ? new Date(data.created_at).toISOString().split('T')[0]
-            : '';
-
-            document.getElementById('edit_created_at').value = createdDate;
-            console.log("hereeeeeeeee");
+          if (field === 'created_at' || field === 'date_of_birth') {
+            input.value = toDateInputValue(data[field]);
+          } else {
+            input.value = data[field] || '';
           }
-        if (field == 'date_of_birth'){
-          const birthdate = data.date_of_birth
-            ? new Date(data.date_of_birth).toISOString().split('T')[0]
-            : '';
-            console.log("birthday .. ");
-            console.log(birthdate);
-
-            document.getElementById('edit_date_of_birth').value = birthdate;
-            console.log("here");
-            console.log(data.date_of_birth);
         }
       });
+
+      // Belt-and-suspenders: ensure date inputs are set even if visibleColumns
+      // hasn't loaded yet (loadColumnConfiguration is async).
+      const dobInput = document.getElementById('edit_date_of_birth');
+      if (dobInput) dobInput.value = toDateInputValue(data.date_of_birth);
+      const createdInput = document.getElementById('edit_created_at');
+      if (createdInput) createdInput.value = toDateInputValue(data.created_at);
 
       // Show the modal
       document.getElementById('editModalOverlay').classList.remove('hidden');

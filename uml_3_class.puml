@@ -1,0 +1,59 @@
+@startuml
+
+class FlaskApp {
+  +index()
+  +login()
+  +verify_sms()
+  +search()
+  +add_patient()
+  +update_patient()
+  +delete_patient()
+  +generate_invoice()
+  +dashboard()
+  +report()
+}
+
+class Authentication {
+  -ph: PasswordHasher
+  -PEPPER_ENV: str
+  +login_required(f)
+  +verify_password(hash, pwd)
+}
+
+class InvoicePDF {
+  -MOIS_FR: dict
+  +header()
+  +footer()
+  +generate(data)
+}
+
+class Database {
+  -DATABASE_URL: str
+  +get_db_connection()
+  +init_db()
+}
+
+class EmailService {
+  -smtp_server: str
+  +email_reception()
+}
+
+class DynamicColumns {
+  +get_visible_columns()
+  +manage_columns()
+  +add_column()
+  +remove_column()
+}
+
+class Logging {
+  +log_file(user_type, action)
+}
+
+FlaskApp --> Authentication
+FlaskApp --> InvoicePDF
+FlaskApp --> Database
+FlaskApp --> EmailService
+FlaskApp --> DynamicColumns
+FlaskApp --> Logging
+
+@enduml

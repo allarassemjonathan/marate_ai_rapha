@@ -20,11 +20,11 @@
     }
 
     .glow-button {
-      background: linear-gradient(90deg, #00FFFF, #8000FF);
-      color: #050505;
+      background: linear-gradient(90deg, #0F2A47, #1E3A5F);
+      color: #ffffff;
       font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+      box-shadow: 0 0 15px rgba(15, 42, 71, 0.4);
       position: relative;
       overflow: hidden;
       z-index: 1;
@@ -37,7 +37,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, #00FFFF, #8000FF, #00FFFF);
+      background: linear-gradient(90deg, #0F2A47, #1E3A5F, #0F2A47);
       opacity: 0;
       transition: opacity 0.4s ease;
       z-index: -1;
@@ -67,8 +67,8 @@
     }
 
     .input-field:focus {
-      border-color: #00FFFF;
-      box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+      border-color: #0F2A47;
+      box-shadow: 0 0 0 3px rgba(15, 42, 71, 0.2);
       background-color: #ffffff; 
     }
 
@@ -79,8 +79,8 @@
     }
 
     .table-header {
-      background: linear-gradient(90deg, rgba(0, 255, 255, 0.05), rgba(128, 0, 255, 0.05));
-      border-bottom: 2px solid #00FFFF;
+      background: linear-gradient(90deg, rgba(15, 42, 71, 0.05), rgba(30, 58, 95, 0.05));
+      border-bottom: 2px solid #0F2A47;
       color: #111111;
     }
     
@@ -104,11 +104,11 @@
     }
 
     .cyan-glow {
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      text-shadow: 0 0 10px rgba(15, 42, 71, 0.5);
     }
 
     .purple-glow {
-      text-shadow: 0 0 10px rgba(128, 0, 255, 0.5);
+      text-shadow: 0 0 10px rgba(30, 58, 95, 0.5);
     }
 
     .scrollbar::-webkit-scrollbar {
@@ -121,7 +121,7 @@
     }
 
     .scrollbar::-webkit-scrollbar-thumb {
-      background: linear-gradient(#00FFFF, #8000FF);
+      background: linear-gradient(#0F2A47, #1E3A5F);
       border-radius: 5px;
     }
     /* Splash screen styles */
@@ -162,32 +162,56 @@
     flex-direction: column;
 }
 
-#invoiceModal #invoice-items-container {
-    flex: 1;
-    overflow-y: auto;
-    max-height: 60vh;
-    scrollbar-width: thin; /* for Firefox */
-    scrollbar-color: #00FFFF #111; /* for Firefox */
+#invoiceModal #invoiceCard > div.flex-1 {
+    scrollbar-width: thin;
+    scrollbar-color: #0F2A47 #e5e7eb;
 }
 
-#invoice-items-container::-webkit-scrollbar {
-  width: 5px;
+#invoiceModal #invoiceCard > div.flex-1::-webkit-scrollbar {
+  width: 6px;
 }
-#invoice-items-container::-webkit-scrollbar-track {
-  background: #111;
+#invoiceModal #invoiceCard > div.flex-1::-webkit-scrollbar-track {
+  background: #f1f5f9;
 }
-#invoice-items-container::-webkit-scrollbar-thumb {
-  background: linear-gradient(#00FFFF, #8000FF);
+#invoiceModal #invoiceCard > div.flex-1::-webkit-scrollbar-thumb {
+  background: linear-gradient(#0F2A47, #1E3A5F);
   border-radius: 5px;
 }
 
 #invoiceCard {
-  resize: both;
-  overflow: auto;
-  min-width: 90%;  /* instead of 400px / 700px */
+  min-width: 90%;
   min-height: 300px;
   max-width: 95vw;
-  max-height: 85vh;
+  max-height: 88vh;
+}
+
+#input_pourcentage_range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  outline: none;
+}
+#input_pourcentage_range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0F2A47;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+#input_pourcentage_range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0F2A47;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 /* Responsive adjustments for mobile */
@@ -200,16 +224,12 @@
       font-size: 0.9rem; /* smaller form elements */
     }
     #invoiceModal {
-        padding: 1rem;
+        padding: 0.5rem;
     }
-    
-    #invoiceModal .card {
-        width: 95%;
-        max-height: 90vh;
-    }
-    
-    #invoiceModal #invoice-items-container {
-        max-height: 50vh;
+
+    #invoiceCard {
+        width: 100%;
+        max-height: 95vh;
     }
 }
 #toastContainer > div {
@@ -217,8 +237,8 @@
   padding: 1rem 1.5rem;
   border-radius: 0.75rem;
   color: #111;
-  background:  #00FFFF;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+  background:  #0F2A47;
+  box-shadow: 0 0 12px rgba(15, 42, 71, 0.6);
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   opacity: 0;
@@ -247,7 +267,7 @@ td, th {
 /* Column Management Modal Styles */
 #columnManagementModal .scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 255, 255, 0.5) transparent;
+  scrollbar-color: rgba(15, 42, 71, 0.5) transparent;
 }
 
 #columnManagementModal .scrollbar::-webkit-scrollbar {
@@ -259,7 +279,7 @@ td, th {
 }
 
 #columnManagementModal .scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 255, 255, 0.5);
+  background-color: rgba(15, 42, 71, 0.5);
   border-radius: 3px;
 }
 
@@ -273,20 +293,20 @@ td, th {
   border-radius: 4px;
   background-color: #f3f4f6;
   border-color: #9ca3af;
-  color: #00FFFF;
+  color: #0F2A47;
 }
 
 #columnManagementModal .form-checkbox:checked,
 #columnManagementModal input[type="checkbox"]:checked {
-  background-color: #00FFFF;
-  border-color: #00FFFF;
-  color: #000000;
+  background-color: #0F2A47;
+  border-color: #0F2A47;
+  color: #ffffff;
 }
 
 #columnManagementModal .form-checkbox:focus,
 #columnManagementModal input[type="checkbox"]:focus {
-  box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
-  border-color: #00FFFF;
+  box-shadow: 0 0 0 3px rgba(15, 42, 71, 0.2);
+  border-color: #0F2A47;
 }
 /* Loader background overlay */
 #loader {
@@ -345,21 +365,21 @@ button:hover i {
 <body>
 </body>
 <!-- Modern Nav Bar -->
-<body class="bg-gray-100">
+<body class="bg-slate-50">
 
   <!-- White Responsive Nav Bar -->
   <nav class="w-full bg-white shadow-md py-3 px-6 flex justify-between items-center mb-6 relative">
-    <span class="font-bold text-black text-lg">Marate AI</span>
-    
+    <a href="/" class="flex items-center">
+      <img src="https://allarassemjonathan.github.io/kiceko.png" alt="Kiceko" class="h-10 w-auto">
+    </a>
+
     <!-- Desktop links -->
-    <div class="hidden lgx:flex space-x-4 items-center">
-      <a href="{{ url_for('logout') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Déconnexion</a>
+    <div class="hidden lgx:flex space-x-3 items-center">
+      <a href="{{ url_for('logout') }}" class="inline-flex items-center text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] shadow-sm transition">Déconnexion</a>
       {% if user_type == 'manager' %}
-        <a href="{{ url_for('send_daily_report_email') }}" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Rapport</a>
-        <a href="/dashboard" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Dashboard</a>
-        <a href="/visibility" class="text-black font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-cyan-100 transition">Permissions</a>
+        <a href="/dashboard" class="inline-flex items-center text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] shadow-sm transition">Dashboard</a>
+        <a href="/visibility" class="inline-flex items-center text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] shadow-sm transition">Permissions</a>
       {% endif %}
-      <span class="text-gray-700">Bienvenue {{username}}</span>
     </div>
 
     <!-- Hamburger (mobile only) -->
@@ -377,17 +397,27 @@ button:hover i {
       <button id="closeBtn" class="text-2xl text-gray-700">&times;</button>
     </div>
 
-    <a href="{{ url_for('logout') }}" class="text-black text-lg hover:text-cyan-600">Déconnexion</a>
-    {{user_type}}
+    <a href="{{ url_for('logout') }}" class="inline-flex items-center text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] shadow-sm transition self-start">Déconnexion</a>
     {% if user_type == 'manager' %}
-      <a href="{{ url_for('send_daily_report_email') }}" class="text-black text-lg hover:text-cyan-600">Rapport</a>
-      <a href="/dashboard" class="text-black text-lg hover:text-cyan-600">Dashboard</a>
-      <a href="/visibility" class="text-black text-lg hover:text-cyan-600">Permissions</a>
+      <a href="/dashboard" class="inline-flex items-center text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] shadow-sm transition self-start">Dashboard</a>
+      <a href="/visibility" class="inline-flex items-center text-white font-medium px-4 py-2 rounded-lg bg-[#0F2A47] hover:bg-[#1E3A5F] shadow-sm transition self-start">Permissions</a>
     {% endif %}
-    <span class="mt-4 text-gray-700">Bienvenue {{username}}</span>
   </div>
 
   <script>
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      if (!container) { alert(message); return; }
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 4000);
+    }
+
     const menuBtn = document.getElementById('menuBtn');
     const closeBtn = document.getElementById('closeBtn');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -404,19 +434,13 @@ button:hover i {
   </script>
 
   <div id="splashScreen">
-    <img src="https://allarassemjonathan.github.io/marate_white.png" class="h-20 md:h-28 w-auto object-contain">
+    <img src="https://allarassemjonathan.github.io/kiceko.png" class="h-20 md:h-28 w-auto object-contain">
   </div>
   <div class="w-full max-w-screen-2xl">
-    <div class="card rounded-2xl shadow-2xl p-6 md:p-8 mb-8">
-      <div class="flex justify-center mb-10">
-      <img src="https://allarassemjonathan.github.io/marate_white.png" class="h-20 md:h-28 w-auto object-contain">
-      </div>
-    </div>
-    
       <!-- <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
         <div class="relative w-full">
           <input id="searchBox" type="text" placeholder="Rechercher un patient..." class="input-field w-full p-4 pl-12 rounded-xl text-sm focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
@@ -430,7 +454,7 @@ button:hover i {
            placeholder="Rechercher un patient..."
            class="input-field w-full p-4 pl-12 pr-12 rounded-xl text-sm focus:outline-none bg-white border border-gray-300 shadow-sm">
     <svg xmlns="http://www.w3.org/2000/svg"
-         class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-400"
+         class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-600"
          fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -441,7 +465,7 @@ button:hover i {
 
   <!-- Add Patient Button -->
   <button onclick="openAddPatientModal()"
-          class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 text-white flex items-center justify-center shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+          class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-300"
           title="Ajouter un patient">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -451,7 +475,8 @@ button:hover i {
   <!-- Gear Icon Button -->
   <div class="relative flex-shrink-0">
     <button onclick="toggleSettingsMenu()"
-            class="w-12 h-12 rounded-xl bg-white border border-gray-300 text-gray-600 hover:text-cyan-600 hover:border-cyan-400 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-300">
+            class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-300"
+            title="Paramètres">
       <svg xmlns="http://www.w3.org/2000/svg"
            class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -582,30 +607,30 @@ window.addEventListener('click', function(e) {
     <!-- Add Form -->
     <form id="addForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {% for el in visible_columns %}
-        {% if el['column_name'] != 'signature' %}
+        {% if el['column_name'] != 'signature' or user_type == 'manager' %}
           {% if el['column_name'] == 'age' %}
             <div class="flex gap-2">
               {{ el['display_name'] }}
               <div class="relative w-1/3">
                 <input id="age_years" name="age_years" type="number" placeholder="Annees" class="input-field w-full p-4 rounded-xl">
-                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
               </div>
               <div class="relative w-1/3">
                 <input id="age_months" name="age_months" type="number" placeholder="Mois" class="input-field w-full p-4 rounded-xl">
-                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
               </div>
               <div class="relative w-1/3">
                 <input id="age_days" name="age_days" type="number" placeholder="Jours" class="input-field w-full p-4 rounded-xl">
-                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
               </div>
             </div>
           {% elif el['column_name'] == 'date_of_birth' or el['column_name'] == 'created_at' %}
             <div class="relative">
               {{el['display_name']}}
               <input id="{{ el['column_name'] }}" name="{{el['column_name'] }}" type="date" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
             </div>
-          {% elif el['column_name'] != 'id' and el['column_name'] != 'signature' and el['column_name'] in role_col %}
+          {% elif el['column_name'] != 'id' and el['column_name'] in role_col %}
             <div class="relative">
               {{ el['display_name'] }}
               <input
@@ -613,7 +638,7 @@ window.addEventListener('click', function(e) {
                 name="{{ el['column_name'] }}"
                 placeholder="{{ el['display_name'] }}"
                 class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
             </div>
           {% endif %}
         {% endif %}
@@ -656,7 +681,7 @@ window.addEventListener('click', function(e) {
       <div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Date d'admission</label>
         <input type="datetime-local" id="hosp_date_admission"
-               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400">
       </div>
 
       <!-- Patient info (read-only) -->
@@ -677,14 +702,14 @@ window.addEventListener('click', function(e) {
       <div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Medecin Traitant</label>
         <input type="text" id="hosp_medecin" placeholder="Prenom - Nom"
-               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400">
       </div>
 
       <!-- Syndrome -->
       <div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Syndrome</label>
         <input type="text" id="hosp_syndrome" placeholder="Syndrome"
-               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400">
       </div>
 
       <!-- Constantes -->
@@ -695,25 +720,25 @@ window.addEventListener('click', function(e) {
             <label class="block text-xs text-gray-500">Temperature</label>
             <div class="flex items-center gap-1">
               <input type="text" id="hosp_temperature" placeholder="--"
-                     class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-400 text-sm">
+                     class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-400 text-sm">
               <span class="text-xs text-gray-400">°C</span>
             </div>
           </div>
           <div>
             <label class="block text-xs text-gray-500">TA</label>
             <input type="text" id="hosp_ta" placeholder="--/--"
-                   class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-400 text-sm">
+                   class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-400 text-sm">
           </div>
           <div>
             <label class="block text-xs text-gray-500">FC</label>
             <input type="text" id="hosp_fc" placeholder="--"
-                   class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-400 text-sm">
+                   class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-400 text-sm">
           </div>
           <div>
             <label class="block text-xs text-gray-500">Poids</label>
             <div class="flex items-center gap-1">
               <input type="number" id="hosp_poids" placeholder="--" step="0.1"
-                     class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-cyan-400 text-sm">
+                     class="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-400 text-sm">
               <span class="text-xs text-gray-400">kg</span>
             </div>
           </div>
@@ -724,7 +749,7 @@ window.addEventListener('click', function(e) {
       <div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Diagnostic</label>
         <input type="text" id="hosp_diagnostic" placeholder="Diagnostic"
-               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+               class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400">
       </div>
 
       <!-- Traitements -->
@@ -732,7 +757,7 @@ window.addEventListener('click', function(e) {
         <label class="block text-sm font-medium text-gray-600 mb-2">Traitement</label>
         <div id="hosp_treatments_list" class="space-y-2"></div>
         <button type="button" onclick="addHospTreatmentRow()"
-                class="mt-2 text-sm bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg transition">
+                class="mt-2 text-sm bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg transition">
           + Ajouter un traitement
         </button>
       </div>
@@ -741,7 +766,7 @@ window.addEventListener('click', function(e) {
       <div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Observation</label>
         <textarea id="hosp_observation" rows="2" placeholder="Observation"
-                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400"></textarea>
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400"></textarea>
       </div>
 
       <!-- Sortie -->
@@ -751,12 +776,12 @@ window.addEventListener('click', function(e) {
           <div>
             <label class="block text-xs text-gray-500 mb-1">Date et Heure de sortie</label>
             <input type="datetime-local" id="hosp_date_sortie"
-                   class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+                   class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400">
           </div>
           <div class="md:col-span-2">
             <label class="block text-xs text-gray-500 mb-1">Observations de sortie</label>
             <textarea id="hosp_observations_sortie" rows="2" placeholder="Observations de sortie"
-                      class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400"></textarea>
+                      class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400"></textarea>
           </div>
         </div>
       </div>
@@ -779,58 +804,145 @@ window.addEventListener('click', function(e) {
 <!-- Invoice Modal -->
 <!-- Outer backdrop -->
 <div id="invoiceModal"
-     class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center px-2"
+     class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center px-2"
      style="display: none !important;">
 
   <!-- Inner modal box -->
   <div id="invoiceCard"
-       class="bg-white text-black rounded-xl p-6 md:p-8 shadow-lg w-full max-w-lg md:max-w-2xl lg:max-w-3xl max-h-[80vh] overflow-y-auto">
+       class="bg-white text-black rounded-2xl shadow-2xl w-full max-w-lg md:max-w-3xl lg:max-w-4xl max-h-[88vh] overflow-hidden flex flex-col">
 
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-lg md:text-2xl font-bold text-black mb-0">Générer Facture</h2>
-      <button onclick="closeInvoiceModal()" class="text-gray-600 hover:text-red-500 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <!-- Header band -->
+    <div class="relative bg-gradient-to-r from-[#0F2A47] to-[#1E3A5F] text-white px-6 md:px-8 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
+          <i class="fa-solid fa-file-invoice-dollar text-lg"></i>
+        </div>
+        <div>
+          <h2 class="text-lg md:text-2xl font-bold leading-tight">Générer Facture</h2>
+          <p class="text-xs md:text-sm text-slate-200/80">Document officiel</p>
+        </div>
+      </div>
+      <button onclick="closeInvoiceModal()"
+              class="h-9 w-9 rounded-lg bg-white/10 hover:bg-white/20 transition flex items-center justify-center"
+              aria-label="Fermer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
 
-    <!-- Patient Info Section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <input id="input_nom" type="text" placeholder="Nom du patient"
-             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
-      <input id="input_prenom" type="text" placeholder="Prénom du patient"
-             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
-      <input id="input_police" type="text" placeholder="Numéro d'immatriculation"
-             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
-      <input id="input_assurance" type="text" placeholder="Nom de l'assurance"
-             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
-      <input id="input_pourcentage" type="number" placeholder="% couvert par l'assurance (ex: 80)" min="0" max="100" value="80"
-             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
-      <input id="input_envoye_a" type="text" placeholder="Envoyé à (ex: Assurance X ou Parent)"
-             class="w-full p-3 md:p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+    <!-- Scrollable body -->
+    <div class="flex-1 overflow-y-auto px-6 md:px-8 py-6 space-y-6 bg-slate-50">
+
+      <!-- Patient block -->
+      <section class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+        <div class="flex items-center gap-2 mb-4">
+          <i class="fa-solid fa-user text-slate-600"></i>
+          <h3 class="text-sm md:text-base font-semibold text-slate-800 uppercase tracking-wide">Patient</h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="input_nom" class="block text-xs font-medium text-slate-500 mb-1">Nom</label>
+            <input id="input_nom" type="text" placeholder="Nom du patient"
+                   class="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] bg-white text-black transition" required>
+          </div>
+          <div>
+            <label for="input_prenom" class="block text-xs font-medium text-slate-500 mb-1">Prénom</label>
+            <input id="input_prenom" type="text" placeholder="Prénom du patient"
+                   class="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] bg-white text-black transition" required>
+          </div>
+        </div>
+      </section>
+
+      <!-- Insurance block -->
+      <section class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+        <div class="flex items-center gap-2 mb-4">
+          <i class="fa-solid fa-shield-halved text-slate-600"></i>
+          <h3 class="text-sm md:text-base font-semibold text-slate-800 uppercase tracking-wide">Assurance &amp; Couverture</h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="input_assurance" class="block text-xs font-medium text-slate-500 mb-1">Nom de l'assurance</label>
+            <input id="input_assurance" type="text" placeholder="ex: NSIA"
+                   class="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] bg-white text-black transition">
+          </div>
+          <div>
+            <label for="input_police" class="block text-xs font-medium text-slate-500 mb-1">Numéro d'immatriculation</label>
+            <input id="input_police" type="text" placeholder="Police / matricule"
+                   class="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] bg-white text-black transition">
+          </div>
+          <div>
+            <label for="input_envoye_a" class="block text-xs font-medium text-slate-500 mb-1">Envoyé à</label>
+            <input id="input_envoye_a" type="text" placeholder="ex: Assurance X ou Parent"
+                   class="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] bg-white text-black transition">
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="input_pourcentage" class="block text-xs font-medium text-slate-500">Couverture assurance</label>
+              <span id="pourcentageDisplay" class="text-sm font-semibold text-[#0F2A47]">80%</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <input id="input_pourcentage_range" type="range" min="0" max="100" value="80" step="1"
+                     class="flex-1 accent-[#0F2A47] cursor-pointer">
+              <input id="input_pourcentage" type="number" min="0" max="100" value="80"
+                     class="w-20 p-2 text-center rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] bg-white text-black transition">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Articles block -->
+      <section>
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-slate-600"></i>
+            <h3 class="text-sm md:text-base font-semibold text-slate-800 uppercase tracking-wide">Articles &amp; Prestations</h3>
+          </div>
+          <button type="button" onclick="addInvoiceSection()"
+                  class="inline-flex items-center gap-2 bg-[#0F2A47] hover:bg-[#1E3A5F] text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition">
+            <i class="fa-solid fa-plus text-xs"></i>
+            Ajouter une section
+          </button>
+        </div>
+
+        <!-- Dynamic Section container -->
+        <div id="invoice-items-container" class="space-y-4"></div>
+
+        <!-- Empty hint shown when no sections -->
+        <div id="invoice-empty-hint" class="bg-white border border-dashed border-slate-300 rounded-xl p-8 text-center text-slate-500">
+          <i class="fa-regular fa-folder-open text-2xl mb-2 block"></i>
+          <p class="text-sm">Aucune section ajoutée. Cliquez sur <span class="font-semibold text-[#0F2A47]">Ajouter une section</span> pour commencer.</p>
+        </div>
+      </section>
+
+      <!-- Live totals summary -->
+      <section class="bg-gradient-to-br from-[#0F2A47] to-[#1E3A5F] text-white rounded-xl p-5 shadow-md">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <div class="text-xs uppercase tracking-wide text-slate-300">Total</div>
+            <div id="invoiceGrandTotal" class="text-xl md:text-2xl font-bold mt-1">0 Fcfa</div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wide text-slate-300">Couvert (<span id="invoiceCoverPct">80</span>%)</div>
+            <div id="invoiceInsurancePart" class="text-xl md:text-2xl font-bold mt-1">0 Fcfa</div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wide text-slate-300">Reste à payer</div>
+            <div id="invoicePatientPart" class="text-xl md:text-2xl font-bold mt-1 text-amber-300">0 Fcfa</div>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <!-- Dynamic Section container -->
-    <div id="invoice-items-container" class="space-y-6 mb-6"></div>
-
-    <!-- Add Section Button -->
-    <div class="flex justify-start mb-6">
-      <button type="button" onclick="addInvoiceSection()"
-              class="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2 rounded-xl transition">
-        Ajouter une section
-      </button>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="flex flex-col md:flex-row justify-between gap-3">
+    <!-- Footer actions -->
+    <div class="border-t border-slate-200 px-6 md:px-8 py-4 bg-white flex flex-col-reverse md:flex-row justify-end gap-3">
       <button onclick="closeInvoiceModal()"
-              class="w-full md:w-auto px-6 py-3 bg-gray-300 hover:bg-gray-400 text-black rounded-xl transition">
+              class="w-full md:w-auto px-5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg font-medium transition">
         Annuler
       </button>
       <button onclick="generateInvoice()"
-              class="w-full md:w-auto glow-button px-6 py-3 rounded-xl text-white font-medium bg-cyan-600 hover:bg-cyan-700">
+              class="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-white font-semibold bg-gradient-to-r from-[#0F2A47] to-[#1E3A5F] hover:from-[#1E3A5F] hover:to-[#0F2A47] shadow-md transition">
+        <i class="fa-solid fa-file-pdf"></i>
         Générer PDF
       </button>
     </div>
@@ -841,13 +953,13 @@ window.addEventListener('click', function(e) {
   <div id="editModalOverlay" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
     <div class="card rounded-2xl p-8 max-w-4xl w-full max-h-screen overflow-y-auto scrollbar" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center mb-6">
-        <button onclick="closeEditModal()" class="text-gray-400 hover:text-cyan-400 transition-colors">
+        <button onclick="closeEditModal()" class="text-gray-400 hover:text-slate-600 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
-      <h2 class="text-2xl font-bold text-black bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-6">Modifier un patient</h2>
+      <h2 class="text-2xl font-bold text-black bg-clip-text bg-gradient-to-r from-slate-700 to-slate-900 mb-6">Modifier un patient</h2>
 
       <form id="editForm" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <input type="hidden" id="editId" name="id">
@@ -859,24 +971,24 @@ window.addEventListener('click', function(e) {
             
             <div class="relative w-1/3">
               <input id="edit_age_years" name="age_years" type="number" placeholder="Années" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
             </div>
 
             <div class="relative w-1/3">
               <input id="edit_age_months" name="age_months" type="number" placeholder="Mois" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
             </div>
 
             <div class="relative w-1/3">
               <input id="edit_age_days" name="age_days" type="number" placeholder="Jours" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
             </div>
           </div>
         {% elif el['column_name'] == 'date_of_birth' or  el['column_name'] == 'created_at' %}
           <div class="relative">
             {{el['display_name']}}
             <input id="edit_{{ el['column_name'] }}" name="{{el['column_name'] }}" type="date" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
           </div>
         {% elif el['column_name'] != 'id' and el['column_name'] in role_col %}
           <div class="relative">
@@ -887,7 +999,7 @@ window.addEventListener('click', function(e) {
               placeholder="{{ el['display_name'] }}"  
               class="input-field w-full p-4 rounded-xl">
             
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
           </div>
         {% endif %}
       {% endfor %}
@@ -897,79 +1009,79 @@ window.addEventListener('click', function(e) {
         <!-- <div class="relative">
           Nom
           <input id="edit_name" name="name" placeholder="Nom" required class="input-field w-full p-4 rounded-xl">
-          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
         </div>
         
         <div class="relative">
           Addresse
           <input id="edit_adresse" name="adresse" placeholder="Adresse" class="input-field w-full p-4 rounded-xl">
-          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
         </div>
         
        <div class="relative">
           Numéro
             <input id = "edit_phone_number" name="phone_number" placeholder="Numero" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
         </div>
 
         <div class="relative">
             Rendez-vous
             <input id="edit_meeting" name="meeting" placeholder="Rendez-vous" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
           </div>
 
           <div class="relative">
             Nouveaux cas
             <input id="edit_new_cases" name="new_cases" placeholder="Nouveaux cas" class="input-field w-full p-4 rounded-xl">
-            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+            <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
           </div>
           
         <div class="relative">
           Date de naissance
           <input id="edit_date_of_birth" name="date_of_birth" type="date" class="input-field w-full p-4 rounded-xl">
-          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
         </div>
         
         <div class="flex gap-2">
           Age
           <div class="relative w-1/3">
               <input id= "edit_age_years" name="age_years" type="number" placeholder="Années" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
           </div>
 
           <div class="relative w-1/3">
               <input id= "edit_age_months" name="age_months" type="number" placeholder="Mois" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
           </div>
 
           <div class="relative w-1/3">
               <input id="edit_age_days" name="age_days" type="number" placeholder="Jours" class="input-field w-full p-4 rounded-xl">
-              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+              <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
           </div>
         </div>
         
         <div class="relative">
           Poids
           <input id="edit_poids" name="poids" type="number" step="0.1" placeholder="Poids" class="input-field w-full p-4 rounded-xl">
-          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
         </div>
         
         <div class="relative">
           Taille
           <input id="edit_taille" name="taille" type="number" step="0.01" placeholder="Taille" class="input-field w-full p-4 rounded-xl">
-          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
         </div>
         
         <div class="relative">
           Tension
           <input id="edit_tension_arterielle" name="tension_arterielle" placeholder="Tension" class="input-field w-full p-4 rounded-xl">
-          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
         </div>
         
         <div class="relative">
           Température
           <input id="edit_temperature" name="temperature" type="number" step="0.1" placeholder="Température" class="input-field w-full p-4 rounded-xl">
-          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 input-underline"></div>
+          <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
         </div>
         
         <div class="relative md:col-span-2">
@@ -1010,7 +1122,7 @@ window.addEventListener('click', function(e) {
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-bold text-black">Gestion des Colonnes</h2>
-      <button onclick="closeColumnManagementModal()" class="text-gray-600 hover:text-cyan-500 transition-colors">
+      <button onclick="closeColumnManagementModal()" class="text-gray-600 hover:text-slate-700 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -1025,7 +1137,7 @@ window.addEventListener('click', function(e) {
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Nom de la colonne</label>
           <input type="text" id="columnNameModal" 
-                 class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400"
+                 class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400"
                  placeholder="ex: nouveau_champ"
                  pattern="[a-zA-Z_][a-zA-Z0-9_]*">
         </div>
@@ -1033,14 +1145,14 @@ window.addEventListener('click', function(e) {
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Nom d'affichage</label>
           <input type="text" id="displayNameModal" 
-                 class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400"
+                 class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400"
                  placeholder="ex: Nouveau Champ">
         </div>
         
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Type de données</label>
           <select id="dataTypeModal" 
-                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cyan-400">
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-slate-400">
             <option value="TEXT">Texte</option>
             <option value="INTEGER">Nombre entier</option>
             <option value="REAL">Nombre décimal</option>
@@ -1051,7 +1163,7 @@ window.addEventListener('click', function(e) {
         
         <div class="flex items-end">
           <button type="submit" 
-                  class="w-full py-3 px-4 rounded-xl font-medium bg-cyan-500 text-white hover:bg-cyan-600 transition">
+                  class="w-full py-3 px-4 rounded-xl font-medium bg-slate-800 text-white hover:bg-slate-900 transition">
             Ajouter
           </button>
         </div>
@@ -1085,7 +1197,7 @@ window.addEventListener('click', function(e) {
         Fermer
       </button>
       <button onclick="refreshMainPageColumns()" 
-              class="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl font-medium transition">
+              class="px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-medium transition">
         Actualiser la Page
       </button>
     </div>
@@ -1096,26 +1208,89 @@ window.addEventListener('click', function(e) {
 
   <script>
 
+    function refreshEmptyHint() {
+      const hint = document.getElementById('invoice-empty-hint');
+      const container = document.getElementById('invoice-items-container');
+      if (!hint || !container) return;
+      hint.style.display = container.children.length === 0 ? '' : 'none';
+    }
+
+    function formatFcfa(n) {
+      const v = Math.round(n || 0);
+      return v.toLocaleString('fr-FR') + ' Fcfa';
+    }
+
+    window.updateInvoiceTotals = function() {
+      const sections = document.querySelectorAll('#invoice-items-container .section-container');
+      let total = 0;
+      sections.forEach(s => {
+        s.querySelectorAll('.article-row').forEach(a => {
+          const q = parseFloat(a.querySelector('.item-quantite')?.value) || 0;
+          const p = parseFloat(a.querySelector('.item-montant')?.value) || 0;
+          total += q * p;
+        });
+      });
+      const pct = Math.max(0, Math.min(100, parseFloat(document.getElementById('input_pourcentage')?.value) || 0));
+      const insurance = total * (pct / 100);
+      const patient = total - insurance;
+
+      const grand = document.getElementById('invoiceGrandTotal');
+      const ins = document.getElementById('invoiceInsurancePart');
+      const pat = document.getElementById('invoicePatientPart');
+      const pctLabel = document.getElementById('invoiceCoverPct');
+      if (grand) grand.textContent = formatFcfa(total);
+      if (ins) ins.textContent = formatFcfa(insurance);
+      if (pat) pat.textContent = formatFcfa(patient);
+      if (pctLabel) pctLabel.textContent = pct;
+    };
+
     window.addInvoiceSection = function() {
       const sectionList = document.getElementById('invoice-items-container');
+      const sectionIndex = sectionList.children.length + 1;
 
       const sectionDiv = document.createElement('div');
-      sectionDiv.className = 'section-container border p-4 rounded-xl mb-6';
+      sectionDiv.className = 'section-container bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden';
 
       sectionDiv.innerHTML = `
-        <input type="text" placeholder="Titre de la section" class="section-title-input input-field mb-4 w-full p-2 rounded border" required>
+        <div class="flex items-center gap-3 px-4 py-3 bg-slate-50 border-b border-slate-200">
+          <span class="section-badge h-7 w-7 rounded-lg bg-[#0F2A47] text-white text-xs font-bold flex items-center justify-center">${sectionIndex}</span>
+          <input type="text" placeholder="Titre de la section (ex: Consultation, Soins...)"
+                 class="section-title-input flex-1 bg-white border border-slate-200 hover:border-slate-300 focus:border-[#0F2A47] focus:ring-2 focus:ring-[#0F2A47]/20 focus:outline-none text-slate-800 font-semibold placeholder-slate-400 px-3 py-1.5 rounded-md transition">
+          <button type="button" onclick="removeInvoiceSection(this)"
+                  class="text-slate-400 hover:text-red-500 transition" title="Supprimer la section">
+            <i class="fa-solid fa-trash text-sm"></i>
+          </button>
+        </div>
 
-        <div class="articles-list scrollbar space-y-4 mb-4"></div>
+        <div class="p-4">
+          <div class="articles-list space-y-3 mb-3"></div>
 
-        <button type="button" onclick="addArticle(this)" class="bg-cyan-500 text-black px-3 py-1 rounded mb-2">Ajouter un article</button>
-
-        <div class="section-subtotal text-right font-semibold mt-2">Sous-total: 0 Fcfa</div>
+          <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+            <button type="button" onclick="addArticle(this)"
+                    class="inline-flex items-center gap-2 text-sm font-medium text-[#0F2A47] hover:text-[#1E3A5F] transition">
+              <i class="fa-solid fa-circle-plus"></i>
+              Ajouter un article
+            </button>
+            <div class="section-subtotal text-sm font-semibold text-slate-700">Sous-total: 0 Fcfa</div>
+          </div>
+        </div>
       `;
 
       sectionList.appendChild(sectionDiv);
+      refreshEmptyHint();
 
       // Automatically add one article row when a new section is created
-      addArticle(sectionDiv.querySelector('button'));
+      addArticle(sectionDiv.querySelector('button[onclick="addArticle(this)"]'));
+    };
+
+    window.removeInvoiceSection = function(button) {
+      const sectionDiv = button.closest('.section-container');
+      sectionDiv.remove();
+      document.querySelectorAll('#invoice-items-container .section-container .section-badge').forEach((b, i) => {
+        b.textContent = i + 1;
+      });
+      refreshEmptyHint();
+      updateInvoiceTotals();
     };
 
     window.addArticle = function(button) {
@@ -1123,30 +1298,40 @@ window.addEventListener('click', function(e) {
     const articleList = sectionDiv.querySelector('.articles-list');
 
     const row = document.createElement('div');
-    row.className = 'article-row grid grid-cols-1 md:grid-cols-3 gap-4 items-center';
+    row.className = 'article-row grid grid-cols-12 gap-2 md:gap-3 items-center';
 
     row.innerHTML = `
-        <div class="dropdown-container relative">
+        <div class="dropdown-container relative col-span-12 md:col-span-6">
             <div class="relative">
-                <input type="text" 
-                       class="item-libelle input-field w-full p-3 rounded-xl border border-gray-600 pr-10" 
-                       placeholder="Libellé" 
-                       onclick="toggleDropdown(this)" 
+                <input type="text"
+                       class="item-libelle w-full p-2.5 pr-9 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] bg-white text-black transition"
+                       placeholder="Libellé"
+                       onclick="toggleDropdown(this)"
                        oninput="filterDropdown(this)"
                        autocomplete="off"
                        required>
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <svg class="dropdown-arrow w-4 h-4 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="dropdown-arrow w-4 h-4 text-slate-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </div>
             </div>
-            <div class="dropdown-list absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto" style="display: none;"></div>
+            <div class="dropdown-list absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto" style="display: none;"></div>
         </div>
-        <input type="number" class="item-quantite input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Quantité" min="1" step="1" value="1" required>
-        <input type="number" class="item-montant input-field w-full p-3 rounded-xl border border-gray-600" placeholder="Montant (Fcfa)" min="0" step="1" value="0" required>
-        <div class="col-span-1 md:col-span-3 text-right">
-            <button type="button" onclick="removeArticle(this)" class="text-red-500 hover:text-red-500 text-sm">Supprimer l'article</button>
+        <div class="col-span-4 md:col-span-2">
+          <input type="number" class="item-quantite w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] bg-white text-black text-center transition" placeholder="Qté" min="1" step="1" value="1" required>
+        </div>
+        <div class="col-span-7 md:col-span-3">
+          <div class="relative">
+            <input type="number" class="item-montant w-full p-2.5 pr-12 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0F2A47]/30 focus:border-[#0F2A47] bg-white text-black text-right transition" placeholder="Montant" min="0" step="1" value="0" required>
+            <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-400 pointer-events-none">Fcfa</span>
+          </div>
+        </div>
+        <div class="col-span-1 flex justify-end">
+            <button type="button" onclick="removeArticle(this)" title="Supprimer l'article"
+                    class="h-9 w-9 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
     `;
 
@@ -1181,8 +1366,30 @@ window.addEventListener('click', function(e) {
       });
 
       const subtotalDiv = sectionDiv.querySelector('.section-subtotal');
-      subtotalDiv.textContent = `Sous-total: ${subtotal.toFixed(2)} Fcfa`;
+      subtotalDiv.textContent = `Sous-total: ${formatFcfa(subtotal)}`;
+      updateInvoiceTotals();
     }
+
+    // Sync the % range slider with the number input and the display label
+    document.addEventListener('DOMContentLoaded', () => {
+      const range = document.getElementById('input_pourcentage_range');
+      const num = document.getElementById('input_pourcentage');
+      const disp = document.getElementById('pourcentageDisplay');
+      if (range && num) {
+        const sync = (src) => {
+          let v = parseFloat(src.value);
+          if (isNaN(v)) v = 0;
+          v = Math.max(0, Math.min(100, v));
+          range.value = v;
+          num.value = v;
+          if (disp) disp.textContent = v + '%';
+          updateInvoiceTotals();
+        };
+        range.addEventListener('input', () => sync(range));
+        num.addEventListener('input', () => sync(num));
+      }
+      refreshEmptyHint();
+    });
 
     window.addArticleRow = function(button) {
       const articleList = button.closest('.section-container').querySelector('.article-list');
@@ -1261,8 +1468,8 @@ window.addEventListener('click', function(e) {
         
         // Edit button
         const editButton = document.createElement('button');
-        editButton.className = 'action-button bg-cyan-500 bg-opacity-20 hover:bg-opacity-30 p-2 rounded-lg';
-        editButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>';
+        editButton.className = 'action-button bg-slate-800 bg-opacity-20 hover:bg-opacity-30 p-2 rounded-lg';
+        editButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>';
         editButton.onclick = function() { openEditModal(patient); };
         
         // Delete button
@@ -1401,17 +1608,17 @@ window.addEventListener('click', function(e) {
         itemDiv.innerHTML = `
             <div class="relative md:col-span-2">
                 <input type="text" placeholder="Nom de l'article" class="item-name input-field w-full p-4 rounded-xl" required>
-                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-cyan-400 transition-all duration-300 input-underline"></div>
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
             </div>
             
             <div class="relative">
                 <input type="number" placeholder="Quantité" class="item-quantity input-field w-full p-4 rounded-xl" step="1" min="0" required>
-                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-cyan-400 transition-all duration-300 input-underline"></div>
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
             </div>
             
             <div class="relative">
                 <input type="number" placeholder="Prix unitaire" class="item-price input-field w-full p-4 rounded-xl" step="500" min="0" required>
-                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-cyan-400 to-cyan-400 transition-all duration-300 input-underline"></div>
+                <div class="absolute left-0 bottom-0 h-0.5 w-0 bg-gradient-to-r from-slate-700 to-slate-900 transition-all duration-300 input-underline"></div>
             </div>
             
             <div class="md:col-span-4 flex justify-end">
@@ -1470,8 +1677,8 @@ window.addEventListener('click', function(e) {
   const sections = [];
   const sectionDivs = document.querySelectorAll('#invoice-items-container .section-container');
 
-  sectionDivs.forEach(sectionDiv => {
-    const titre = sectionDiv.querySelector('.section-title-input').value.trim();
+  sectionDivs.forEach((sectionDiv, idx) => {
+    const titre = sectionDiv.querySelector('.section-title-input').value.trim() || `Section ${idx + 1}`;
     const articles = [];
     const articleRows = sectionDiv.querySelectorAll('.article-row');
 
@@ -1485,7 +1692,7 @@ window.addEventListener('click', function(e) {
       }
     });
 
-    if (titre && articles.length > 0) {
+    if (articles.length > 0) {
       sections.push({ titre, articles });
     }
   });
@@ -1630,7 +1837,7 @@ function toggleColumnVisibility(columnName, isVisible) {
       const statusSpan = row.querySelector('td:nth-child(4) span span');
       if (statusSpan) {
         statusSpan.textContent = isVisible ? '✓ Visible' : 'Masquée';
-        statusSpan.className = isVisible ? 'ml-2 text-sm text-cyan-400' : 'ml-2 text-sm text-gray-500';
+        statusSpan.className = isVisible ? 'ml-2 text-sm text-slate-600' : 'ml-2 text-sm text-gray-500';
       }
     } else {
       // Revert checkbox state

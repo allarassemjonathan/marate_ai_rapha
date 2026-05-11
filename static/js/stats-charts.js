@@ -1,17 +1,17 @@
-// --- Color Palette (cyan/blue theme) ---
+// --- Color Palette (navy/slate theme) ---
 const COLORS = {
-  primary: 'rgba(6, 182, 212, 1)',
-  primaryLight: 'rgba(6, 182, 212, 0.15)',
-  secondary: 'rgba(59, 130, 246, 1)',
-  secondaryLight: 'rgba(59, 130, 246, 0.15)',
-  accent: 'rgba(249, 115, 22, 1)',
-  accentLight: 'rgba(249, 115, 22, 0.15)',
-  coral: 'rgba(251, 113, 133, 1)',
-  coralLight: 'rgba(251, 113, 133, 0.15)',
+  primary: 'rgba(15, 42, 71, 1)',
+  primaryLight: 'rgba(15, 42, 71, 0.15)',
+  secondary: 'rgba(71, 85, 105, 1)',
+  secondaryLight: 'rgba(71, 85, 105, 0.15)',
+  accent: 'rgba(245, 158, 11, 1)',
+  accentLight: 'rgba(245, 158, 11, 0.15)',
+  coral: 'rgba(244, 63, 94, 1)',
+  coralLight: 'rgba(244, 63, 94, 0.15)',
   pieColors: [
-    '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899',
-    '#f97316', '#eab308', '#22c55e', '#14b8a6',
-    '#6366f1', '#f43f5e'
+    '#0F2A47', '#475569', '#94a3b8', '#f59e0b',
+    '#10b981', '#f43f5e', '#6366f1', '#14b8a6',
+    '#ec4899', '#eab308'
   ]
 };
 
@@ -471,12 +471,12 @@ if (CHART_DATA.distribution) {
 if (CHART_DATA.topDiagnoses) {
   const diagContainer = document.getElementById('diagChartContainer');
   const diagColors = [
-    'rgba(6, 182, 212, 0.85)',    // cyan
-    'rgba(249, 115, 22, 0.85)',   // orange
-    'rgba(139, 92, 246, 0.85)',   // purple
-    'rgba(236, 72, 153, 0.85)',   // pink
-    'rgba(34, 197, 94, 0.85)',    // green
-    'rgba(234, 179, 8, 0.85)',    // yellow
+    'rgba(15, 42, 71, 0.85)',     // navy
+    'rgba(71, 85, 105, 0.85)',    // slate 600
+    'rgba(245, 158, 11, 0.85)',   // amber
+    'rgba(244, 63, 94, 0.85)',    // rose
+    'rgba(16, 185, 129, 0.85)',   // emerald
+    'rgba(148, 163, 184, 0.85)',  // slate 400
   ];
 
   CHART_DATA.topDiagnoses.datasets.forEach((clinicDs, ci) => {
@@ -543,8 +543,8 @@ if (CHART_DATA.activityHeatmap && CHART_DATA.activityHeatmap.clinics) {
 
   // Color palettes per clinic index
   const heatPalettes = [
-    { bg: '#f0f9ff', from: [240, 249, 255], to: [6, 182, 212] },   // cyan
-    { bg: '#fff7ed', from: [255, 247, 237], to: [249, 115, 22] },   // orange
+    { bg: '#f8fafc', from: [248, 250, 252], to: [15, 42, 71] },    // slate-50 → navy
+    { bg: '#f1f5f9', from: [241, 245, 249], to: [71, 85, 105] },   // slate-100 → slate-600
   ];
 
   let clinicIdx = 0;

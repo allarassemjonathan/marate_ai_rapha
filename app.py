@@ -410,44 +410,47 @@ class InvoicePDF(FPDF):
         return f"{int(value):,} Fcfa".replace(",", " ")
 
     def header(self):
-        # Cyan header band
-        self.set_fill_color(255,255,255)
-        self.rect(0, 0, 210, 36, 'F')
+        # Slate navy header band
+        self.set_fill_color(15, 42, 71)
+        self.rect(0, 0, 210, 32, 'F')
 
-        # Logos via BytesIO (no temp files)
+        # App logo (Kiceko) on the band
         try:
-            logos = [
-                ("https://allarassemjonathan.github.io/solidarite_logo.png", 12, 3, 38),
-                ("https://allarassemjonathan.github.io/marate_white.png", 160, 10, 30),
-            ]
-            for url, x, y, w in logos:
-                resp = requests.get(url, timeout=10)
-                if resp.status_code == 200:
-                    self.image(io.BytesIO(resp.content), x, y, w)
+            resp = requests.get("https://allarassemjonathan.github.io/kiceko.png", timeout=10)
+            if resp.status_code == 200:
+                self.image(io.BytesIO(resp.content), 12, 8, 32)
         except Exception:
             pass
 
         # Title on the band
         now = datetime.now()
         month_fr = self.MOIS_FR.get(now.strftime('%B'), now.strftime('%B'))
-        self.set_y(10)
-        self.set_font('Arial', 'B', 15)
-        self.set_text_color(0, 0, 0)
-        self.cell(0, 10, f'FACTURE  -  {month_fr} {now.strftime("%Y")}', align='C')
+        self.set_y(11)
+        self.set_font('Arial', 'B', 17)
+        self.set_text_color(255, 255, 255)
+        self.cell(0, 7, 'FACTURE', align='C')
+        self.set_y(19)
+        self.set_font('Arial', '', 10)
+        self.set_text_color(200, 215, 230)
+        self.cell(0, 6, f'{month_fr} {now.strftime("%Y")}', align='C')
 
-        self.set_y(58)
+        # Thin accent line below band
+        self.set_draw_color(30, 58, 95)
+        self.set_line_width(0.6)
+        self.line(0, 32, 210, 32)
+
+        self.set_y(42)
 
     def footer(self):
         self.set_y(-18)
-        self.set_draw_color(6, 182, 212)
+        self.set_draw_color(15, 42, 71)
         self.set_line_width(0.3)
         self.line(10, self.get_y(), 200, self.get_y())
         self.ln(2)
         self.set_font('Arial', '', 7)
         self.set_text_color(140, 140, 140)
-        self.cell(63, 5, 'Clinique de la Solidarite', align='L')
-        self.cell(63, 5, f'Page {self.page_no()}/{{nb}}', align='C')
-        self.cell(63, 5, f'Genere le {datetime.now().strftime("%d/%m/%Y")}', align='R')
+        self.cell(95, 5, f'Page {self.page_no()}/{{nb}}', align='L')
+        self.cell(95, 5, f'Genere le {datetime.now().strftime("%d/%m/%Y")}', align='R')
 
     def add_invoice_header(self, meta):
         now = datetime.now()
@@ -460,7 +463,7 @@ class InvoicePDF(FPDF):
         if envoye_a:
             self.set_font('Arial', '', 10)
             self.set_text_color(80, 80, 80)
-            self.cell(0, 7, f"Societe d'assurance : {envoye_a}  -  doit au cabinet Solidarite", align='C', ln=1)
+            self.cell(0, 7, f"Societe d'assurance : {envoye_a}  -  doit au cabinet", align='C', ln=1)
             self.ln(2)
 
         # Patient info box
@@ -468,7 +471,7 @@ class InvoicePDF(FPDF):
         box_y = self.get_y()
         box_w = 190
         box_h = 22
-        self.set_draw_color(6, 182, 212)
+        self.set_draw_color(15, 42, 71)
         self.set_line_width(0.3)
         self.rect(box_x, box_y, box_w, box_h, round_corners=True, corner_radius=3, style='D')
 
@@ -512,18 +515,18 @@ class InvoicePDF(FPDF):
         table_w = sum(col_widths)
 
         for section in sections:
-            # Section title bar
+            # Section title bar (slate navy)
             self.set_font('Arial', 'B', 11)
-            self.set_fill_color(6, 182, 212)
+            self.set_fill_color(15, 42, 71)
             self.set_text_color(255, 255, 255)
             self.cell(table_w, 9, f'  {section.get("titre", "Section")}', 0, 1, 'L', True)
 
-            # Column headers
+            # Column headers (light slate tint)
             headers = ['Libelle', 'Quantite', 'Montant unit.', '% Assurance', 'Net a payer']
             self.set_font('Arial', 'B', 9)
-            self.set_fill_color(230, 248, 250)
-            self.set_text_color(60, 60, 60)
-            self.set_draw_color(6, 182, 212)
+            self.set_fill_color(232, 236, 243)
+            self.set_text_color(60, 70, 85)
+            self.set_draw_color(15, 42, 71)
             self.set_line_width(0.2)
             for i, h in enumerate(headers):
                 align = 'L' if i == 0 else 'C'
@@ -569,26 +572,26 @@ class InvoicePDF(FPDF):
 
             # Subtotal row
             self.set_font('Arial', 'B', 10)
-            self.set_fill_color(230, 248, 250)
-            self.set_draw_color(6, 182, 212)
+            self.set_fill_color(232, 236, 243)
+            self.set_draw_color(15, 42, 71)
             self.set_line_width(0.3)
-            self.set_text_color(6, 182, 212)
+            self.set_text_color(15, 42, 71)
             self.cell(sum(col_widths[:-1]), 9, 'Sous-total  ', 'T', 0, 'R', True)
             self.cell(col_widths[-1], 9, self._fmt_currency(sous_total), 'T', 1, 'R', True)
             self.ln(5)
 
-        # Final total box
+        # Final total box (slate navy)
         self.ln(3)
         box_w = 130
         box_x = (210 - box_w) / 2
         box_y = self.get_y()
-        self.set_fill_color(255, 245, 247)
-        self.set_draw_color(220, 20, 60)
+        self.set_fill_color(15, 42, 71)
+        self.set_draw_color(15, 42, 71)
         self.set_line_width(0.6)
         self.rect(box_x, box_y, box_w, 14, round_corners=True, corner_radius=3, style='DF')
         self.set_xy(box_x, box_y + 2)
         self.set_font('Arial', 'B', 12)
-        self.set_text_color(220, 20, 60)
+        self.set_text_color(255, 255, 255)
         self.cell(box_w, 10, f'TOTAL A PAYER : {self._fmt_currency(total_net)}', align='C')
         self.ln(18)
 
@@ -868,6 +871,8 @@ def index():
     visible_columns = get_visible_columns()
     role_col = get_visibility_backend(user_type)
     visible_columns = [dict(row) for row in visible_columns]
+    if user_type == 'manager':
+        role_col = [col['column_name'] for col in visible_columns]
     print(visible_columns)
     return render_template('index.html',
                          user_type=user_type,
@@ -1277,14 +1282,7 @@ def get_patient(patient_id):
     row = dict(row)
     print(session['username'])
 
-    if user_type == 'infirmiers' or user_type == 'receptionistes':
-        return jsonify(row)
-    if row['signature'] is None:
-        return jsonify(row)
-    if row and row['signature'] and row['signature'] == session['username'].replace('_', ' '):
-        return jsonify(row)
-    else:
-        return jsonify({'status': 'error', 'message': f"Seul le {row['signature']} a le droit de modifier ce patient."})
+    return jsonify(row)
 
 
 @app.route('/update/<int:patient_id>', methods=['PUT'])
@@ -1295,6 +1293,13 @@ def update_patient(patient_id):
         data['signature'] = session['username'].replace('_', ' ')
     if not data.get('name'):
         return jsonify({'status': 'error', 'message': 'Name is required'}), 400
+
+    # Treat every edit as an "update" — bump created_at so the patient
+    # moves back to the top of the list (which is sorted by created_at desc).
+    # This also overrides any (possibly empty / date-truncated) value the
+    # edit form may have submitted for created_at.
+    gmt_plus1 = timezone(timedelta(hours=1))
+    data['created_at'] = datetime.now(gmt_plus1)
 
 
     # get all the data on columns 
@@ -1309,13 +1314,9 @@ def update_patient(patient_id):
     print("rows are ", rows)
     data_fields = set(row['column_name'] for row in rows)
 
-    # Replace empty strings with None for date fields
-    cleaned_data = {}
-    for k, v in data.items():
-        if k in data_fields and v == '':
-            cleaned_data[k] = None
-        else:
-            cleaned_data[k] = v
+    # Replace empty strings with None — Postgres rejects '' for INTEGER/REAL/DATE columns
+    # (e.g. age_years/months/days, which are hardcoded and not in patient_columns_meta).
+    cleaned_data = {k: (None if v == '' else v) for k, v in data.items()}
 
     print('cleaned data', cleaned_data)
     set_clause = ", ".join([f"{k} = %s" for k in cleaned_data.keys()])
@@ -1610,7 +1611,200 @@ def send_daily_report_email():
         
     except Exception as e:
         return f"Failed to send daily report email: {e}"
-    
+
+
+def _ai_report_render_html(analysis_html, today, totals):
+    return f"""
+    <div style="font-family: 'Inter', Arial, sans-serif; color: #111; max-width: 720px; line-height: 1.6;">
+      <p style="margin:0 0 20px; color:#475569;">
+        <strong>{totals.get('today_total', 0)}</strong> consultation(s) aujourd'hui ·
+        <strong>{totals.get('today_new', 0)}</strong> nouveau(x) patient(s) ·
+        <strong>{totals.get('window_total', 0)}</strong> consultation(s) sur 30 jours
+      </p>
+      {analysis_html}
+      <hr style="margin:24px 0; border:none; border-top:1px solid #e2e8f0;">
+      <p style="color:#64748b; font-size:12px;">Analyse générée par Claude (Opus 4.7) à partir des données patients des 30 derniers jours.</p>
+    </div>
+    """
+
+
+def _ai_report_collect_data():
+    """Return (today_rows, window_rows, clinic_names, today_date) for the AI report."""
+    conn = get_db_connection()
+    conn.autocommit = True
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT id, name FROM clinics")
+    clinic_names = {r['id']: r['name'] for r in cur.fetchall()}
+
+    fields = (
+        "id, clinic_id, created_at, age, signature, new_cases, "
+        "hypothese_de_diagnostique, temperature, tension_arterielle, bilan, resultat_bilan, ordonnance"
+    )
+    cur.execute(
+        f"SELECT {fields} FROM patients "
+        f"WHERE created_at::date = CURRENT_DATE "
+        f"ORDER BY clinic_id, created_at"
+    )
+    today_rows = cur.fetchall()
+    cur.execute(
+        f"SELECT {fields} FROM patients "
+        f"WHERE created_at::date >= CURRENT_DATE - INTERVAL '30 days' "
+        f"  AND created_at::date < CURRENT_DATE "
+        f"ORDER BY clinic_id, created_at"
+    )
+    window_rows = cur.fetchall()
+    cur.close(); conn.close()
+    return today_rows, window_rows, clinic_names, date.today()
+
+
+def _row_to_compact(r):
+    def trunc(v, n=120):
+        if v is None: return None
+        s = str(v).strip().replace('\n', ' ')
+        return s if len(s) <= n else s[:n] + '…'
+    return {
+        'id': r.get('id'),
+        'clinic': r.get('clinic_id'),
+        'date': r['created_at'].strftime('%Y-%m-%d') if r.get('created_at') else None,
+        'age': r.get('age'),
+        'doctor': trunc(r.get('signature'), 40),
+        'new': (str(r.get('new_cases') or '').lower().strip() == 'oui'),
+        'diagnosis': trunc(r.get('hypothese_de_diagnostique'), 160),
+        'temp': r.get('temperature'),
+        'bp': trunc(r.get('tension_arterielle'), 20),
+        'lab': trunc(r.get('bilan'), 80),
+        'lab_result': trunc(r.get('resultat_bilan'), 80),
+        'rx': trunc(r.get('ordonnance'), 120),
+    }
+
+
+@app.route('/ai_report', methods=['POST'])
+@login_required
+def ai_report():
+    if session.get('user_type') != 'manager':
+        return jsonify(ok=False, error="Accès réservé au gestionnaire."), 403
+
+    try:
+        import anthropic
+    except ImportError:
+        return jsonify(ok=False, error="Le module 'anthropic' n'est pas installé (pip install anthropic)."), 500
+
+    api_key = os.environ.get('ANTHROPIC_API_KEY')
+    if not api_key:
+        return jsonify(ok=False, error="ANTHROPIC_API_KEY manquante dans .env"), 500
+
+    extra_prompt = ((request.get_json(silent=True) or {}).get('extra_prompt') or '').strip()
+
+    today_rows, window_rows, clinic_names, today = _ai_report_collect_data()
+
+    if not today_rows and not window_rows:
+        return jsonify(ok=False, error="Aucune donnée patient sur les 30 derniers jours — rien à analyser."), 400
+
+    today_compact = [_row_to_compact(r) for r in today_rows]
+    window_compact = [_row_to_compact(r) for r in window_rows]
+
+    totals = {
+        'today_total': len(today_rows),
+        'today_new': sum(1 for r in today_compact if r['new']),
+        'window_total': len(window_rows),
+        'clinics': {int(cid): name for cid, name in clinic_names.items()},
+    }
+
+    payload = {
+        'date_du_rapport': today.strftime('%Y-%m-%d'),
+        'cliniques': totals['clinics'],
+        'aujourdhui': today_compact,
+        'trente_derniers_jours': window_compact,
+    }
+
+    system_prompt = (
+        "Tu es un analyste médical et épidémiologique pour le Cabinet RAPHA (réseau de cliniques). "
+        "À partir des données patients fournies en JSON (consultations d'aujourd'hui en détail + 30 derniers jours pour la baseline), "
+        "rédige un rapport synthétique en français pour le gestionnaire. "
+        "Format HTML simple uniquement (h2, h3, h4, ul, ol, li, p, strong, em, table, tr, td, th — sans CSS, sans <html>/<body>). "
+        "Sections obligatoires : "
+        "(1) <h2>Volume d'activité</h2> — total consultations aujourd'hui, par clinique, comparaison avec la moyenne quotidienne des 30 derniers jours ; "
+        "(2) <h2>Pathologies du jour</h2> — diagnostics principaux observés aujourd'hui, regroupés par thème (respiratoire, digestif, paludisme, etc.), par clinique ; "
+        "(3) <h2>Signaux épidémiologiques</h2> — augmentation anormale de certains diagnostics (paludisme, fièvre, infections respiratoires, diarrhée, etc.) par rapport à la baseline 30j, clusters géographiques par clinique, regroupements suspects (même symptôme, plusieurs patients, même quartier ou même jour) ; "
+        "(4) <h2>Cas inhabituels</h2> — patients individuels avec présentation atypique (vitales extrêmes, diagnostics rares, combinaisons inattendues) ; cite les <strong>IDs</strong> des consultations concernées ; "
+        "(5) <h2>Tendances cachées</h2> — patterns qu'un humain pourrait manquer (saisonnalité, montée silencieuse d'une pathologie, charge par médecin, profil démographique inhabituel) ; "
+        "(6) <h2>Recommandations</h2> — 3 à 5 actions concrètes priorisées. "
+        "Règles strictes : sois factuel, ne jamais inventer une donnée absente ; si la baseline est trop courte pour une comparaison fiable, dis-le ; "
+        "utilise les noms des cliniques fournis dans le mapping `cliniques` plutôt que les IDs ; "
+        "quand tu cites un chiffre, il doit être vérifiable dans les données ; sois concis (rapport scannable en 2 minutes)."
+    )
+
+    if extra_prompt:
+        system_prompt += (
+            "\n\nInstructions supplémentaires du gestionnaire (à respecter en priorité, "
+            "sans contredire les règles ci-dessus) :\n" + extra_prompt
+        )
+
+    user_message = (
+        "Voici les données à analyser. `aujourdhui` contient les consultations du jour (à analyser en détail). "
+        "`trente_derniers_jours` contient les consultations des 30 jours précédents (baseline pour détecter ce qui est inhabituel).\n\n"
+        f"```json\n{json.dumps(payload, ensure_ascii=False, default=str)}\n```"
+    )
+
+    try:
+        client = anthropic.Anthropic(api_key=api_key)
+        response = client.messages.create(
+            model="claude-opus-4-7",
+            max_tokens=4096,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_message}],
+        )
+        analysis_html = "".join(b.text for b in response.content if b.type == "text").strip()
+    except anthropic.APIStatusError as e:
+        return jsonify(ok=False, error=f"Erreur Claude API ({e.status_code}): {e.message}"), 502
+    except Exception as e:
+        return jsonify(ok=False, error=f"Erreur d'analyse IA: {e}"), 500
+
+    if not analysis_html:
+        return jsonify(ok=False, error="L'IA n'a renvoyé aucune analyse."), 502
+
+    full_html = _ai_report_render_html(analysis_html, today, totals)
+    log_file(session.get('username', 'unknown'), 'AI report', f"Rapport IA généré pour {today}")
+    return jsonify(ok=True, html=full_html, totals=totals)
+
+
+@app.route('/ai_report/email', methods=['POST'])
+@login_required
+def ai_report_email():
+    if session.get('user_type') != 'manager':
+        return jsonify(ok=False, error="Accès réservé au gestionnaire."), 403
+
+    data = request.get_json(silent=True) or {}
+    recipient = (data.get('email') or '').strip()
+    html = data.get('html') or ''
+    if not recipient or '@' not in recipient:
+        return jsonify(ok=False, error="Adresse email invalide."), 400
+    if not html.strip():
+        return jsonify(ok=False, error="Aucun contenu à envoyer — générez d'abord le rapport."), 400
+
+    if not (smtp_server and smtp_port and your_email and your_password):
+        return jsonify(ok=False, error="SMTP non configuré (SMTP_SERVER, SMTP_PORT, EMAIL, CODE manquants dans .env)."), 500
+
+    today = date.today()
+    msg = MIMEMultipart('alternative')
+    msg['From'] = your_email
+    msg['To'] = recipient
+    msg['Subject'] = f"Rapport IA du {today.strftime('%Y-%m-%d')} — Cabinet RAPHA"
+    msg.attach(MIMEText(html, 'html', 'utf-8'))
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(your_email, your_password)
+        server.send_message(msg)
+        server.quit()
+    except Exception as e:
+        return jsonify(ok=False, error=f"Échec de l'envoi de l'email: {e}"), 500
+
+    log_file(session.get('username', 'unknown'), 'AI report email', f"Rapport IA envoyé à {recipient}")
+    return jsonify(ok=True)
+
+
 _cache = {}  # keyed by clinic_id
 
 def load_df_cached(ttl=60):

@@ -1,0 +1,38 @@
+@startuml
+
+actor Utilisateur as user
+participant Frontend as front
+participant Flask as flask
+database PostgreSQL as db
+participant Email as email
+
+== Authentification ==
+
+user -> front : Acceder au site
+front -> flask : GET /login
+user -> front : Email + mot de passe
+front -> flask : POST /login
+flask -> db : SELECT FROM users
+flask -> flask : verify_password()
+flask -> user : Rediriger /verify_sms
+user -> front : Code SMS
+front -> flask : POST /verify_sms
+flask -> front : Rediriger vers /
+
+== Ajout Patient ==
+
+user -> front : Formulaire patient
+front -> flask : POST /add
+flask -> db : INSERT INTO patients
+flask -> email : Notifier equipe
+flask -> front : JSON success
+
+== Facture ==
+
+user -> front : Generer facture
+front -> flask : POST /generate_invoice
+flask -> db : SELECT patient
+flask -> flask : InvoicePDF.generate()
+flask -> front : PDF
+
+@enduml
