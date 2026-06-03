@@ -96,6 +96,20 @@ def init_db():
                     details TEXT
                 )
             ''')
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS bills (
+                    id SERIAL PRIMARY KEY,
+                    patient_id INTEGER,
+                    patient_nom TEXT,
+                    patient_prenom TEXT,
+                    insurance TEXT,
+                    pourcentage NUMERIC,
+                    total_amount NUMERIC,
+                    insurance_amount NUMERIC,
+                    patient_amount NUMERIC,
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                )
+            ''')
             conn.commit()
 
 def log_file(user_type, action, details=None):
@@ -441,6 +455,12 @@ class InvoicePDF(FPDF):
         self.cell(0, 10, f"MONTANT À PAYER PAR LE PATIENT: {patient_amount} Fcfa", ln=1, align='C')
 
 
+ALLOWED_INSURANCES = [
+    'Ascoma', 'Saar', 'Start National', 'Signa',
+    'Gras Savoye', 'Ecare', 'Henner', 'Dea', 'Msh'
+]
+
+
 @app.route('/generate_invoice/<int:patient_id>', methods=['POST'])
 @login_required
 def generate_invoice(patient_id):
@@ -452,19 +472,57 @@ def generate_invoice(patient_id):
 
         meta = data['meta']
         sections = data['sections']
-        pourcentage_patient = 100 - float(meta.get('pourcentage', 0))  # e.g. 20 if insurance covers 80%
+        pourcentage_assurance = float(meta.get('pourcentage', 0))
+        pourcentage_patient = 100 - pourcentage_assurance  # e.g. 20 if insurance covers 80%
 
         pdf = InvoicePDF()
         pdf.add_page()
         pdf.add_invoice_header(meta)
         pdf.add_invoice_sections(sections, pourcentage_patient)
 
+        total_amount = 0
+        for section in sections:
+            for article in section.get('articles', []):
+                qte = float(article.get('quantite', 1))
+                brut = float(article.get('montant', 0))
+                total_amount += brut * qte
+        insurance_amount = round(total_amount * pourcentage_assurance / 100)
+        patient_amount = round(total_amount - insurance_amount)
+
+        insurance_name = meta.get('assurance', '') or ''
+        if insurance_name in ALLOWED_INSURANCES and pourcentage_assurance > 0:
+            try:
+                conn = get_db_connection()
+                cur = conn.cursor()
+                cur.execute(
+                    """
+                    INSERT INTO bills
+                        (patient_id, patient_nom, patient_prenom, insurance,
+                         pourcentage, total_amount, insurance_amount, patient_amount)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        patient_id,
+                        meta.get('nom', ''),
+                        meta.get('prenom', ''),
+                        insurance_name,
+                        pourcentage_assurance,
+                        total_amount,
+                        insurance_amount,
+                        patient_amount,
+                    ),
+                )
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                print(f"Error saving bill: {e}")
+
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
             pdf.output(tmp_file.name)
             tmp_file.seek(0)
 
             filename = f"facture_{meta['nom']}_{meta['prenom']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-            
+
             log_file(
                 session.get('user_type'),
                 'Facture généré',
@@ -1320,6 +1378,75 @@ def graph_automatique():
         get_chart("graph_automatique",build_graph_automatique_chart),
         mimetype="img/png"
     )
+
+@app.route('/insurance')
+@login_required
+def insurance_breakdown():
+    selected_year = request.args.get('year', type=int)
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT DISTINCT EXTRACT(YEAR FROM created_at)::int AS y FROM bills ORDER BY y DESC")
+    available_years = [r['y'] for r in cur.fetchall()]
+    if not available_years:
+        available_years = [datetime.now().year]
+    if selected_year is None or selected_year not in available_years:
+        selected_year = available_years[0]
+
+    cur.execute(
+        """
+        SELECT insurance,
+               EXTRACT(MONTH FROM created_at)::int AS month,
+               SUM(insurance_amount) AS owed
+        FROM bills
+        WHERE EXTRACT(YEAR FROM created_at) = %s
+        GROUP BY insurance, month
+        """,
+        (selected_year,),
+    )
+    monthly_rows = cur.fetchall()
+
+    monthly = {ins: {m: 0 for m in range(1, 13)} for ins in ALLOWED_INSURANCES}
+    for row in monthly_rows:
+        ins = row['insurance']
+        if ins in monthly:
+            monthly[ins][row['month']] = float(row['owed'] or 0)
+
+    insurance_totals = {ins: sum(monthly[ins].values()) for ins in ALLOWED_INSURANCES}
+    monthly_totals = {m: sum(monthly[ins][m] for ins in ALLOWED_INSURANCES) for m in range(1, 13)}
+    grand_total = sum(insurance_totals.values())
+
+    cur.execute(
+        """
+        SELECT id, patient_nom, patient_prenom, insurance,
+               pourcentage, total_amount, insurance_amount, patient_amount,
+               created_at
+        FROM bills
+        WHERE EXTRACT(YEAR FROM created_at) = %s
+        ORDER BY created_at DESC
+        """,
+        (selected_year,),
+    )
+    bills = cur.fetchall()
+    conn.close()
+
+    months_fr = ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin',
+                 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.']
+
+    return render_template(
+        'insurance.html',
+        insurances=ALLOWED_INSURANCES,
+        monthly=monthly,
+        insurance_totals=insurance_totals,
+        monthly_totals=monthly_totals,
+        grand_total=grand_total,
+        bills=bills,
+        years=available_years,
+        selected_year=selected_year,
+        months_fr=months_fr,
+    )
+
 
 @app.route("/stat", methods=['GET','POST'])
 @login_required

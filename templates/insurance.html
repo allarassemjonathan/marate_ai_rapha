@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assurances — Récapitulatif</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
+      min-height: 100vh;
+    }
+    .num { font-variant-numeric: tabular-nums; }
+    .zero { color: #9ca3af; }
+  </style>
+</head>
+<body class="text-gray-800">
+
+  <header class="flex flex-col md:flex-row items-center justify-between bg-white/60 backdrop-blur-md shadow-sm px-6 py-4 mb-8 rounded-xl">
+    <div class="flex items-center gap-3">
+      <a href="/" class="text-cyan-600 hover:text-cyan-800 font-semibold text-lg">← Retour au menu</a>
+      <h1 class="text-2xl font-bold text-gray-700">Assurances — Récapitulatif</h1>
+    </div>
+    <form action="/insurance" method="get" class="flex items-center gap-3 mt-2 md:mt-0">
+      <label class="text-gray-600 font-medium">Année :</label>
+      <select name="year" onchange="this.form.submit()"
+              class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none">
+        {% for y in years %}
+        <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 pb-10 space-y-8">
+
+    <section class="bg-white rounded-2xl p-6 shadow-md">
+      <h2 class="text-lg font-semibold text-cyan-600 mb-4">
+        💰 Montant dû par assurance — {{ selected_year }}
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-cyan-50 text-cyan-800">
+              <th class="text-left px-3 py-2 border-b border-cyan-100">Assurance</th>
+              {% for m in months_fr %}
+              <th class="text-right px-3 py-2 border-b border-cyan-100">{{ m }}</th>
+              {% endfor %}
+              <th class="text-right px-3 py-2 border-b border-cyan-100 font-bold">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ins in insurances %}
+            <tr class="hover:bg-gray-50">
+              <td class="px-3 py-2 border-b border-gray-100 font-medium">{{ ins }}</td>
+              {% for m in range(1, 13) %}
+                {% set val = monthly[ins][m] %}
+                <td class="px-3 py-2 border-b border-gray-100 text-right num {% if not val %}zero{% endif %}">
+                  {{ '{:,.0f}'.format(val).replace(',', ' ') }}
+                </td>
+              {% endfor %}
+              <td class="px-3 py-2 border-b border-gray-100 text-right num font-semibold text-cyan-700">
+                {{ '{:,.0f}'.format(insurance_totals[ins]).replace(',', ' ') }}
+              </td>
+            </tr>
+            {% endfor %}
+            <tr class="bg-cyan-50 font-semibold text-cyan-800">
+              <td class="px-3 py-2">Total mensuel</td>
+              {% for m in range(1, 13) %}
+              <td class="px-3 py-2 text-right num">
+                {{ '{:,.0f}'.format(monthly_totals[m]).replace(',', ' ') }}
+              </td>
+              {% endfor %}
+              <td class="px-3 py-2 text-right num text-cyan-900">
+                {{ '{:,.0f}'.format(grand_total).replace(',', ' ') }} Fcfa
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-gray-500 mt-3">
+        Les montants sont la part assurance (montant total × pourcentage de couverture).
+      </p>
+    </section>
+
+    <section class="bg-white rounded-2xl p-6 shadow-md">
+      <h2 class="text-lg font-semibold text-cyan-600 mb-4">
+        📄 Détail des factures — {{ selected_year }}
+      </h2>
+      {% if bills %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-cyan-50 text-cyan-800">
+              <th class="text-left px-3 py-2 border-b border-cyan-100">Date</th>
+              <th class="text-left px-3 py-2 border-b border-cyan-100">Patient</th>
+              <th class="text-left px-3 py-2 border-b border-cyan-100">Assurance</th>
+              <th class="text-right px-3 py-2 border-b border-cyan-100">% Couvert</th>
+              <th class="text-right px-3 py-2 border-b border-cyan-100">Total facture</th>
+              <th class="text-right px-3 py-2 border-b border-cyan-100">Part assurance</th>
+              <th class="text-right px-3 py-2 border-b border-cyan-100">Part patient</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in bills %}
+            <tr class="hover:bg-gray-50">
+              <td class="px-3 py-2 border-b border-gray-100">
+                {{ b.created_at.strftime('%d/%m/%Y') if b.created_at else '' }}
+              </td>
+              <td class="px-3 py-2 border-b border-gray-100">{{ b.patient_nom }} {{ b.patient_prenom }}</td>
+              <td class="px-3 py-2 border-b border-gray-100">{{ b.insurance }}</td>
+              <td class="px-3 py-2 border-b border-gray-100 text-right num">{{ b.pourcentage }}%</td>
+              <td class="px-3 py-2 border-b border-gray-100 text-right num">
+                {{ '{:,.0f}'.format(b.total_amount|float).replace(',', ' ') }}
+              </td>
+              <td class="px-3 py-2 border-b border-gray-100 text-right num text-cyan-700 font-medium">
+                {{ '{:,.0f}'.format(b.insurance_amount|float).replace(',', ' ') }}
+              </td>
+              <td class="px-3 py-2 border-b border-gray-100 text-right num">
+                {{ '{:,.0f}'.format(b.patient_amount|float).replace(',', ' ') }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-gray-500 italic">Aucune facture enregistrée pour cette année.</p>
+      {% endif %}
+    </section>
+
+  </main>
+
+  <footer class="text-center text-gray-500 py-6 text-sm">
+    © 2025 Asamaan | Récapitulatif des assurances
+  </footer>
+</body>
+</html>

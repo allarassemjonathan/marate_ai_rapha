@@ -1,3 +1,7 @@
-2025-12-26
-Nouvelle evenement: 11:33:02 Dr_Djaury_Dadji_-A, La connexion a échoué, Failed login attempt
-Nouvelle evenement: 11:36:10 Dr_Djaury_Dadji_-A, login, L'utilisateur 'Dr_Djaury_Dadji_-A' s'est connecté avec succès
+2026-06-02
+Nouvelle evenement: 22:14:33 Dr_Toralta_G_.Josephine, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 22:14:39 Dr_Toralta_G_.Josephine, La connexion a échoué, Failed login attempt
+Nouvelle evenement: 22:22:05 Dr_Toralta_G_.Josephine, login, L'utilisateur 'Dr_Toralta_G_.Josephine' s'est connecté avec succès
+Nouvelle evenement: 22:22:48 medecins, Ajout d'un patient, Le patient 'Jonathan Allarassem' a été ajouté
+Nouvelle evenement: 22:23:26 medecins, Facture généré, Facture généré pour le patient Allarassem Jonathan
+Nouvelle evenement: 22:25:04 medecins, Suppression d'un patient, Le patient avec l'identifiant 5280 a été supprimé. Voici les infos du patient supprimé [RealDictRow({'id': 5280, 'name': 'Jonathan Allarassem', 'adresse': '8 Allegheny Center', 'age': 0.0, 'date_of_birth': None, 'poids': None, 'taille': None, 'tension_arterielle': None, 'temperature': None, 'hypothese_de_diagnostique': '', 'bilan': '', 'resultat_bilan': '', 'signature': 'Dr Toralta G .Josephine', 'renseignements_clinique': '', 'ordonnance': '', 'created_at': datetime.datetime(2026, 6, 3, 2, 22, 47, 393076), 'meeting': '', 'new_cases': '', 'phone_number': '4127854528', 'age_years': 0, 'age_months': 0, 'age_days': 0})]

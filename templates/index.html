@@ -251,6 +251,9 @@ td, th {
   <a href="/stat" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
     Statistiques
   </a>
+  <a href="/insurance" class="text-black font-medium hover:bg-white-700 px-4 py-2 rounded-lg transition duration-200 bg-white-600">
+    Assurances
+  </a>
   {%endif%}
   <a>Bienvenue {{username}}</a>
 </nav>
@@ -445,7 +448,18 @@ td, th {
       <input id="input_nom" type="text" placeholder="Nom du patient" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
       <input id="input_prenom" type="text" placeholder="Prénom du patient" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
       <input id="input_police" type="text" placeholder="Numéro de police" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
-      <input id="input_assurance" type="text" placeholder="Nom de l'assurance" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+      <select id="input_assurance" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+        <option value="">-- Nom de l'assurance --</option>
+        <option value="Ascoma">Ascoma</option>
+        <option value="Saar">Saar</option>
+        <option value="Start National">Start National</option>
+        <option value="Signa">Signa</option>
+        <option value="Gras Savoye">Gras Savoye</option>
+        <option value="Ecare">Ecare</option>
+        <option value="Henner">Henner</option>
+        <option value="Dea">Dea</option>
+        <option value="Msh">Msh</option>
+      </select>
       <input id="input_pourcentage" type="number" placeholder="% couvert par l'assurance (ex: 80)" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" min="0" max="100" value="80">
       <input id="input_envoye_a" type="text" placeholder="Envoyé à (ex: Assurance X ou Parent)" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
     </div>
