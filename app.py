@@ -7,7 +7,7 @@ import matplotlib.ticker as mticker
 import pandas as pd
 import io
 from collections import defaultdict
-from flask import Flask, render_template, request, jsonify, send_file, session, flash, redirect, url_for
+from flask import Flask, render_template, request, jsonify, send_file, session, flash, redirect, url_for, abort
 import sqlite3
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -175,7 +175,8 @@ CREDENTIALS = {
     'Dr_Toralta_Emmanuelle_Mantar':os.environ.get('Dr_Toralta_Emmanuelle_Mantar'), 
     'Dr_Madjibeye_Mirielle':os.environ.get('Dr_Madjibeye_Mirielle'), 
     'Dr_Robnodji_Adoucie':os.environ.get('Dr_Robnodji_Adoucie'), 
-    'Dr_Ndoubabe_Bonheur': os.environ.get('Dr_Ndoubabe_Bonheur')
+    'Dr_Ndoubabe_Bonheur': os.environ.get('Dr_Ndoubabe_Bonheur'),
+    'Maman_ivonne': os.environ.get('Maman_ivonne')
 }
 
 # Decorator to require login
@@ -1382,6 +1383,8 @@ def graph_automatique():
 @app.route('/insurance')
 @login_required
 def insurance_breakdown():
+    if session.get('username') != 'Maman_ivonne':
+        abort(403)
     selected_year = request.args.get('year', type=int)
 
     conn = get_db_connection()
