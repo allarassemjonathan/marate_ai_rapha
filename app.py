@@ -176,6 +176,10 @@ CREDENTIALS = {
     'Dr_Madjibeye_Mirielle':os.environ.get('Dr_Madjibeye_Mirielle'), 
     'Dr_Robnodji_Adoucie':os.environ.get('Dr_Robnodji_Adoucie'), 
     'Dr_Ndoubabe_Bonheur': os.environ.get('Dr_Ndoubabe_Bonheur'),
+    'Dr_YICKOLLE_MADINE_PRISCILLE': os.environ.get('Dr_YICKOLLE_MADINE_PRISCILLE'),
+    'Dr_DINGUEMNAYAL_BONHEUR': os.environ.get('Dr_DINGUEMNAYAL_BONHEUR'),
+    'Dr_NADJIADOUM_CHARITÉ': os.environ.get('Dr_NADJIADOUM_CHARITÉ'),
+    'Dr_HAISSEBA_DANSALA': os.environ.get('Dr_HAISSEBA_DANSALA'),
     'Maman_ivonne': os.environ.get('Maman_ivonne')
 }
 
@@ -856,7 +860,9 @@ def login():
                 'Dr_Toralta_G_.Josephine', 'Dr_Djaury_Dadji_-A', 'Dr_Abaye_Evelet',
                 'Dr_Doumgo_Monna_Doni_Nelson', 'Dr_Ngetigal_Hyacinte', 'Dr_Ousmane_Hamane_Gadji',
                 'Dr_Toralta_Emmanuelle_Mantar', 'Dr_Madjibeye_Mirielle',
-                'Dr_Robnodji_Adoucie', 'Dr_Ndoubabe_Bonheur'
+                'Dr_Robnodji_Adoucie', 'Dr_Ndoubabe_Bonheur',
+                'Dr_YICKOLLE_MADINE_PRISCILLE', 'Dr_DINGUEMNAYAL_BONHEUR',
+                'Dr_NADJIADOUM_CHARITÉ', 'Dr_HAISSEBA_DANSALA'
             }
 
             # Always set both username & user_type
@@ -1420,17 +1426,35 @@ def insurance_breakdown():
     monthly_totals = {m: sum(monthly[ins][m] for ins in ALLOWED_INSURANCES) for m in range(1, 13)}
     grand_total = sum(insurance_totals.values())
 
-    cur.execute(
-        """
-        SELECT id, patient_nom, patient_prenom, insurance,
-               pourcentage, total_amount, insurance_amount, patient_amount,
-               created_at
-        FROM bills
-        WHERE EXTRACT(YEAR FROM created_at) = %s
-        ORDER BY created_at DESC
-        """,
-        (selected_year,),
-    )
+    selected_insurance = request.args.get('ins')
+    if selected_insurance not in ALLOWED_INSURANCES:
+        selected_insurance = None
+
+    if selected_insurance:
+        cur.execute(
+            """
+            SELECT id, patient_nom, patient_prenom, insurance,
+                   pourcentage, total_amount, insurance_amount, patient_amount,
+                   created_at
+            FROM bills
+            WHERE EXTRACT(YEAR FROM created_at) = %s
+              AND insurance = %s
+            ORDER BY created_at DESC
+            """,
+            (selected_year, selected_insurance),
+        )
+    else:
+        cur.execute(
+            """
+            SELECT id, patient_nom, patient_prenom, insurance,
+                   pourcentage, total_amount, insurance_amount, patient_amount,
+                   created_at
+            FROM bills
+            WHERE EXTRACT(YEAR FROM created_at) = %s
+            ORDER BY created_at DESC
+            """,
+            (selected_year,),
+        )
     bills = cur.fetchall()
     conn.close()
 
@@ -1447,8 +1471,17 @@ def insurance_breakdown():
         bills=bills,
         years=available_years,
         selected_year=selected_year,
+        selected_insurance=selected_insurance,
         months_fr=months_fr,
     )
+
+
+@app.route('/insurance/add_bill')
+@login_required
+def insurance_add_bill():
+    if session.get('username') != 'Maman_ivonne':
+        abort(403)
+    return render_template('manual_bill.html', insurances=ALLOWED_INSURANCES)
 
 
 @app.route("/stat", methods=['GET','POST'])

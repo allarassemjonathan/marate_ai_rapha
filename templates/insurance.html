@@ -51,8 +51,11 @@
           </thead>
           <tbody>
             {% for ins in insurances %}
-            <tr class="hover:bg-gray-50">
-              <td class="px-3 py-2 border-b border-gray-100 font-medium">{{ ins }}</td>
+            <tr class="hover:bg-gray-50 {% if selected_insurance == ins %}bg-cyan-50{% endif %}">
+              <td class="px-3 py-2 border-b border-gray-100 font-medium">
+                <a href="/insurance?year={{ selected_year }}&ins={{ ins }}#details"
+                   class="text-cyan-700 hover:text-cyan-900 hover:underline">{{ ins }}</a>
+              </td>
               {% for m in range(1, 13) %}
                 {% set val = monthly[ins][m] %}
                 <td class="px-3 py-2 border-b border-gray-100 text-right num {% if not val %}zero{% endif %}">
@@ -83,10 +86,30 @@
       </p>
     </section>
 
-    <section class="bg-white rounded-2xl p-6 shadow-md">
-      <h2 class="text-lg font-semibold text-cyan-600 mb-4">
-        📄 Détail des factures — {{ selected_year }}
-      </h2>
+    <section id="details" class="bg-white rounded-2xl p-6 shadow-md">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h2 class="text-lg font-semibold text-cyan-600">
+          📄 Détail des factures —
+          {% if selected_insurance %}{{ selected_insurance }} —{% endif %}
+          {{ selected_year }}
+        </h2>
+        <div class="flex items-center gap-3">
+          {% if selected_insurance %}
+          <a href="/insurance?year={{ selected_year }}"
+             class="text-sm text-gray-600 hover:text-gray-800 underline">
+            ← Toutes les assurances
+          </a>
+          {% else %}
+          <span class="text-xs text-gray-500 italic">
+            Cliquez sur une assurance ci-dessus pour filtrer.
+          </span>
+          {% endif %}
+          <a href="/insurance/add_bill"
+             class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm">
+            + Ajouter une facture manquante
+          </a>
+        </div>
+      </div>
       {% if bills %}
       <div class="overflow-x-auto">
         <table class="min-w-full text-sm border-collapse">

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajouter une facture manquante</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+
+  <header class="flex items-center justify-between bg-white/60 backdrop-blur-md shadow-sm px-6 py-4 mb-8 rounded-xl">
+    <div class="flex items-center gap-3">
+      <a href="/insurance" class="text-cyan-600 hover:text-cyan-800 font-semibold text-lg">← Retour aux assurances</a>
+      <h1 class="text-2xl font-bold text-gray-700">Ajouter une facture manquante</h1>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 pb-10">
+    <div class="bg-white rounded-2xl p-8 shadow-md">
+
+      <p class="text-sm text-gray-600 mb-6">
+        Utilisez ce formulaire pour saisir une facture qui a été émise sur papier mais qui n'a pas été enregistrée dans le système.
+        La facture sera ajoutée au récapitulatif des assurances comme toutes les autres.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <input id="input_nom" type="text" placeholder="Nom du patient" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
+        <input id="input_prenom" type="text" placeholder="Prénom du patient" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" required>
+        <input id="input_police" type="text" placeholder="Numéro de police" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+        <select id="input_assurance" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+          <option value="">-- Nom de l'assurance --</option>
+          {% for ins in insurances %}
+          <option value="{{ ins }}">{{ ins }}</option>
+          {% endfor %}
+        </select>
+        <input id="input_pourcentage" type="number" placeholder="% couvert par l'assurance (ex: 80)" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black" min="0" max="100" value="80">
+        <input id="input_envoye_a" type="text" placeholder="Envoyé à (ex: Assurance X ou Parent)" class="w-full p-4 rounded-xl border border-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white text-black">
+      </div>
+
+      <div id="invoice-items-container" class="space-y-6 mb-6"></div>
+
+      <div class="flex justify-start mb-6">
+        <button type="button" onclick="addInvoiceSection()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2 rounded-xl transition">
+          Ajouter une section
+        </button>
+      </div>
+
+      <div class="flex justify-between">
+        <a href="/insurance" class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-black rounded-xl transition">Annuler</a>
+        <button onclick="generateInvoice()" class="px-6 py-3 rounded-xl text-white font-medium bg-cyan-600 hover:bg-cyan-700">
+          Enregistrer & générer PDF
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const MANUAL_PATIENT_ID = 0;
+
+    function addInvoiceSection() {
+      const sectionList = document.getElementById('invoice-items-container');
+      const sectionDiv = document.createElement('div');
+      sectionDiv.className = 'section-container border p-4 rounded-xl mb-6';
+      sectionDiv.innerHTML = `
+        <input type="text" placeholder="Titre de la section" class="section-title-input mb-4 w-full p-2 rounded border" required>
+        <div class="articles-list space-y-4 mb-4"></div>
+        <button type="button" onclick="addArticle(this)" class="bg-cyan-500 text-black px-3 py-1 rounded mb-2">Ajouter un article</button>
+        <div class="section-subtotal text-right font-semibold mt-2">Sous-total: 0 Fcfa</div>
+      `;
+      sectionList.appendChild(sectionDiv);
+      addArticle(sectionDiv.querySelector('button'));
+    }
+
+    function addArticle(button) {
+      const sectionDiv = button.closest('.section-container');
+      const articleList = sectionDiv.querySelector('.articles-list');
+      const row = document.createElement('div');
+      row.className = 'article-row grid grid-cols-1 md:grid-cols-3 gap-4 items-center';
+      row.innerHTML = `
+        <input type="text" class="item-libelle w-full p-3 rounded-xl border border-gray-400" placeholder="Libellé" required>
+        <input type="number" class="item-quantite w-full p-3 rounded-xl border border-gray-400" placeholder="Quantité" min="1" step="1" value="1" required>
+        <input type="number" class="item-montant w-full p-3 rounded-xl border border-gray-400" placeholder="Montant (Fcfa)" min="0" step="1" value="0" required>
+        <div class="col-span-1 md:col-span-3 text-right">
+          <button type="button" onclick="removeArticle(this)" class="text-red-500 hover:text-red-700 text-sm">Supprimer l'article</button>
+        </div>
+      `;
+      articleList.appendChild(row);
+      [row.querySelector('.item-quantite'), row.querySelector('.item-montant')].forEach(input => {
+        input.addEventListener('input', () => updateSectionSubtotal(sectionDiv));
+      });
+      updateSectionSubtotal(sectionDiv);
+    }
+
+    function removeArticle(button) {
+      const sectionDiv = button.closest('.section-container');
+      button.closest('.article-row').remove();
+      updateSectionSubtotal(sectionDiv);
+    }
+
+    function updateSectionSubtotal(sectionDiv) {
+      let subtotal = 0;
+      sectionDiv.querySelectorAll('.article-row').forEach(article => {
+        const qty = parseFloat(article.querySelector('.item-quantite').value) || 0;
+        const price = parseFloat(article.querySelector('.item-montant').value) || 0;
+        subtotal += qty * price;
+      });
+      sectionDiv.querySelector('.section-subtotal').textContent = `Sous-total: ${subtotal.toFixed(2)} Fcfa`;
+    }
+
+    function generateInvoice() {
+      const meta = {
+        nom: document.getElementById('input_nom').value.trim(),
+        prenom: document.getElementById('input_prenom').value.trim(),
+        police: document.getElementById('input_police').value.trim(),
+        assurance: document.getElementById('input_assurance').value.trim(),
+        pourcentage: document.getElementById('input_pourcentage').value.trim(),
+        envoye_a: document.getElementById('input_envoye_a').value.trim()
+      };
+
+      if (!meta.nom || !meta.prenom) {
+        alert('Le nom et le prénom du patient sont requis.');
+        return;
+      }
+      if (!meta.assurance) {
+        alert('Veuillez sélectionner une assurance.');
+        return;
+      }
+
+      const sections = [];
+      document.querySelectorAll('#invoice-items-container .section-container').forEach(sectionDiv => {
+        const titre = sectionDiv.querySelector('.section-title-input').value.trim();
+        const articles = [];
+        sectionDiv.querySelectorAll('.article-row').forEach(row => {
+          const libelle = row.querySelector('.item-libelle').value.trim();
+          const quantite = parseFloat(row.querySelector('.item-quantite').value);
+          const montant = parseFloat(row.querySelector('.item-montant').value);
+          if (libelle && quantite > 0 && montant >= 0) {
+            articles.push({ libelle, quantite, montant });
+          }
+        });
+        if (titre && articles.length > 0) {
+          sections.push({ titre, articles });
+        }
+      });
+
+      if (sections.length === 0) {
+        alert('Veuillez ajouter au moins une section avec des articles valides.');
+        return;
+      }
+
+      fetch(`/generate_invoice/${MANUAL_PATIENT_ID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ meta, sections })
+      })
+      .then(response => {
+        if (response.ok) return response.blob();
+        else throw new Error('Erreur lors de la génération du PDF');
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `facture_${meta.nom}_${meta.prenom}_${new Date().toISOString().slice(0,10)}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        window.location.href = '/insurance';
+      })
+      .catch(error => {
+        alert('Erreur: ' + error.message);
+      });
+    }
+
+    addInvoiceSection();
+  </script>
+</body>
+</html>
