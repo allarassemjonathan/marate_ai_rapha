@@ -514,7 +514,12 @@ function loadPatients(q = '') {
     .then(data => {
       console.log('what is this');
       console.log(data);
-      data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      data.sort((a, b) => {
+        const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
+        if (tb !== ta) return tb - ta;
+        return (b.id || 0) - (a.id || 0);
+      });
       data = data.slice(0, pageSize);
 
       let currentActionRow = null;

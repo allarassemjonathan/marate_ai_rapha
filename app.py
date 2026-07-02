@@ -1007,7 +1007,7 @@ def search():
         try:
             print('right before')
             cur.execute(
-            f"SELECT * FROM patients WHERE name ILIKE %s;",
+            f"SELECT * FROM patients WHERE name ILIKE %s ORDER BY created_at DESC NULLS LAST, id DESC;",
             (f'%{q}%',)  # one-element tuple
             )
             print('right after')
