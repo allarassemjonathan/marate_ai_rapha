@@ -180,6 +180,10 @@ CREDENTIALS = {
     'Dr_DINGUEMNAYAL_BONHEUR': os.environ.get('Dr_DINGUEMNAYAL_BONHEUR'),
     'Dr_NADJIADOUM_CHARITÉ': os.environ.get('Dr_NADJIADOUM_CHARITÉ'),
     'Dr_HAISSEBA_DANSALA': os.environ.get('Dr_HAISSEBA_DANSALA'),
+    'Dr_Pricille': os.environ.get('Dr_Pricille'),
+    'Dr_Charite': os.environ.get('Dr_Charite'),
+    'Dr_Josue': os.environ.get('Dr_Josue'),
+    'Dr_Bonheur': os.environ.get('Dr_Bonheur'),
     'Maman_ivonne': os.environ.get('Maman_ivonne')
 }
 
@@ -862,7 +866,8 @@ def login():
                 'Dr_Toralta_Emmanuelle_Mantar', 'Dr_Madjibeye_Mirielle',
                 'Dr_Robnodji_Adoucie', 'Dr_Ndoubabe_Bonheur',
                 'Dr_YICKOLLE_MADINE_PRISCILLE', 'Dr_DINGUEMNAYAL_BONHEUR',
-                'Dr_NADJIADOUM_CHARITÉ', 'Dr_HAISSEBA_DANSALA'
+                'Dr_NADJIADOUM_CHARITÉ', 'Dr_HAISSEBA_DANSALA',
+                'Dr_Pricille', 'Dr_Charite', 'Dr_Josue', 'Dr_Bonheur'
             }
 
             # Always set both username & user_type
